@@ -1598,6 +1598,44 @@ footer{margin-top:var(--s8);padding-top:var(--s5);border-top:1px solid var(--hai
     el.setAttribute('data-theme', next);
     localStorage.setItem('brand-theme', next);
   }
+
+  // 좌측 nav 스크롤 활성화 (현재 보는 앵커)
+  (function(){
+    var links = [].slice.call(document.querySelectorAll('nav a[href^="#"]'));
+    var map = {};
+    var targets = [];
+    links.forEach(function(a){
+      var id = a.getAttribute('href').slice(1);
+      var el = document.getElementById(id);
+      if(el){ map[id] = a; targets.push(el); }
+    });
+    if(!targets.length) return;
+
+    function setActive(id){
+      links.forEach(function(a){ a.classList.remove('active'); });
+      if(map[id]){
+        map[id].classList.add('active');
+        // 활성 항목이 사이드바 뷰포트 밖이면 스크롤
+        map[id].scrollIntoView({block:'nearest'});
+      }
+    }
+
+    var visible = {};
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting) visible[e.target.id] = e.intersectionRatio;
+        else delete visible[e.target.id];
+      });
+      // 화면에 걸친 섹션 중 문서 순서상 가장 위 항목 활성
+      var cur = null;
+      for(var i=0;i<targets.length;i++){
+        if(visible[targets[i].id] != null){ cur = targets[i].id; break; }
+      }
+      if(cur) setActive(cur);
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: [0, 1] });
+
+    targets.forEach(function(el){ obs.observe(el); });
+  })();
 </script>
 </body>
 </html>

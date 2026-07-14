@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>메모</title>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon-util.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/ds.css">
+
+<!-- Supabase (메모 읽기) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Cloudflare Turnstile (봇 판별) -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script>
+  const SUPABASE_URL = "https://pstpexrnusiwrkcdypjq.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzdHBleHJudXNpd3JrY2R5cGpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMTQ2MTMsImV4cCI6MjA5ODU5MDYxM30._913UewzlbfF8lumTSlwzBd6748QWYHtfjXA8f1pLus";
+  const MEMO_FN_URL = SUPABASE_URL + "/functions/v1/memo";
+
+  // ⚠️ Cloudflare 대시보드에서 발급한 Turnstile 사이트 키로 교체하세요.
+  //    1x00000000000000000000AA 는 "항상 통과" 테스트 키입니다.
+  const TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
+
+  window.SB_CLIENT = window.supabase
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+</script>
+
+<style>
+  body{margin:0;min-height:100vh;padding:40px 24px 64px;}
+  .wrap{max-width:900px;margin:0 auto;}
+  .head{text-align:center;margin-bottom:var(--s6);}
+  .head h1{font-size:28px;margin:0;}
+  .head .sub{font-size:13px;color:var(--muted);margin-top:6px;}
+
+  /* 작성 폼 */
+  .composer{padding:var(--s5);margin-bottom:var(--s6);}
+  .composer textarea{width:100%;min-height:110px;resize:vertical;
+    font-family:var(--font);font-size:14px;line-height:1.6;
+    color:var(--ink);background:var(--canvas);
+    border:1px solid var(--hairline);border-radius:var(--r-md);padding:12px 14px;}
+  .composer textarea:focus,.composer input:focus{outline:none;border-color:var(--brand-yellow);}
+  .row{display:flex;align-items:center;gap:var(--s3);margin-top:var(--s3);flex-wrap:wrap;}
+  .composer input[type=password]{flex:1;min-width:180px;
+    font-family:var(--font);font-size:14px;color:var(--ink);background:var(--canvas);
+    border:1px solid var(--hairline);border-radius:var(--r-md);padding:10px 14px;}
+  .hint{font-size:12px;color:var(--muted);margin-top:var(--s2);}
+  .cf-turnstile{margin-top:var(--s3);}
+
+  /* 메모 목록 */
+  .list{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s4);}
+  @media(max-width:700px){.list{grid-template-columns:1fr;}}
+  .memo{display:flex;flex-direction:column;gap:var(--s3);padding:var(--s4);}
+  .memo .content{
+    /* 내용은 드래그(부분 선택) 가능 */
+    user-select:text;-webkit-user-select:text;cursor:text;
+    white-space:pre-wrap;overflow-wrap:anywhere;
+    font-size:14px;line-height:1.65;color:var(--body);margin:0;}
+  .memo .foot{display:flex;align-items:center;gap:var(--s2);
+    border-top:1px solid var(--hairline);padding-top:var(--s3);}
+  .memo time{font-family:var(--mono);font-size:11px;color:var(--muted);margin-right:auto;}
+  .del-row{display:none;gap:var(--s2);align-items:center;}
+  .del-row.open{display:flex;}
+  .del-row input{width:130px;font-size:13px;color:var(--ink);background:var(--canvas);
+    border:1px solid var(--hairline);border-radius:var(--r-sm);padding:6px 10px;}
+  .empty{color:var(--muted);font-size:14px;text-align:center;padding:var(--s7) 0;}
+
+  /* 토스트 */
+  #toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);
+    background:var(--surface-soft);color:var(--ink);border:1px solid var(--hairline);
+    border-radius:var(--r-pill);padding:10px 20px;font-size:13px;font-weight:600;
+    box-shadow:var(--sh-lg);opacity:0;pointer-events:none;transition:.2s;z-index:50;}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  #toast.err{border-color:var(--error);color:#FFD9D9;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <span class="eyebrow">OneThe Util</span>
+    <h1>메모</h1>
+    <p class="sub">누구나 남기는 공개 메모. 비밀번호로 본인 메모만 삭제.</p>
+  </header>
+
+  <form class="card composer" id="form">
+    <textarea id="content" maxlength="2000" placeholder="메모 내용 (최대 2000자)" required></textarea>
+    <div class="row">
+      <input type="password" id="password" placeholder="삭제용 비밀번호" autocomplete="new-password" required>
+      <button class="btn btn-primary" type="submit" id="submitBtn">게시</button>
+    </div>
+    <div class="cf-turnstile" id="cf" data-theme="dark"></div>
+    <p class="hint">스팸 방지: 봇 검증 · 한국 IP만 게시 · 작성 3초 이내 게시 차단</p>
+  </form>
+
+  <div class="list" id="list"></div>
+  <p class="empty" id="empty" hidden>아직 메모가 없습니다.</p>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function () {
+  const SB = window.SB_CLIENT;
+  const form = document.getElementById("form");
+  const contentEl = document.getElementById("content");
+  const passwordEl = document.getElementById("password");
+  const submitBtn = document.getElementById("submitBtn");
+  const listEl = document.getElementById("list");
+  const emptyEl = document.getElementById("empty");
+  const toastEl = document.getElementById("toast");
+
+  let widgetId = null;
+  let toastTimer = null;
+
+  function toast(msg, isErr) {
+    toastEl.textContent = msg;
+    toastEl.classList.toggle("err", !!isErr);
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+  }
+
+  // ───────── Turnstile ─────────
+  window.onloadTurnstileCallback = function () {
+    widgetId = turnstile.render("#cf", {
+      sitekey: TURNSTILE_SITE_KEY,
+      theme: "dark",
+      "refresh-expired": "auto",
+    });
+  };
+  // api.js 가 이미 로드된 경우 대비
+  const cfWait = setInterval(() => {
+    if (window.turnstile && widgetId === null) {
+      clearInterval(cfWait);
+      window.onloadTurnstileCallback();
+    }
+  }, 200);
+
+  // ───────── 목록 ─────────
+  function fmt(iso) {
+    const d = new Date(iso);
+    const p = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  }
+
+  function render(memos) {
+    listEl.innerHTML = "";
+    emptyEl.hidden = memos.length > 0;
+
+    for (const m of memos) {
+      const card = document.createElement("article");
+      card.className = "card memo";
+
+      const p = document.createElement("p");
+      p.className = "content";
+      p.textContent = m.content;   // 텍스트 노드 → 부분 드래그 선택 가능
+
+      const foot = document.createElement("div");
+      foot.className = "foot";
+
+      const time = document.createElement("time");
+      time.dateTime = m.created_at;
+      time.textContent = fmt(m.created_at);
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "btn btn-secondary btn-sm";
+      copyBtn.textContent = "복사";
+      copyBtn.addEventListener("click", () => copy(m.content, copyBtn));
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.className = "btn btn-secondary btn-sm";
+      delBtn.textContent = "삭제";
+
+      const delRow = document.createElement("div");
+      delRow.className = "del-row";
+      const pw = document.createElement("input");
+      pw.type = "password";
+      pw.placeholder = "비밀번호";
+      pw.autocomplete = "off";
+      const ok = document.createElement("button");
+      ok.type = "button";
+      ok.className = "btn btn-primary btn-sm";
+      ok.textContent = "확인";
+      delRow.append(pw, ok);
+
+      delBtn.addEventListener("click", () => {
+        delRow.classList.toggle("open");
+        if (delRow.classList.contains("open")) pw.focus();
+      });
+      ok.addEventListener("click", () => remove(m.id, pw.value, ok));
+      pw.addEventListener("keydown", (e) => { if (e.key === "Enter") ok.click(); });
+
+      foot.append(time, copyBtn, delBtn, delRow);
+      card.append(p, foot);
+      listEl.appendChild(card);
+    }
+  }
+
+  async function load() {
+    if (!SB) { toast("Supabase 미설정", true); return; }
+    const { data, error } = await SB
+      .from("memos")
+      .select("id, content, created_at")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) { toast("불러오기 실패: " + error.message, true); return; }
+    render(data || []);
+  }
+
+  // ───────── 복사 ─────────
+  async function copy(text, btn) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    const old = btn.textContent;
+    btn.textContent = "복사됨 ✓";
+    setTimeout(() => { btn.textContent = old; }, 1200);
+  }
+
+  // ───────── 서버 호출 ─────────
+  async function callFn(payload) {
+    const res = await fetch(MEMO_FN_URL, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "apikey": SUPABASE_ANON_KEY,
+        "authorization": "Bearer " + SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify(payload),
+    });
+    let data;
+    try { data = await res.json(); } catch { data = { ok: false, message: "서버 응답 오류" }; }
+    return data;
+  }
+
+  // ───────── 게시 ─────────
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const content = contentEl.value.trim();
+    const password = passwordEl.value;
+    if (!content || !password) { toast("내용과 비밀번호를 입력하세요.", true); return; }
+
+    const token = (window.turnstile && widgetId !== null) ? turnstile.getResponse(widgetId) : "";
+    if (!token) { toast("봇 검증이 아직 끝나지 않았습니다. 잠시 후 다시 시도하세요.", true); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "게시 중…";
+    const data = await callFn({ action: "create", content, password, token });
+    submitBtn.disabled = false;
+    submitBtn.textContent = "게시";
+
+    // Turnstile 토큰은 1회용 → 항상 리셋
+    if (window.turnstile && widgetId !== null) turnstile.reset(widgetId);
+
+    if (!data.ok) { toast(data.message || "게시 실패", true); return; }
+    contentEl.value = "";
+    passwordEl.value = "";
+    toast("게시 완료");
+    load();
+  });
+
+  // ───────── 삭제 ─────────
+  async function remove(id, password, btn) {
+    if (!password) { toast("비밀번호를 입력하세요.", true); return; }
+    btn.disabled = true;
+    const data = await callFn({ action: "delete", id, password });
+    btn.disabled = false;
+    if (!data.ok) { toast(data.message || "삭제 실패", true); return; }
+    toast("삭제 완료");
+    load();
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>

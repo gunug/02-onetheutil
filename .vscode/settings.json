@@ -1,0 +1,23 @@
+{
+  "window.title": "02-onetheutil",
+  "window.titleBarStyle": "custom",
+  "workbench.colorCustomizations": {
+    "titleBar.activeForeground": "#00E5FF",
+    "titleBar.activeBackground": "#061D21",
+    "titleBar.inactiveForeground": "#00E5FFAA",
+    "titleBar.inactiveBackground": "#05181B",
+    "titleBar.border": "#00E5FF55",
+
+    "sideBar.foreground": "#00E5FF",
+    "sideBar.background": "#041416",
+    "sideBar.border": "#00E5FF33",
+    "sideBarTitle.foreground": "#00E5FF",
+    "sideBarSectionHeader.foreground": "#00E5FF",
+    "sideBarSectionHeader.background": "#061D21",
+
+    "list.activeSelectionForeground": "#FFFFFF",
+    "list.inactiveSelectionForeground": "#FFFFFF",
+    "list.focusForeground": "#FFFFFF",
+    "list.highlightForeground": "#FFFFFF"
+  }
+}
