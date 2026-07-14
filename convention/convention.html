@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>코딩컨벤션 coding conventions</title>
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/ds.css">
+<style>
+body{line-height:1.6;-webkit-font-smoothing:antialiased;}
+*{scrollbar-width:thin;scrollbar-color:var(--hairline) transparent}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{background:var(--hairline);border-radius:var(--r-pill);
+  border:2px solid var(--canvas);background-clip:padding-box}
+*::-webkit-scrollbar-thumb:hover{background:var(--brand-yellow-deep)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:var(--s8) var(--s5) var(--s8);}
+
+/* hero */
+.hero{margin-bottom:var(--s7);}
+h1{font-size:42px;line-height:1.1;letter-spacing:-.02em;margin:0 0 var(--s3);}
+.hero p{color:var(--muted);font-size:16px;margin:0;}
+
+/* rules */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:var(--s4);margin-bottom:var(--s7);}
+.rules .card{padding:var(--s5);}
+.rules h2{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--brand-yellow-deep);margin:0 0 var(--s3);}
+.rules ul{margin:0;padding-left:var(--s4);}
+.rules li{font-size:13px;color:var(--body);margin-bottom:6px;}
+.rules li:last-child{margin-bottom:0;}
+.rules code{font-family:var(--mono);font-size:12px;background:#161613;color:var(--brand-yellow-soft);
+  padding:2px 6px;border-radius:var(--r-sm);}
+.rules strong{color:var(--ink);}
+
+/* table */
+.sheet{background:var(--surface);border:1px solid var(--hairline);
+  border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+caption{text-align:left;padding:var(--s5) var(--s5) var(--s3);font-size:12px;
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+thead th{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);text-align:left;padding:var(--s2) var(--s4);
+  background:var(--surface-soft);border-bottom:1px solid var(--hairline);}
+tbody tr{border-bottom:1px solid var(--hairline);}
+tbody tr:last-child{border-bottom:none;}
+td,tbody th{padding:var(--s3) var(--s4);vertical-align:middle;}
+
+th.group{width:120px;border-right:1px solid var(--hairline);
+  background:var(--canvas);vertical-align:middle;text-align:left;}
+th.group span{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;
+  color:var(--ink);letter-spacing:-.01em;}
+th.group span::before{content:"";width:4px;height:16px;border-radius:2px;
+  background:var(--brand-yellow);flex:none;}
+th.sub{width:130px;font-size:12px;font-weight:600;color:var(--muted);
+  text-align:left;white-space:nowrap;}
+th.sub small{display:block;font-weight:400;font-size:11px;color:var(--hairline);
+  color:#6b6a62;}
+
+/* chips */
+ul.items{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0;}
+ul.items li{font-family:var(--mono);font-size:12px;line-height:1;
+  padding:6px 10px;border-radius:var(--r-pill);
+  background:var(--surface-soft);color:var(--body);
+  border:1px solid var(--hairline);cursor:pointer;
+  transition:background .12s,color .12s,border-color .12s;user-select:none;}
+ul.items li small{margin-left:4px;font-size:10px;opacity:.55;}
+ul.items li:hover{background:var(--brand-yellow-soft);color:var(--on-brand);
+  border-color:var(--brand-yellow-soft);}
+ul.items li.is-copied{background:var(--brand-yellow);color:var(--on-brand);
+  border-color:var(--brand-yellow);}
+
+/* toast */
+#toast{position:fixed;bottom:var(--s6);left:50%;
+  transform:translateX(-50%) translateY(10px);
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:600;font-family:var(--mono);
+  padding:10px 18px;border-radius:var(--r-pill);
+  background:var(--brand-yellow);color:var(--on-brand);
+  box-shadow:var(--sh-lg);opacity:0;pointer-events:none;
+  transition:opacity .18s,transform .18s;z-index:100;}
+#toast.is-visible{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.is-error{background:var(--error);color:#fff;}
+
+@media (max-width:720px){
+  h1{font-size:32px;}
+  th.group,th.sub{width:auto;}
+  th.group,th.sub,td{display:block;}
+  th.group{border-right:none;border-bottom:1px solid var(--hairline);}
+  tbody tr{border-bottom:2px solid var(--hairline);}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">naming convention</span>
+    <h1>코딩 컨벤션 · BEM</h1>
+    <p>Block · Element · Modifier 네이밍 사전. 항목을 클릭하면 클립보드에 복사됩니다.</p>
+  </header>
+
+  <section class="rules">
+    <article class="card">
+      <h2>표기 규칙</h2>
+      <ul>
+        <li>형식 <code>block__element--modifier</code></li>
+        <li>element는 <code>__</code>, modifier는 <code>--</code></li>
+        <li>단어 구분은 하이픈 1개 — <code>privacy-policy</code></li>
+        <li>예시 <code>header__nav--active</code></li>
+        <li>모두 소문자. 카멜케이스 · 언더스코어 1개 금지</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>금지 규칙</h2>
+      <ul>
+        <li>element의 element 금지 — <code>block__el1__el2</code> ❌ → <code>block__el1-el2</code> ⭕</li>
+        <li>modifier 단독 사용 금지 — <code>class="button button--disabled"</code></li>
+        <li>block 없는 element 금지</li>
+        <li>modifier는 클래스당 1축(state · variant · size · shape · color)만</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>block vs element</h2>
+      <ul>
+        <li>떼어내도 의미 성립 → <strong>block</strong> (<code>card</code>, <code>nav</code>)</li>
+        <li>부모 없이 의미 없음 → <strong>element</strong> (<code>card__title</code>)</li>
+        <li>재사용되면 block으로 승격</li>
+      </ul>
+    </article>
+  </section>
+
+  <div class="sheet">
+    <table>
+      <caption>BEM 네이밍 사전</caption>
+      <thead>
+        <tr>
+          <th scope="col">구분</th>
+          <th scope="col">분류</th>
+          <th scope="col">항목</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- folder ---------------------------------->
+        <tr>
+          <th class="group" rowspan="2" scope="rowgroup"><span>folder</span></th>
+          <th class="sub" scope="row">depth1</th>
+          <td>
+            <ul class="items">
+              <li>core</li>
+              <li>base</li>
+              <li>global</li>
+              <li>mobile</li>
+              <li>tablet</li>
+              <li>desktop</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <th class="sub" scope="row">depth2</th>
+          <td>
+            <ul class="items">
+              <li>common</li>
+              <li>home</li>
+              <li>main</li>
+              <li>sub</li>
+              <li>popup</li>
+              <li>component</li>
+            </ul>
+          </td>
+        </tr>
+        <!-- file, page ------------------------------>
+        <tr>
+          <th class="group" scope="rowgroup"><span>file · page</span></th>
+          <th class="sub" scope="row">name</th>
+          <td>
+            <ul class="items">
+              <li>guide</li>
+              <li>privacy-policy</li>
+              <li>cover</li>
+              <li>profile</li>
+              <li>promotion</li>
+              <li>test</li>
+              <li>login</li>
+              <li>detail</li>
+              <li>user</li>
+              <li>setting</li>
+              <li>support</li>
+              <li>management</li>
+              <li>board</li>
+              <li>result</li>
+              <li>send</li>
+              <li>load</li>
+              <li>error</li>
+              <li>search</li>
+              <li>notice</li>
+              <li>faq</li>
+              <li>edit</li>
+            </ul>
+          </td>
+        </tr>
+        <!-- block ----------------------------------->
+        <tr>
+          <th class="group" rowspan="3" scope="rowgroup"><span>block</span></th>
+          <th class="sub" scope="row">depth1</th>
+          <td>
+            <ul class="items">
+              <li>header</li>
+              <li>footer</li>
+              <li>main</li>
+              <li>aside</li>
+              <li>modal</li>
+              <li>popup</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <th class="sub" scope="row">depth2</th>
+          <td>
+            <ul class="items">
+              <li data-copy="nav">nav<small>(navigation)</small></li>
+              <li data-copy="info">info<small>(information)</small></li>
+              <li>notice</li>
+              <li>board</li>
+              <li>copyright</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <th class="sub" scope="row">depth3</th>
+          <td>
+            <ul class="items">
+              <li>container</li>
+              <li>card</li>
+              <li>content</li>
+            </ul>
+          </td>
+        </tr>
+        <!-- element --------------------------------->
+        <tr>
+          <th class="group" rowspan="3" scope="rowgroup"><span>element</span></th>
+          <th class="sub" scope="row">depth1 <small>위치</small></th>
+          <td>
+            <ul class="items">
+              <li>top</li>
+              <li>middle</li>
+              <li>bottom</li>
+              <li>left</li>
+              <li>right</li>
+              <li>header</li>
+              <li>footer</li>
+              <li>front</li>
+              <li>side</li>
+              <li>back</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <th class="sub" scope="row">depth2 <small>역할</small></th>
+          <td>
+            <ul class="items">
+              <li>title</li>
+              <li data-copy="desc">description</li>
+              <li>image</li>
+              <li>button</li>
+              <li>link</li>
+              <li>icon</li>
+              <li>list</li>
+              <li>form</li>
+              <li>tab</li>
+              <li>bar</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <th class="sub" scope="row">depth3 <small>조각</small></th>
+          <td>
+            <ul class="items">
+              <li>item</li>
+              <li>text</li>
+              <li>label</li>
+              <li>value</li>
+              <li>input</li>
+              <li>wrap</li>
+              <li>badge</li>
+              <li>thumb</li>
+            </ul>
+          </td>
+        </tr>
+        <!-- modifier -------------------------------->
+        <tr>
+          <th class="group" rowspan="5" scope="rowgroup"><span>modifier</span></th>
+          <th class="sub" scope="row">state</th>
+          <td>
+            <ul class="items">
+              <li>active</li>
+              <li>inactive</li>
+              <li>enabled</li>
+              <li>disabled</li>
+              <li>selected</li>
+              <li>checked</li>
+              <li>unchecked</li>
+              <li>hidden</li>
+              <li>open</li>
+              <li>close</li>
+              <li>loading</li>
+              <li>error</li>
+              <li>success</li>
+              <li>warning</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <th class="sub" scope="row">variant</th>
+          <td>
+            <ul class="items">
+              <li>primary</li>
+              <li>secondary</li>
+              <li>public</li>
+              <li>private</li>
+              <li>normal</li>
+              <li>special</li>
+              <li>ghost</li>
+              <li>outline</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <th class="sub" scope="row">size</th>
+          <td>
+            <ul class="items">
+              <li>xs</li>
+              <li>sm</li>
+              <li>md</li>
+              <li>lg</li>
+              <li>xl</li>
+              <li>short</li>
+              <li>long</li>
+              <li>wide</li>
+              <li>narrow</li>
+              <li>tall</li>
+              <li>thin</li>
+              <li>thick</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <th class="sub" scope="row">shape</th>
+          <td>
+            <ul class="items">
+              <li>round</li>
+              <li>square</li>
+              <li>circle</li>
+              <li>pill</li>
+              <li>flat</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <th class="sub" scope="row">color</th>
+          <td>
+            <ul class="items">
+              <li>dark</li>
+              <li>light</li>
+              <li>accent</li>
+              <li>point</li>
+              <li>brand</li>
+              <li>muted</li>
+              <li>danger</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  var toast = document.getElementById('toast');
+  var toastTimer = null;
+
+  function showToast(text, isError) {
+    toast.textContent = isError ? '복사 실패' : text;
+    toast.classList.toggle('is-error', !!isError);
+    toast.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      toast.classList.remove('is-visible');
+    }, 1200);
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    // 구형 브라우저 / file: 프로토콜 대응
+    return new Promise(function (resolve, reject) {
+      var textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy') ? resolve() : reject(new Error('copy failed'));
+      } catch (err) {
+        reject(err);
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    });
+  }
+
+  document.querySelectorAll('ul.items li').forEach(function (li) {
+    li.addEventListener('click', function () {
+      // data-copy가 있으면 그 값, 없으면 텍스트에서 괄호 설명 제거
+      var text = li.dataset.copy || li.textContent.replace(/\s*\(.*?\)\s*/g, '').trim();
+      if (!text) return;
+
+      copyText(text).then(function () {
+        li.classList.add('is-copied');
+        setTimeout(function () {
+          li.classList.remove('is-copied');
+        }, 400);
+        showToast(text);
+      }).catch(function () {
+        showToast('', true);
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
