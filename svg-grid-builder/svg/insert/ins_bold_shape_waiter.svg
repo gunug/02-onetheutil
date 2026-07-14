@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="waiter">
+  <circle class="ins-solid" cx="12" cy="9.95" r="3.15"/>
+  <path class="ins-solid" d="M 7.25 17.2 C 7.25 13.95 9.5 13.2 12 13.2 C 14.5 13.2 16.75 13.95 16.75 17.2 Z"/>
+  <path class="ins-solid" d="M 12 13 L 10.25 12.25 L 10.25 13.75 Z M 12 13 L 13.75 12.25 L 13.75 13.75 Z"/>
+  <ellipse class="ins-solid" cx="15.5" cy="15.2" rx="2.34" ry="0.72"/>
+  <path class="ins-solid" d="M 13.16 15.2 A 2.34 2.34 0 0 1 17.84 15.2 Z"/>
+  <circle class="ins-solid" cx="15.5" cy="12.64" r="0.52"/>
+</svg>

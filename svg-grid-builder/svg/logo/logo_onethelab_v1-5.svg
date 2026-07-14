@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="One The Lab ver1.5">
+  <g transform="translate(6,6) scale(0.5)">
+    <g transform="translate(0,6.062) scale(0.40276) translate(-268.052,-406.287)" stroke="#000000" stroke-linecap="round" stroke-linejoin="round">
+      <!-- D + play face (with inner triangle hole) -->
+      <path class="ins-solid" fill-rule="evenodd" style="stroke-width:calc(var(--stroke-w)*2.5)" d="M285.078,411.203l-8.512-4.915l-8.512,4.915l0,19.658l8.513,4.915l17.025-9.829v-9.829L285.078,411.203z M276.564,425.947l0.001-9.829l8.512,4.914L276.564,425.947z"/>
+      <!-- top face -->
+      <polygon class="ins-solid" style="stroke-width:calc(var(--stroke-w)*2.5)" points="293.59,416.118 285.078,411.203 293.59,406.288 310.615,416.118 302.104,421.032 302.104,430.861 293.59,435.776"/>
+      <!-- small top triangle -->
+      <polygon class="ins-solid" style="stroke-width:calc(var(--stroke-w)*2.5)" points="310.615,406.288 302.104,411.202 310.615,416.118"/>
+      <!-- right face -->
+      <polygon class="ins-solid" style="stroke-width:calc(var(--stroke-w)*2.5)" points="310.615,416.118 302.104,421.032 302.104,430.861 310.615,435.775 327.641,425.947 319.128,421.031 310.615,425.947"/>
+    </g>
+  </g>
+</svg>

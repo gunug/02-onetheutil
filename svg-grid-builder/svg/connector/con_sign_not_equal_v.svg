@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-name="sign-not-equal-v">
+  <line x1="9" y1="7" x2="9" y2="17" stroke="#F5F4EC" stroke-width="2.4" stroke-linecap="round"/>
+  <line x1="15" y1="7" x2="15" y2="17" stroke="#F5F4EC" stroke-width="2.4" stroke-linecap="round"/>
+  <line x1="18" y1="8" x2="6" y2="16" stroke="#F5F4EC" stroke-width="2.4" stroke-linecap="round"/>
+</svg>

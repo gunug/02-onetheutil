@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="Web">
+  <g transform="translate(6,6) scale(0.5)">
+    <circle class="ins" style="stroke-width:calc(var(--stroke-w)*2.2)" cx="12" cy="12" r="10"/>
+    <ellipse class="ins" style="stroke-width:calc(var(--stroke-w)*2.2)" cx="12" cy="12" rx="4.4" ry="10"/>
+    <line class="ins" style="stroke-width:calc(var(--stroke-w)*2.2)" x1="2" y1="12" x2="22" y2="12"/>
+  </g>
+</svg>

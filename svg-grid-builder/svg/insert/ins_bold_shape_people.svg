@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="people">
+  <circle class="ins-solid" cx="9" cy="10" r="1.8"/>
+  <path class="ins-solid" d="M6 16.5 C6 14 7.3 13.4 9 13.4 C10.7 13.4 12 14 12 16.5 Z"/>
+  <circle class="ins-solid" cx="15" cy="10" r="1.8"/>
+  <path class="ins-solid" d="M12 16.5 C12 14 13.3 13.4 15 13.4 C16.7 13.4 18 14 18 16.5 Z"/>
+</svg>

@@ -1,0 +1,760 @@
+{
+"count": 151,
+"items": [
+{
+"folder": "frame",
+"name": "frm_bl_bold_arc-quarter",
+"path": "svg/frame/frm_bl_bold_arc-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_arc-tail-long",
+"path": "svg/frame/frm_bl_bold_arc-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_arc-tail",
+"path": "svg/frame/frm_bl_bold_arc-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_dia-quarter",
+"path": "svg/frame/frm_bl_bold_dia-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_dia-tail-long",
+"path": "svg/frame/frm_bl_bold_dia-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_dia-tail",
+"path": "svg/frame/frm_bl_bold_dia-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_flower4",
+"path": "svg/frame/frm_bl_bold_flower4.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_flower8",
+"path": "svg/frame/frm_bl_bold_flower8.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_hexagon-v",
+"path": "svg/frame/frm_bl_bold_hexagon-v.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_hexagon",
+"path": "svg/frame/frm_bl_bold_hexagon.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_oct-quarter",
+"path": "svg/frame/frm_bl_bold_oct-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_oct-tail-long",
+"path": "svg/frame/frm_bl_bold_oct-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_oct-tail",
+"path": "svg/frame/frm_bl_bold_oct-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_rect-cut-deep",
+"path": "svg/frame/frm_bl_bold_rect-cut-deep.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_rect-cut",
+"path": "svg/frame/frm_bl_bold_rect-cut.svg"
+},
+{
+"folder": "frame",
+"name": "frm_bl_bold_rect-quarter",
+"path": "svg/frame/frm_bl_bold_rect-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_arc-quarter",
+"path": "svg/frame/frm_br_bold_arc-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_arc-tail-long",
+"path": "svg/frame/frm_br_bold_arc-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_arc-tail",
+"path": "svg/frame/frm_br_bold_arc-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_dia-quarter",
+"path": "svg/frame/frm_br_bold_dia-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_dia-tail-long",
+"path": "svg/frame/frm_br_bold_dia-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_dia-tail",
+"path": "svg/frame/frm_br_bold_dia-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_flower4",
+"path": "svg/frame/frm_br_bold_flower4.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_flower8",
+"path": "svg/frame/frm_br_bold_flower8.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_hexagon-v",
+"path": "svg/frame/frm_br_bold_hexagon-v.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_hexagon",
+"path": "svg/frame/frm_br_bold_hexagon.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_oct-quarter",
+"path": "svg/frame/frm_br_bold_oct-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_oct-tail-long",
+"path": "svg/frame/frm_br_bold_oct-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_oct-tail",
+"path": "svg/frame/frm_br_bold_oct-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_rect-cut-deep",
+"path": "svg/frame/frm_br_bold_rect-cut-deep.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_rect-cut",
+"path": "svg/frame/frm_br_bold_rect-cut.svg"
+},
+{
+"folder": "frame",
+"name": "frm_br_bold_rect-quarter",
+"path": "svg/frame/frm_br_bold_rect-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_arrow-dl",
+"path": "svg/frame/frm_full_bold_arrow-dl.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_arrow-down",
+"path": "svg/frame/frm_full_bold_arrow-down.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_arrow-dr",
+"path": "svg/frame/frm_full_bold_arrow-dr.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_arrow-left",
+"path": "svg/frame/frm_full_bold_arrow-left.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_arrow-right",
+"path": "svg/frame/frm_full_bold_arrow-right.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_arrow-ul",
+"path": "svg/frame/frm_full_bold_arrow-ul.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_arrow-up",
+"path": "svg/frame/frm_full_bold_arrow-up.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_arrow-ur",
+"path": "svg/frame/frm_full_bold_arrow-ur.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_box-closed",
+"path": "svg/frame/frm_full_bold_box-closed.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_box-open",
+"path": "svg/frame/frm_full_bold_box-open.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_circle-trio",
+"path": "svg/frame/frm_full_bold_circle-trio.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_cloud-asym",
+"path": "svg/frame/frm_full_bold_cloud-asym.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_gift-box",
+"path": "svg/frame/frm_full_bold_gift-box.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_monitor-4-3",
+"path": "svg/frame/frm_full_bold_monitor-4-3.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_person",
+"path": "svg/frame/frm_full_bold_person.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_photo-frame",
+"path": "svg/frame/frm_full_bold_photo-frame.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_ratio-10-16",
+"path": "svg/frame/frm_full_bold_ratio-10-16.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_ratio-16-10",
+"path": "svg/frame/frm_full_bold_ratio-16-10.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_ratio-16-9",
+"path": "svg/frame/frm_full_bold_ratio-16-9.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_ratio-9-16",
+"path": "svg/frame/frm_full_bold_ratio-9-16.svg"
+},
+{
+"folder": "frame",
+"name": "frm_full_bold_server",
+"path": "svg/frame/frm_full_bold_server.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_arc-quarter",
+"path": "svg/frame/frm_tl_bold_arc-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_arc-tail-long",
+"path": "svg/frame/frm_tl_bold_arc-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_arc-tail",
+"path": "svg/frame/frm_tl_bold_arc-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_dia-quarter",
+"path": "svg/frame/frm_tl_bold_dia-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_dia-tail-long",
+"path": "svg/frame/frm_tl_bold_dia-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_dia-tail",
+"path": "svg/frame/frm_tl_bold_dia-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_flower4",
+"path": "svg/frame/frm_tl_bold_flower4.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_flower8",
+"path": "svg/frame/frm_tl_bold_flower8.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_hexagon-v",
+"path": "svg/frame/frm_tl_bold_hexagon-v.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_hexagon",
+"path": "svg/frame/frm_tl_bold_hexagon.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_oct-quarter",
+"path": "svg/frame/frm_tl_bold_oct-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_oct-tail-long",
+"path": "svg/frame/frm_tl_bold_oct-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_oct-tail",
+"path": "svg/frame/frm_tl_bold_oct-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_rect-cut-deep",
+"path": "svg/frame/frm_tl_bold_rect-cut-deep.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_rect-cut",
+"path": "svg/frame/frm_tl_bold_rect-cut.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tl_bold_rect-quarter",
+"path": "svg/frame/frm_tl_bold_rect-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_arc-quarter",
+"path": "svg/frame/frm_tr_bold_arc-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_arc-tail-long",
+"path": "svg/frame/frm_tr_bold_arc-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_arc-tail",
+"path": "svg/frame/frm_tr_bold_arc-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_dia-quarter",
+"path": "svg/frame/frm_tr_bold_dia-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_dia-tail-long",
+"path": "svg/frame/frm_tr_bold_dia-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_dia-tail",
+"path": "svg/frame/frm_tr_bold_dia-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_flower4",
+"path": "svg/frame/frm_tr_bold_flower4.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_flower8",
+"path": "svg/frame/frm_tr_bold_flower8.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_hexagon-v",
+"path": "svg/frame/frm_tr_bold_hexagon-v.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_hexagon",
+"path": "svg/frame/frm_tr_bold_hexagon.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_oct-quarter",
+"path": "svg/frame/frm_tr_bold_oct-quarter.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_oct-tail-long",
+"path": "svg/frame/frm_tr_bold_oct-tail-long.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_oct-tail",
+"path": "svg/frame/frm_tr_bold_oct-tail.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_rect-cut-deep",
+"path": "svg/frame/frm_tr_bold_rect-cut-deep.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_rect-cut",
+"path": "svg/frame/frm_tr_bold_rect-cut.svg"
+},
+{
+"folder": "frame",
+"name": "frm_tr_bold_rect-quarter",
+"path": "svg/frame/frm_tr_bold_rect-quarter.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_chart_bar",
+"path": "svg/insert/ins_bold_chart_bar.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_chart_line",
+"path": "svg/insert/ins_bold_chart_line.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_chart_pie",
+"path": "svg/insert/ins_bold_chart_pie.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_chart_stock",
+"path": "svg/insert/ins_bold_chart_stock.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_hand_like",
+"path": "svg/insert/ins_bold_hand_like.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_list_rows",
+"path": "svg/insert/ins_bold_list_rows.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_mark_dots",
+"path": "svg/insert/ins_bold_mark_dots.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_mark_exclaim",
+"path": "svg/insert/ins_bold_mark_exclaim.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_mark_info",
+"path": "svg/insert/ins_bold_mark_info.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_mark_question",
+"path": "svg/insert/ins_bold_mark_question.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_mark_x",
+"path": "svg/insert/ins_bold_mark_x.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_apps",
+"path": "svg/insert/ins_bold_object_apps.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_chip",
+"path": "svg/insert/ins_bold_object_chip.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_codewin",
+"path": "svg/insert/ins_bold_object_codewin.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_db",
+"path": "svg/insert/ins_bold_object_db.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_grad",
+"path": "svg/insert/ins_bold_object_grad.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_interface",
+"path": "svg/insert/ins_bold_object_interface.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_key",
+"path": "svg/insert/ins_bold_object_key.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_link",
+"path": "svg/insert/ins_bold_object_link.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_lock",
+"path": "svg/insert/ins_bold_object_lock.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_mail",
+"path": "svg/insert/ins_bold_object_mail.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_mailopen",
+"path": "svg/insert/ins_bold_object_mailopen.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_nodes",
+"path": "svg/insert/ins_bold_object_nodes.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_refresh",
+"path": "svg/insert/ins_bold_object_refresh.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_remodel",
+"path": "svg/insert/ins_bold_object_remodel.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_search",
+"path": "svg/insert/ins_bold_object_search.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_server",
+"path": "svg/insert/ins_bold_object_server.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_sparkcode",
+"path": "svg/insert/ins_bold_object_sparkcode.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_table",
+"path": "svg/insert/ins_bold_object_table.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_token",
+"path": "svg/insert/ins_bold_object_token.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_cloud",
+"path": "svg/insert/ins_bold_shape_cloud.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_flag",
+"path": "svg/insert/ins_bold_shape_flag.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_gear",
+"path": "svg/insert/ins_bold_shape_gear.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_heart",
+"path": "svg/insert/ins_bold_shape_heart.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_o",
+"path": "svg/insert/ins_bold_shape_o.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_people",
+"path": "svg/insert/ins_bold_shape_people.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_person",
+"path": "svg/insert/ins_bold_shape_person.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_shuriken",
+"path": "svg/insert/ins_bold_shape_shuriken.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_sign_minus",
+"path": "svg/insert/ins_bold_sign_minus.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_sign_plus",
+"path": "svg/insert/ins_bold_sign_plus.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_text_code",
+"path": "svg/insert/ins_bold_text_code.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_text_lines",
+"path": "svg/insert/ins_bold_text_lines.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_text_lines3",
+"path": "svg/insert/ins_bold_text_lines3.svg"
+},
+{
+"folder": "logo",
+"name": "logo_android",
+"path": "svg/logo/logo_android.svg"
+},
+{
+"folder": "logo",
+"name": "logo_claude",
+"path": "svg/logo/logo_claude.svg"
+},
+{
+"folder": "logo",
+"name": "logo_flutter",
+"path": "svg/logo/logo_flutter.svg"
+},
+{
+"folder": "logo",
+"name": "logo_gemini",
+"path": "svg/logo/logo_gemini.svg"
+},
+{
+"folder": "logo",
+"name": "logo_git",
+"path": "svg/logo/logo_git.svg"
+},
+{
+"folder": "logo",
+"name": "logo_github",
+"path": "svg/logo/logo_github.svg"
+},
+{
+"folder": "logo",
+"name": "logo_ios",
+"path": "svg/logo/logo_ios.svg"
+},
+{
+"folder": "logo",
+"name": "logo_obsidian",
+"path": "svg/logo/logo_obsidian.svg"
+},
+{
+"folder": "logo",
+"name": "logo_onethelab_v1-5",
+"path": "svg/logo/logo_onethelab_v1-5.svg"
+},
+{
+"folder": "logo",
+"name": "logo_onethelab_v2",
+"path": "svg/logo/logo_onethelab_v2.svg"
+},
+{
+"folder": "logo",
+"name": "logo_onethelab_v2_tight",
+"path": "svg/logo/logo_onethelab_v2_tight.svg"
+},
+{
+"folder": "logo",
+"name": "logo_openai",
+"path": "svg/logo/logo_openai.svg"
+},
+{
+"folder": "logo",
+"name": "logo_usb",
+"path": "svg/logo/logo_usb.svg"
+},
+{
+"folder": "logo",
+"name": "logo_web",
+"path": "svg/logo/logo_web.svg"
+},
+{
+"folder": "logo",
+"name": "logo_wifi",
+"path": "svg/logo/logo_wifi.svg"
+},
+{
+"folder": "face",
+"name": "face_angry",
+"path": "svg/face/face_angry.svg"
+},
+{
+"folder": "face",
+"name": "face_laugh",
+"path": "svg/face/face_laugh.svg"
+},
+{
+"folder": "face",
+"name": "face_love",
+"path": "svg/face/face_love.svg"
+},
+{
+"folder": "face",
+"name": "face_neutral",
+"path": "svg/face/face_neutral.svg"
+},
+{
+"folder": "face",
+"name": "face_sad",
+"path": "svg/face/face_sad.svg"
+},
+{
+"folder": "face",
+"name": "face_smile",
+"path": "svg/face/face_smile.svg"
+},
+{
+"folder": "face",
+"name": "face_surprise",
+"path": "svg/face/face_surprise.svg"
+},
+{
+"folder": "face",
+"name": "face_wink",
+"path": "svg/face/face_wink.svg"
+}
+]
+}

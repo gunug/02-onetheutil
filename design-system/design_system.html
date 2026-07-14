@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>design system</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Brand (테마 무관 고정) */
+  --brand-yellow:#FFD400;
+  --brand-yellow-soft:#FFE766;
+  --brand-yellow-deep:#C9A600;
+  --on-brand:#1A1A17;       /* 노랑 위 텍스트 — 항상 어둡게 */
+  /* Semantic */
+  --success:#3FA66A;
+  --warning:#E0941A;
+  --error:#D24A4A;
+  --info:#3A78C2;
+  /* 코드블록 (항상 어둡게) */
+  --code-bg:#161613;
+  --code-fg:#FAFAF7;
+  /* Radius */
+  --r-sm:6px; --r-md:10px; --r-lg:16px; --r-pill:9999px;
+  /* Space */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+  --font:"Inter",-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+/* ===== 라이트 테마 ===== */
+[data-theme="light"]{
+  --ink:#1A1A17;
+  --body:#3D3D38;
+  --muted:#7A7A72;
+  --hairline:#E7E5DD;
+  --canvas:#FAFAF7;
+  --surface:#FFFFFF;
+  --surface-soft:#F4F3EE;
+  --on-ink:#FAFAF7;         /* --ink 표면 위 텍스트 */
+  --sh-sm:0 1px 2px rgba(26,26,23,.06);
+  --sh-md:0 4px 16px rgba(26,26,23,.08);
+  --sh-lg:0 12px 40px rgba(26,26,23,.12);
+}
+/* ===== 다크 테마 (기본) ===== */
+[data-theme="dark"]{
+  --ink:#F5F4EC;
+  --body:#CFCDC2;
+  --muted:#8E8C82;
+  --hairline:#33332B;
+  --canvas:#121210;
+  --surface:#1C1C17;
+  --surface-soft:#26261F;
+  --on-ink:#121210;
+  --sh-sm:0 1px 2px rgba(0,0,0,.4);
+  --sh-md:0 4px 16px rgba(0,0,0,.45);
+  --sh-lg:0 12px 40px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+/* scrollbar — 디자인 시스템 적용 */
+*{scrollbar-width:thin;scrollbar-color:var(--hairline) transparent}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{background:var(--hairline);border-radius:var(--r-pill);
+  border:2px solid var(--canvas);background-clip:padding-box}
+*::-webkit-scrollbar-thumb:hover{background:var(--brand-yellow-deep)}
+*::-webkit-scrollbar-corner{background:transparent}
+body{font-family:var(--font);background:var(--canvas);color:var(--body);
+  line-height:1.6;-webkit-font-smoothing:antialiased}
+
+/* layout */
+.layout{display:block;min-height:100vh}
+aside{display:none}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;
+  color:var(--ink);margin-bottom:var(--s7)}
+.logo .mark{display:grid;place-items:center}
+.logo .mark svg{width:46px;height:auto;display:block}
+.logo .mark svg path,.logo .mark svg polygon{fill:var(--brand-yellow)}
+nav a{display:block;padding:3px 10px;border-radius:var(--r-sm);color:var(--muted);
+  text-decoration:none;font-size:13px;font-weight:500;line-height:1.55}
+nav a:hover{background:var(--surface-soft);color:var(--ink)}
+nav a.active{background:var(--brand-yellow);color:var(--on-brand);font-weight:600}
+/* 큰 섹션 — 강한 구분 */
+nav .nav-sec{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;
+  letter-spacing:.01em;color:var(--ink);margin:var(--s6) 0 var(--s3);
+  padding-top:var(--s4);border-top:1px solid var(--hairline)}
+nav .nav-sec:first-of-type{margin-top:0;padding-top:0;border-top:none}
+nav .nav-sec .tick{width:4px;height:15px;border-radius:2px;background:var(--brand-yellow)}
+/* 작은 그룹 — 약한 구분 */
+nav .group{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin:var(--s3) 0 3px 10px}
+
+main{padding:var(--s8) var(--s8);max-width:100%;width:100%}
+.hero{margin-bottom:var(--s8)}
+.eyebrow{display:inline-block;background:var(--code-bg);color:var(--brand-yellow);
+  font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 12px;border-radius:var(--r-pill);margin-bottom:var(--s4)}
+h1{font-size:52px;line-height:1.05;letter-spacing:-.02em;color:var(--ink);font-weight:800}
+.hero p{font-size:19px;color:var(--muted);margin-top:var(--s4);max-width:60ch}
+
+section{margin-bottom:var(--s8);scroll-margin-top:var(--s5)}
+h2{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--brand-yellow-deep);margin-bottom:var(--s2)}
+.sec-title{font-size:30px;font-weight:700;color:var(--ink);letter-spacing:-.01em;
+  margin-bottom:var(--s5)}
+h3{font-size:16px;font-weight:600;color:var(--ink);margin:var(--s5) 0 var(--s3)}
+
+.card{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-lg);
+  padding:var(--s6);box-shadow:var(--sh-sm)}
+
+/* color swatches */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--s4)}
+.swatch{border:1px solid var(--hairline);border-radius:var(--r-md);overflow:hidden;
+  box-shadow:var(--sh-sm)}
+.swatch .chip{height:84px}
+.swatch .meta{padding:10px 12px;background:var(--surface)}
+.swatch .name{font-size:13px;font-weight:600;color:var(--ink)}
+.swatch .hex{font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* type scale */
+.type-row{display:flex;align-items:baseline;gap:var(--s5);padding:var(--s4) 0;
+  border-bottom:1px solid var(--hairline)}
+.type-row:last-child{border:none}
+.type-row .label{font-family:var(--mono);font-size:12px;color:var(--muted);width:90px;flex:none}
+.type-row .sample{color:var(--ink)}
+
+/* spacing */
+.space-row{display:flex;align-items:center;gap:var(--s4);margin-bottom:var(--s3)}
+.space-row .bar{height:18px;background:var(--brand-yellow);border-radius:3px}
+.space-row .tok{font-family:var(--mono);font-size:12px;color:var(--muted);width:120px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font);
+  font-size:14px;font-weight:600;padding:10px 20px;border-radius:var(--r-md);
+  border:1px solid transparent;cursor:pointer;text-decoration:none;transition:.12s}
+.btn-primary{background:var(--brand-yellow);color:var(--on-brand)}
+.btn-primary:hover{background:var(--brand-yellow-deep);color:#fff}
+.btn-secondary{background:var(--surface);color:var(--ink);border-color:var(--hairline)}
+.btn-secondary:hover{background:var(--surface-soft)}
+.btn-dark{background:var(--ink);color:var(--on-ink)}
+.btn-dark:hover{opacity:.85}
+.btn-ghost{background:transparent;color:var(--ink)}
+.btn-ghost:hover{background:var(--surface-soft)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-sm{padding:6px 14px;font-size:13px}
+.btn-lg{padding:14px 28px;font-size:16px}
+.row{display:flex;gap:var(--s3);flex-wrap:wrap;align-items:center}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+  padding:4px 12px;border-radius:var(--r-pill)}
+.badge.dot::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.b-yellow{background:var(--brand-yellow-soft);color:var(--brand-yellow-deep)}
+.b-success{background:#E3F3EA;color:var(--success)}
+.b-warning{background:#FAF0DD;color:var(--warning)}
+.b-error{background:#F8E5E5;color:var(--error)}
+.b-info{background:#E4EEF8;color:var(--info)}
+
+/* form */
+.field{max-width:360px}
+label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
+input,select,textarea{width:100%;font-family:var(--font);font-size:14px;
+  padding:10px 14px;border:1px solid var(--hairline);border-radius:var(--r-md);
+  background:var(--surface);color:var(--ink);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--brand-yellow-deep);
+  box-shadow:0 0 0 3px var(--brand-yellow-soft)}
+
+/* alert */
+.alert{display:flex;gap:12px;padding:14px 16px;border-radius:var(--r-md);
+  font-size:14px;border:1px solid;margin-bottom:var(--s3)}
+.alert .ic{font-weight:700}
+.a-success{background:#E3F3EA;border-color:#BFE4CD;color:#246b44}
+.a-warning{background:#FAF0DD;border-color:#EAD7AC;color:#8a5e10}
+.a-error{background:#F8E5E5;border-color:#EBC2C2;color:#8f2f2f}
+.a-info{background:#E4EEF8;border-color:#C2D7EB;color:#2a567f}
+
+/* table */
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);
+  border:1px solid var(--hairline);border-radius:var(--r-lg);overflow:hidden}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--hairline)}
+thead th{background:var(--surface-soft);font-size:12px;text-transform:uppercase;
+  letter-spacing:.05em;color:var(--muted)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface-soft)}
+
+/* code */
+code{font-family:var(--mono);font-size:13px;background:var(--surface-soft);
+  padding:2px 6px;border-radius:4px;color:var(--ink)}
+.code-block{background:var(--code-bg);color:var(--code-fg);border-radius:var(--r-md);
+  padding:var(--s5);font-family:var(--mono);font-size:13px;line-height:1.7;overflow-x:auto}
+.code-block .c{color:#9a9a8e}
+.code-block .y{color:var(--brand-yellow)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s5)}
+.elev{height:90px;border-radius:var(--r-md);background:var(--surface);
+  display:grid;place-items:center;font-size:13px;color:var(--muted)}
+
+/* ===== 큰 섹션 배너 (콘텐츠) ===== */
+.banner{margin:var(--s8) 0 var(--s6);padding-top:var(--s5);border-top:3px solid var(--ink)}
+.banner .b-eyebrow{font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--brand-yellow-deep)}
+.banner .b-title{font-size:38px;font-weight:800;letter-spacing:-.02em;color:var(--ink);margin-top:6px}
+.banner .b-desc{font-size:16px;color:var(--muted);margin-top:8px;max-width:62ch}
+
+/* ===== 다이어그램 공용 ===== */
+.diagram{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-lg);
+  padding:var(--s6);box-shadow:var(--sh-sm);overflow-x:auto;margin-bottom:var(--s4)}
+.diagram svg{display:block;max-width:100%;height:auto}
+.cap{font-size:13px;color:var(--muted);margin:-4px 0 var(--s5)}
+svg .nbox{fill:var(--surface-soft);stroke:var(--hairline);stroke-width:1.5}
+svg .nfill{fill:var(--brand-yellow)}
+svg .ndark{fill:var(--ink)}
+svg .nline{stroke:var(--muted);stroke-width:1.5;fill:none}
+svg .ndash{stroke:var(--muted);stroke-width:1.5;fill:none;stroke-dasharray:5 4}
+svg .nt{fill:var(--ink);font-family:var(--font);font-size:12px;font-weight:600}
+svg .nt-on{fill:var(--on-brand);font-family:var(--font);font-size:12px;font-weight:700}
+svg .ns{fill:var(--muted);font-family:var(--mono);font-size:11px}
+svg .nt-d{fill:var(--on-ink);font-family:var(--font);font-size:12px;font-weight:600}
+
+/* roadmap */
+.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4)}
+.rm-col{position:relative}
+.rm-q{font-size:12px;font-weight:700;letter-spacing:.05em;color:var(--brand-yellow-deep);margin-bottom:8px}
+.rm-card{background:var(--surface);border:1px solid var(--hairline);border-left:3px solid var(--brand-yellow);
+  border-radius:var(--r-md);padding:12px 14px;font-size:13px;margin-bottom:8px;box-shadow:var(--sh-sm)}
+.rm-card.done{border-left-color:var(--success);opacity:.8}
+.rm-card.now{border-left-color:var(--info)}
+.rm-card .s{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+
+/* matrix 2x2 */
+.matrix{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
+  gap:6px;height:300px}
+.mq{border-radius:var(--r-md);padding:14px;font-size:13px;display:flex;flex-direction:column}
+.mq .h{font-weight:700;color:var(--ink);margin-bottom:6px}
+.mq .it{font-size:12px;color:var(--body);padding:2px 0}
+.mq.q1{background:rgba(63,166,106,.14)}
+.mq.q2{background:rgba(255,212,0,.18)}
+.mq.q3{background:rgba(58,120,194,.12)}
+.mq.q4{background:rgba(210,74,74,.12)}
+.maxis{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;font-weight:600}
+
+/* dashboard */
+.dash{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-bottom:var(--s4)}
+.kpi{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-md);
+  padding:16px;box-shadow:var(--sh-sm)}
+.kpi .label{font-size:12px;color:var(--muted)}
+.kpi .num{font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-top:4px}
+.kpi .delta{font-size:12px;font-weight:600;margin-top:4px}
+.kpi .up{color:var(--success)} .kpi .down{color:var(--error)}
+.bars{display:flex;align-items:flex-end;gap:10px;height:120px;padding-top:8px}
+.bars .bar{flex:1;background:var(--brand-yellow);border-radius:5px 5px 0 0;min-width:18px;position:relative}
+.bars .bar span{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:11px;color:var(--muted)}
+
+/* timeline */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:"";position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:var(--hairline)}
+.tl-item{position:relative;margin-bottom:var(--s5)}
+.tl-item::before{content:"";position:absolute;left:-25px;top:3px;width:14px;height:14px;
+  border-radius:50%;background:var(--brand-yellow);border:3px solid var(--surface);box-shadow:0 0 0 1px var(--hairline)}
+.tl-date{font-size:12px;font-weight:700;color:var(--brand-yellow-deep)}
+.tl-title{font-size:15px;font-weight:600;color:var(--ink);margin-top:2px}
+.tl-desc{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* case study */
+.case{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s4)}
+.case .col{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-md);padding:18px}
+.case .col h4{font-size:13px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px}
+.case .p{border-top:3px solid var(--error)}.case .a{border-top:3px solid var(--info)}.case .r{border-top:3px solid var(--success)}
+.case .p h4{color:var(--error)}.case .a h4{color:var(--info)}.case .r h4{color:var(--success)}
+.case p{font-size:13px;color:var(--body)}
+.case .metric{font-size:26px;font-weight:800;color:var(--ink);margin-bottom:4px}
+
+/* wireframe */
+.wire{border:2px dashed var(--muted);border-radius:var(--r-md);padding:14px;background:var(--surface)}
+.wire .wbar{height:22px;background:var(--surface-soft);border:1px solid var(--hairline);border-radius:4px;margin-bottom:10px;display:flex;align-items:center;gap:6px;padding:0 8px}
+.wire .wdot{width:8px;height:8px;border-radius:50%;background:var(--muted);opacity:.5}
+.wire .wgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.wire .wbox{height:70px;background:var(--surface-soft);border:1px solid var(--hairline);border-radius:6px;
+  display:grid;place-items:center;font-size:11px;color:var(--muted)}
+.wire .wline{height:9px;background:var(--surface-soft);border-radius:3px;margin:6px 0}
+.wire .wline.s{width:60%}
+
+/* SWOT */
+.swot{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.swot .cell{border-radius:var(--r-md);padding:16px;min-height:120px}
+.swot .cell h4{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;gap:8px;align-items:center}
+.swot .cell .tag{font-size:11px;font-weight:800;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;color:#fff}
+.swot .it{font-size:12.5px;color:var(--body);padding:2px 0}
+.swot .s{background:rgba(63,166,106,.12)} .swot .s h4{color:var(--success)} .swot .s .tag{background:var(--success)}
+.swot .w{background:rgba(210,74,74,.12)} .swot .w h4{color:var(--error)} .swot .w .tag{background:var(--error)}
+.swot .o{background:rgba(58,120,194,.12)} .swot .o h4{color:var(--info)} .swot .o .tag{background:var(--info)}
+.swot .t{background:rgba(224,148,26,.14)} .swot .t h4{color:var(--warning)} .swot .t .tag{background:var(--warning)}
+
+/* Journey map */
+.journey{display:grid;grid-template-columns:repeat(4,1fr);gap:0;text-align:center}
+.journey .stage{padding:0 8px}
+.journey .st-h{font-size:13px;font-weight:700;color:var(--ink);padding:10px 0;
+  background:var(--surface-soft);border:1px solid var(--hairline);border-radius:var(--r-sm) var(--r-sm) 0 0}
+.journey .st-do{font-size:12px;color:var(--body);padding:10px 6px;border:1px solid var(--hairline);border-top:none;min-height:64px}
+.journey .st-emo{font-size:22px;padding:8px 0;border:1px solid var(--hairline);border-top:none;border-radius:0 0 var(--r-sm) var(--r-sm)}
+
+/* Gantt */
+.gantt{font-size:13px}
+.gantt .grow{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:10px;margin-bottom:8px}
+.gantt .gtrack{position:relative;height:22px;background:var(--surface-soft);border-radius:5px}
+.gantt .gbar{position:absolute;height:22px;border-radius:5px;background:var(--brand-yellow);
+  display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--on-brand);font-weight:600}
+.gantt .gbar.b{background:var(--info)} .gantt .gbar.g{background:var(--success)}
+.gantt .gaxis{display:grid;grid-template-columns:120px 1fr;gap:10px;font-size:11px;color:var(--muted);margin-top:4px}
+.gantt .gaxis .ticks{display:flex;justify-content:space-between}
+
+/* Kanban */
+.kanban{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s4)}
+.kanban .kcol{background:var(--surface-soft);border:1px solid var(--hairline);border-radius:var(--r-md);padding:12px}
+.kanban .kh{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px;display:flex;justify-content:space-between}
+.kanban .kh .cnt{color:var(--muted);font-weight:600}
+.kanban .kcard{background:var(--surface);border:1px solid var(--hairline);border-left:3px solid var(--brand-yellow);
+  border-radius:6px;padding:10px;font-size:12.5px;margin-bottom:8px;box-shadow:var(--sh-sm)}
+.kanban .kcard.b{border-left-color:var(--info)} .kanban .kcard.g{border-left-color:var(--success)}
+
+/* Comparison matrix */
+.cmatrix td .dots{color:var(--brand-yellow-deep);letter-spacing:2px}
+.cmatrix td .off{color:var(--hairline)}
+
+footer{margin-top:var(--s8);padding-top:var(--s5);border-top:1px solid var(--hairline);
+  font-size:13px;color:var(--muted)}
+
+/* 다크 테마 — 시맨틱 칩/알림 톤 다운 */
+[data-theme="dark"] .b-yellow{background:rgba(255,212,0,.16);color:var(--brand-yellow)}
+[data-theme="dark"] .b-success{background:rgba(63,166,106,.18);color:#6cc28d}
+[data-theme="dark"] .b-warning{background:rgba(224,148,26,.18);color:#e6a948}
+[data-theme="dark"] .b-error{background:rgba(210,74,74,.18);color:#e07676}
+[data-theme="dark"] .b-info{background:rgba(58,120,194,.18);color:#6c9fd6}
+[data-theme="dark"] .a-success{background:rgba(63,166,106,.12);border-color:rgba(63,166,106,.35);color:#7fcfa0}
+[data-theme="dark"] .a-warning{background:rgba(224,148,26,.12);border-color:rgba(224,148,26,.35);color:#e6b35c}
+[data-theme="dark"] .a-error{background:rgba(210,74,74,.12);border-color:rgba(210,74,74,.35);color:#e58a8a}
+[data-theme="dark"] .a-info{background:rgba(58,120,194,.12);border-color:rgba(58,120,194,.35);color:#82add9}
+
+/* 테마 토글 */
+.theme-toggle{display:flex;align-items:center;gap:8px;width:100%;margin-top:var(--s5);
+  padding:9px 12px;border:1px solid var(--hairline);border-radius:var(--r-md);
+  background:var(--surface-soft);color:var(--ink);font-family:var(--font);
+  font-size:13px;font-weight:600;cursor:pointer}
+.theme-toggle:hover{border-color:var(--brand-yellow-deep)}
+.theme-toggle .ic{font-size:15px}
+[data-theme="dark"] .theme-toggle .sun{display:none}
+[data-theme="light"] .theme-toggle .moon{display:none}
+
+@media(max-width:860px){
+  .layout{grid-template-columns:1fr}
+  aside{display:none}
+  main{padding:var(--s6) var(--s5)}
+  h1{font-size:38px}
+  .grid2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside>
+    <div class="logo"><span class="mark"><svg viewBox="6.04 9.10 11.73 5.80" aria-label="One The Lab"><g transform="translate(6,6) scale(0.5)"><g transform="translate(0,6.062) scale(0.40276) translate(-268.052,-406.287)"><path fill-rule="evenodd" d="M284.609,412.015 276.566,407.371 268.991,411.744 268.991,430.320 276.567,434.693 292.654,425.406 292.654,416.659 Z M275.626,427.571 275.628,414.494 286.952,421.032 Z"/><polygon points="294.527,415.577 286.953,411.203 293.590,407.371 308.740,416.118 301.166,420.491 301.166,430.320 294.527,434.152"/><polygon points="309.678,407.912 303.979,411.202 309.678,414.494"/><polygon points="309.678,417.742 303.041,421.573 303.041,430.320 310.615,434.692 325.766,425.947 319.128,422.114 309.678,427.571"/></g></g></svg></span> One The Lab</div>
+    <nav>
+      <div class="nav-sec"><span class="tick"></span>기초</div>
+      <a href="#brand" class="active">Brand</a>
+      <a href="#color">Color</a>
+      <a href="#type">Typography</a>
+      <a href="#space">간격</a>
+      <a href="#radius">모서리 · 그림자</a>
+
+      <div class="nav-sec"><span class="tick"></span>Component</div>
+      <a href="#button">Button</a>
+      <a href="#badge">Badge</a>
+      <a href="#form">Form</a>
+      <a href="#alert">알림</a>
+      <a href="#table">Table</a>
+
+      <div class="nav-sec"><span class="tick"></span>Infographic</div>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#matrix">Matrix</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#compare">비교표</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#mindmap-arch">Mind Map · Architecture</a>
+      <a href="#casestudy">Case Study</a>
+      <a href="#venn">Venn Diagram</a>
+      <a href="#circlepack">Circle Packing</a>
+      <a href="#bubble">Bubble Chart</a>
+      <a href="#conceptmap">개념도</a>
+      <a href="#tree">Tree Diagram</a>
+      <a href="#procflow">순서도</a>
+      <a href="#swot">SWOT Analysis</a>
+      <a href="#journey">Customer Journey Map</a>
+      <a href="#sankey">Sankey Diagram</a>
+      <a href="#gantt">Gantt Chart</a>
+      <a href="#kanban">Kanban Board</a>
+      <a href="#fishbone">Fishbone Diagram</a>
+      <a href="#cmatrix">Comparison Matrix</a>
+
+      <div class="nav-sec"><span class="tick"></span>Programming</div>
+      <div class="group">구조 (Structure)</div>
+      <a href="#uml-class">Class</a>
+      <a href="#uml-object">Object</a>
+      <a href="#uml-package">Package</a>
+      <a href="#uml-component">Component</a>
+      <a href="#uml-deploy">Deployment</a>
+      <a href="#uml-composite">Composite Structure</a>
+      <div class="group">동작 (Behavior)</div>
+      <a href="#uml-sequence">Sequence</a>
+      <a href="#uml-activity">Activity</a>
+      <a href="#uml-state">State Machine</a>
+      <a href="#uml-usecase">Use Case</a>
+      <a href="#uml-comm">Communication</a>
+      <a href="#uml-timing">Timing</a>
+      <a href="#uml-ioverview">Interaction Overview</a>
+      <div class="group">기타</div>
+      <a href="#d-erd">ERD</a>
+      <a href="#d-flowchart">Flowchart</a>
+      <a href="#d-dfd">Data Flow (DFD)</a>
+      <a href="#d-sysarch">System Architecture</a>
+      <a href="#d-network">Network</a>
+      <a href="#d-apiflow">API Flow</a>
+      <a href="#d-userflow">User Flow</a>
+      <a href="#d-wireframe">Wireframe</a>
+      <a href="#d-mindmap">Mind Map</a>
+      <a href="#d-atam">ATAM · 아키텍처 분석</a>
+
+      <div class="nav-sec"><span class="tick"></span>개발</div>
+      <a href="#token">Token 사용법</a>
+    </nav>
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <span class="ic moon">🌙</span><span class="ic sun">☀️</span>
+      <span class="moon">다크 모드</span><span class="sun">라이트 모드</span>
+    </button>
+  </aside>
+
+  <main>
+    <div class="hero" id="brand">
+      <span class="eyebrow">Design System · v1.0</span>
+      <h1>One The Lab Design System</h1>
+      <p>일관된 화면을 빠르게 만들기 위한 색·글꼴·간격·컴포넌트 규칙 모음. 노랑을 브랜드 보울티지로 쓰고, 짙은 잉크와 따뜻한 캔버스로 균형을 잡는다.</p>
+    </div>
+
+    <!-- COLOR -->
+    <section id="color">
+      <h2>Foundations</h2>
+      <div class="sec-title">Color</div>
+      <h3>Brand</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:#FFD400"></div><div class="meta"><div class="name">Yellow</div><div class="hex">#FFD400</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#FFE766"></div><div class="meta"><div class="name">Yellow Soft</div><div class="hex">#FFE766</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#C9A600"></div><div class="meta"><div class="name">Yellow Deep</div><div class="hex">#C9A600</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#1A1A17"></div><div class="meta"><div class="name">Ink</div><div class="hex">#1A1A17</div></div></div>
+      </div>
+      <h3>중립 · 표면</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:#3D3D38"></div><div class="meta"><div class="name">Body</div><div class="hex">#3D3D38</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#7A7A72"></div><div class="meta"><div class="name">Muted</div><div class="hex">#7A7A72</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#E7E5DD"></div><div class="meta"><div class="name">Hairline</div><div class="hex">#E7E5DD</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#FAFAF7;border-bottom:1px solid #E7E5DD"></div><div class="meta"><div class="name">Canvas</div><div class="hex">#FAFAF7</div></div></div>
+      </div>
+      <h3>Semantic</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:#3FA66A"></div><div class="meta"><div class="name">Success</div><div class="hex">#3FA66A</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#E0941A"></div><div class="meta"><div class="name">Warning</div><div class="hex">#E0941A</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#D24A4A"></div><div class="meta"><div class="name">Error</div><div class="hex">#D24A4A</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#3A78C2"></div><div class="meta"><div class="name">Info</div><div class="hex">#3A78C2</div></div></div>
+      </div>
+    </section>
+
+    <!-- TYPE -->
+    <section id="type">
+      <h2>Foundations</h2>
+      <div class="sec-title">Typography</div>
+      <div class="card">
+        <div class="type-row"><span class="label">Display</span><span class="sample" style="font-size:48px;font-weight:800;letter-spacing:-.02em">제목 크게</span></div>
+        <div class="type-row"><span class="label">H1 / 32</span><span class="sample" style="font-size:32px;font-weight:700">섹션 제목</span></div>
+        <div class="type-row"><span class="label">H2 / 24</span><span class="sample" style="font-size:24px;font-weight:600">하위 제목</span></div>
+        <div class="type-row"><span class="label">H3 / 18</span><span class="sample" style="font-size:18px;font-weight:600">카드 제목</span></div>
+        <div class="type-row"><span class="label">Body / 16</span><span class="sample" style="font-size:16px">본문 텍스트는 16px, 줄간격 1.6으로 읽기 편하게.</span></div>
+        <div class="type-row"><span class="label">Small / 14</span><span class="sample" style="font-size:14px;color:var(--muted)">보조 설명 텍스트</span></div>
+        <div class="type-row"><span class="label">Mono / 13</span><span class="sample" style="font-family:var(--mono);font-size:13px">const token = "value";</span></div>
+      </div>
+      <p style="margin-top:12px;font-size:14px;color:var(--muted)">서체: <code>Inter</code> (UI) · <code>JetBrains Mono</code> (코드)</p>
+    </section>
+
+    <!-- SPACE -->
+    <section id="space">
+      <h2>Foundations</h2>
+      <div class="sec-title">간격 Scale</div>
+      <div class="card">
+        <div class="space-row"><span class="tok">--s1 · 4px</span><div class="bar" style="width:4px"></div></div>
+        <div class="space-row"><span class="tok">--s2 · 8px</span><div class="bar" style="width:8px"></div></div>
+        <div class="space-row"><span class="tok">--s3 · 12px</span><div class="bar" style="width:12px"></div></div>
+        <div class="space-row"><span class="tok">--s4 · 16px</span><div class="bar" style="width:16px"></div></div>
+        <div class="space-row"><span class="tok">--s5 · 24px</span><div class="bar" style="width:24px"></div></div>
+        <div class="space-row"><span class="tok">--s6 · 32px</span><div class="bar" style="width:32px"></div></div>
+        <div class="space-row"><span class="tok">--s7 · 48px</span><div class="bar" style="width:48px"></div></div>
+        <div class="space-row"><span class="tok">--s8 · 64px</span><div class="bar" style="width:64px"></div></div>
+      </div>
+    </section>
+
+    <!-- RADIUS / ELEVATION -->
+    <section id="radius">
+      <h2>Foundations</h2>
+      <div class="sec-title">모서리 · 그림자</div>
+      <div class="grid2">
+        <div class="card">
+          <h3 style="margin-top:0">Radius</h3>
+          <div class="row">
+            <div style="width:70px;height:70px;background:var(--brand-yellow);border-radius:6px"></div>
+            <div style="width:70px;height:70px;background:var(--brand-yellow);border-radius:10px"></div>
+            <div style="width:70px;height:70px;background:var(--brand-yellow);border-radius:16px"></div>
+            <div style="width:70px;height:70px;background:var(--brand-yellow);border-radius:9999px"></div>
+          </div>
+          <p style="font-size:13px;color:var(--muted);margin-top:10px">sm 6 · md 10 · lg 16 · pill</p>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0">Elevation</h3>
+          <div class="row">
+            <div class="elev" style="width:90px;box-shadow:var(--sh-sm)">sm</div>
+            <div class="elev" style="width:90px;box-shadow:var(--sh-md)">md</div>
+            <div class="elev" style="width:90px;box-shadow:var(--sh-lg)">lg</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUTTONS -->
+    <section id="button">
+      <h2>Components</h2>
+      <div class="sec-title">Button</div>
+      <div class="card">
+        <div class="row" style="margin-bottom:16px">
+          <button class="btn btn-primary">Primary</button>
+          <button class="btn btn-secondary">Secondary</button>
+          <button class="btn btn-dark">Dark</button>
+          <button class="btn btn-ghost">Ghost</button>
+          <button class="btn btn-primary" disabled>Disabled</button>
+        </div>
+        <div class="row">
+          <button class="btn btn-primary btn-sm">Small</button>
+          <button class="btn btn-primary">Default</button>
+          <button class="btn btn-primary btn-lg">Large</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BADGE -->
+    <section id="badge">
+      <h2>Components</h2>
+      <div class="sec-title">Badge · 상태</div>
+      <div class="card">
+        <div class="row">
+          <span class="badge b-yellow">기본</span>
+          <span class="badge dot b-success">정상</span>
+          <span class="badge dot b-warning">주의</span>
+          <span class="badge dot b-error">오류</span>
+          <span class="badge dot b-info">정보</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORM -->
+    <section id="form">
+      <h2>Components</h2>
+      <div class="sec-title">Form</div>
+      <div class="card field">
+        <div style="margin-bottom:16px">
+          <label>이름</label>
+          <input type="text" placeholder="홍길동">
+        </div>
+        <div style="margin-bottom:16px">
+          <label>분류</label>
+          <select><option>모델</option><option>에이전트</option></select>
+        </div>
+        <div style="margin-bottom:16px">
+          <label>메모</label>
+          <textarea rows="3" placeholder="내용 입력..."></textarea>
+        </div>
+        <button class="btn btn-primary">저장</button>
+      </div>
+    </section>
+
+    <!-- ALERT -->
+    <section id="alert">
+      <h2>Components</h2>
+      <div class="sec-title">알림</div>
+      <div class="alert a-success"><span class="ic">✓</span><div>저장되었습니다.</div></div>
+      <div class="alert a-warning"><span class="ic">!</span><div>저장하지 않은 변경사항이 있습니다.</div></div>
+      <div class="alert a-error"><span class="ic">✕</span><div>요청을 처리하지 못했습니다.</div></div>
+      <div class="alert a-info"><span class="ic">i</span><div>새 버전이 준비되었습니다.</div></div>
+    </section>
+
+    <!-- TABLE -->
+    <section id="table">
+      <h2>Components</h2>
+      <div class="sec-title">Table</div>
+      <table>
+        <thead><tr><th>토큰</th><th>값</th><th>용도</th><th>상태</th></tr></thead>
+        <tbody>
+          <tr><td><code>--brand-yellow</code></td><td>#FFD400</td><td>브랜드 강조</td><td><span class="badge dot b-success">사용중</span></td></tr>
+          <tr><td><code>--ink</code></td><td>#1A1A17</td><td>제목·텍스트</td><td><span class="badge dot b-success">사용중</span></td></tr>
+          <tr><td><code>--canvas</code></td><td>#FAFAF7</td><td>배경</td><td><span class="badge dot b-success">사용중</span></td></tr>
+          <tr><td><code>--hairline</code></td><td>#E7E5DD</td><td>테두리</td><td><span class="badge dot b-warning">검토</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============ 인포그래픽 ============ -->
+    <div class="banner">
+      <div class="b-eyebrow">Infographics</div>
+      <div class="b-title">Infographic</div>
+      <div class="b-desc">정보를 빠르게 전달하는 시각 패턴. 발표·문서·대시보드에 그대로 가져다 쓴다.</div>
+    </div>
+
+    <!-- 로드맵 -->
+    <section id="roadmap">
+      <h2>Infographics</h2>
+      <div class="sec-title">Roadmap</div>
+      <div class="diagram">
+        <div class="roadmap">
+          <div class="rm-col"><div class="rm-q">Q1 · 완료</div>
+            <div class="rm-card done">디자인 시스템 v1<span class="s">토큰·컴포넌트</span></div>
+            <div class="rm-card done">다크 모드<span class="s">테마 전환</span></div>
+          </div>
+          <div class="rm-col"><div class="rm-q">Q2 · 진행</div>
+            <div class="rm-card now">다이어그램 라이브러리<span class="s">UML · 인포그래픽</span></div>
+            <div class="rm-card now">반응형 개선</div>
+          </div>
+          <div class="rm-col"><div class="rm-q">Q3 · 예정</div>
+            <div class="rm-card">컴포넌트 문서화</div>
+            <div class="rm-card">접근성 점검</div>
+          </div>
+          <div class="rm-col"><div class="rm-q">Q4 · 예정</div>
+            <div class="rm-card">v2 릴리스</div>
+            <div class="rm-card">팀 온보딩</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 매트릭스 -->
+    <section id="matrix">
+      <h2>Infographics</h2>
+      <div class="sec-title">Matrix (2×2)</div>
+      <p class="cap">중요도 × 긴급도 — 우선순위 분류 (아이젠하워)</p>
+      <div class="diagram">
+        <div class="matrix">
+          <div class="mq q2"><div class="h">🔥 지금 한다</div><div class="it">· 배포 버그</div><div class="it">· 보안 패치</div></div>
+          <div class="mq q1"><div class="h">📅 계획한다</div><div class="it">· 리팩터링</div><div class="it">· 문서화</div></div>
+          <div class="mq q4"><div class="h">⚡ 위임한다</div><div class="it">· 알림 응답</div><div class="it">· 회의 정리</div></div>
+          <div class="mq q3"><div class="h">🗑 버린다</div><div class="it">· 잡무</div><div class="it">· 과한 최적화</div></div>
+        </div>
+        <div class="maxis">← 낮은 긴급도 &nbsp;·&nbsp; 높은 긴급도 →</div>
+      </div>
+    </section>
+
+    <!-- 대시보드 -->
+    <section id="dashboard">
+      <h2>Infographics</h2>
+      <div class="sec-title">Dashboard</div>
+      <div class="diagram">
+        <div class="dash">
+          <div class="kpi"><div class="label">활성 사용자</div><div class="num">12.4K</div><div class="delta up">▲ 8.2%</div></div>
+          <div class="kpi"><div class="label">전환율</div><div class="num">3.1%</div><div class="delta up">▲ 0.4%p</div></div>
+          <div class="kpi"><div class="label">평균 응답</div><div class="num">240ms</div><div class="delta down">▼ 12ms</div></div>
+          <div class="kpi"><div class="label">오류율</div><div class="num">0.7%</div><div class="delta down">▼ 0.2%p</div></div>
+        </div>
+        <div class="bars">
+          <div class="bar" style="height:45%"><span>월</span></div>
+          <div class="bar" style="height:62%"><span>화</span></div>
+          <div class="bar" style="height:55%"><span>수</span></div>
+          <div class="bar" style="height:80%"><span>목</span></div>
+          <div class="bar" style="height:70%"><span>금</span></div>
+          <div class="bar" style="height:95%"><span>토</span></div>
+          <div class="bar" style="height:88%"><span>일</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 비교표 -->
+    <section id="compare">
+      <h2>Infographics</h2>
+      <div class="sec-title">비교표</div>
+      <table>
+        <thead><tr><th>기능</th><th>Free</th><th>Pro</th><th>Team</th></tr></thead>
+        <tbody>
+          <tr><td>프로젝트 수</td><td>3</td><td>무제한</td><td>무제한</td></tr>
+          <tr><td>다크 모드</td><td style="color:var(--success)">✓</td><td style="color:var(--success)">✓</td><td style="color:var(--success)">✓</td></tr>
+          <tr><td>협업</td><td style="color:var(--error)">✕</td><td style="color:var(--error)">✕</td><td style="color:var(--success)">✓</td></tr>
+          <tr><td>우선 지원</td><td style="color:var(--error)">✕</td><td style="color:var(--success)">✓</td><td style="color:var(--success)">✓</td></tr>
+          <tr><td>가격 / 월</td><td>₩0</td><td>₩9,900</td><td>₩29,000</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 타임라인 -->
+    <section id="timeline">
+      <h2>Infographics</h2>
+      <div class="sec-title">Timeline</div>
+      <div class="diagram">
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-date">2026.01</div><div class="tl-title">프로젝트 시작</div><div class="tl-desc">요구사항 정의 · 디자인 토큰</div></div>
+          <div class="tl-item"><div class="tl-date">2026.03</div><div class="tl-title">MVP(Minimum Viable Product) 출시</div><div class="tl-desc">핵심 컴포넌트 · 다크 모드</div></div>
+          <div class="tl-item"><div class="tl-date">2026.06</div><div class="tl-title">다이어그램 추가</div><div class="tl-desc">UML · 인포그래픽 라이브러리</div></div>
+          <div class="tl-item"><div class="tl-date">2026.09</div><div class="tl-title">정식 v2</div><div class="tl-desc">문서화 · 접근성</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 마인드맵 / 아키텍처 -->
+    <section id="mindmap-arch">
+      <h2>Infographics</h2>
+      <div class="sec-title">Mind Map · Architecture</div>
+      <div class="diagram">
+        <svg viewBox="0 0 640 260" role="img" aria-label="mindmap">
+          <line class="nline" x1="320" y1="130" x2="140" y2="55"/>
+          <line class="nline" x1="320" y1="130" x2="140" y2="205"/>
+          <line class="nline" x1="320" y1="130" x2="500" y2="55"/>
+          <line class="nline" x1="320" y1="130" x2="500" y2="205"/>
+          <rect class="nfill" x="255" y="108" width="130" height="44" rx="22"/>
+          <text class="nt-on" x="320" y="135" text-anchor="middle">One The Lab 시스템</text>
+          <rect class="nbox" x="50" y="35" width="160" height="40" rx="8"/><text class="nt" x="130" y="60" text-anchor="middle">디자인 토큰</text>
+          <rect class="nbox" x="50" y="185" width="160" height="40" rx="8"/><text class="nt" x="130" y="210" text-anchor="middle">컴포넌트</text>
+          <rect class="nbox" x="430" y="35" width="160" height="40" rx="8"/><text class="nt" x="510" y="60" text-anchor="middle">인포그래픽</text>
+          <rect class="nbox" x="430" y="185" width="160" height="40" rx="8"/><text class="nt" x="510" y="210" text-anchor="middle">다이어그램</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 케이스 스터디 -->
+    <section id="casestudy">
+      <h2>Infographics</h2>
+      <div class="sec-title">Case Study</div>
+      <div class="case">
+        <div class="col p"><h4>문제</h4><p>화면마다 색·간격이 제각각이라 신규 페이지 제작에 평균 3일 소요.</p></div>
+        <div class="col a"><h4>해결</h4><p>CSS 토큰 + 컴포넌트 라이브러리 도입, 다크 모드 기본 제공.</p></div>
+        <div class="col r"><h4>결과</h4><div class="metric">−65%</div><p>제작 시간 3일 → 1일 미만.</p></div>
+      </div>
+    </section>
+
+    <!-- 벤다이어그램 -->
+    <section id="venn">
+      <h2>Infographics</h2>
+      <div class="sec-title">Venn Diagram</div>
+      <p class="cap">집합의 교집합·합집합 표현</p>
+      <div class="diagram">
+        <svg viewBox="0 0 480 240" role="img" aria-label="venn diagram">
+          <circle cx="180" cy="110" r="90" fill="var(--brand-yellow)" fill-opacity="0.45" stroke="var(--brand-yellow-deep)" stroke-width="1.5"/>
+          <circle cx="300" cy="110" r="90" fill="var(--info)" fill-opacity="0.30" stroke="var(--info)" stroke-width="1.5"/>
+          <text class="nt" x="130" y="115" text-anchor="middle">디자인</text>
+          <text class="nt" x="350" y="115" text-anchor="middle">개발</text>
+          <text class="ns" x="240" y="115" text-anchor="middle">협업</text>
+          <text class="ns" x="240" y="220" text-anchor="middle">교집합 = 공통 작업</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 서클 패킹 -->
+    <section id="circlepack">
+      <h2>Infographics</h2>
+      <div class="sec-title">Circle Packing</div>
+      <p class="cap">계층·크기를 중첩 원으로 표현</p>
+      <div class="diagram">
+        <svg viewBox="0 0 480 240" role="img" aria-label="circle packing">
+          <circle cx="160" cy="120" r="110" fill="var(--surface-soft)" stroke="var(--hairline)" stroke-width="1.5"/>
+          <circle cx="125" cy="100" r="55" fill="var(--brand-yellow)" fill-opacity="0.55" stroke="var(--brand-yellow-deep)"/>
+          <circle cx="200" cy="150" r="40" fill="var(--info)" fill-opacity="0.35" stroke="var(--info)"/>
+          <circle cx="180" cy="70" r="22" fill="var(--success)" fill-opacity="0.4" stroke="var(--success)"/>
+          <text class="ns" x="125" y="104" text-anchor="middle">UI</text>
+          <text class="ns" x="200" y="154" text-anchor="middle">API</text>
+          <circle cx="380" cy="120" r="85" fill="var(--surface-soft)" stroke="var(--hairline)" stroke-width="1.5"/>
+          <circle cx="360" cy="110" r="45" fill="var(--error)" fill-opacity="0.3" stroke="var(--error)"/>
+          <circle cx="415" cy="150" r="28" fill="var(--warning)" fill-opacity="0.4" stroke="var(--warning)"/>
+          <text class="ns" x="360" y="114" text-anchor="middle">DB</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 버블 차트 -->
+    <section id="bubble">
+      <h2>Infographics</h2>
+      <div class="sec-title">Bubble Chart</div>
+      <p class="cap">X·Y·크기(3차원) 데이터 표현</p>
+      <div class="diagram">
+        <svg viewBox="0 0 520 260" role="img" aria-label="bubble chart">
+          <line class="nline" x1="50" y1="20" x2="50" y2="220"/>
+          <line class="nline" x1="50" y1="220" x2="500" y2="220"/>
+          <circle cx="130" cy="170" r="22" fill="var(--brand-yellow)" fill-opacity="0.6" stroke="var(--brand-yellow-deep)"/>
+          <circle cx="230" cy="120" r="38" fill="var(--info)" fill-opacity="0.35" stroke="var(--info)"/>
+          <circle cx="330" cy="160" r="16" fill="var(--success)" fill-opacity="0.5" stroke="var(--success)"/>
+          <circle cx="400" cy="80" r="48" fill="var(--error)" fill-opacity="0.3" stroke="var(--error)"/>
+          <text class="ns" x="275" y="248" text-anchor="middle">비용 →</text>
+          <text class="ns" x="20" y="120" text-anchor="middle" transform="rotate(-90 20 120)">성과 →</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 개념도 -->
+    <section id="conceptmap">
+      <h2>Infographics</h2>
+      <div class="sec-title">개념도</div>
+      <p class="cap">개념과 관계(연결어)를 명시한 지도</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 240" role="img" aria-label="concept map">
+          <rect class="nfill" x="220" y="20" width="120" height="40" rx="8"/><text class="nt-on" x="280" y="45" text-anchor="middle">에이전트</text>
+          <rect class="nbox" x="40" y="150" width="120" height="40" rx="8"/><text class="nt" x="100" y="175" text-anchor="middle">모델</text>
+          <rect class="nbox" x="220" y="150" width="120" height="40" rx="8"/><text class="nt" x="280" y="175" text-anchor="middle">도구</text>
+          <rect class="nbox" x="400" y="150" width="120" height="40" rx="8"/><text class="nt" x="460" y="175" text-anchor="middle">루프</text>
+          <line class="nline" x1="245" y1="60" x2="120" y2="150" marker-end="url(#arrC)"/><text class="ns" x="150" y="105">포함</text>
+          <line class="nline" x1="280" y1="60" x2="280" y2="150" marker-end="url(#arrC)"/><text class="ns" x="290" y="110">사용</text>
+          <line class="nline" x1="315" y1="60" x2="440" y2="150" marker-end="url(#arrC)"/><text class="ns" x="400" y="105">반복</text>
+          <defs><marker id="arrC" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.5"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 트리 다이어그램 -->
+    <section id="tree">
+      <h2>Infographics</h2>
+      <div class="sec-title">Tree Diagram</div>
+      <p class="cap">계층 구조(부모-자식)</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 230" role="img" aria-label="tree diagram">
+          <rect class="nfill" x="230" y="20" width="100" height="36" rx="6"/><text class="nt-on" x="280" y="43" text-anchor="middle">root</text>
+          <rect class="nbox" x="90" y="100" width="100" height="36" rx="6"/><text class="nt" x="140" y="123" text-anchor="middle">src</text>
+          <rect class="nbox" x="370" y="100" width="100" height="36" rx="6"/><text class="nt" x="420" y="123" text-anchor="middle">docs</text>
+          <rect class="nbox" x="30" y="180" width="100" height="36" rx="6"/><text class="ns" x="80" y="203" text-anchor="middle">ui</text>
+          <rect class="nbox" x="150" y="180" width="100" height="36" rx="6"/><text class="ns" x="200" y="203" text-anchor="middle">api</text>
+          <rect class="nbox" x="370" y="180" width="100" height="36" rx="6"/><text class="ns" x="420" y="203" text-anchor="middle">guide</text>
+          <path class="nline" d="M280 56 L140 100"/><path class="nline" d="M280 56 L420 100"/>
+          <path class="nline" d="M140 136 L80 180"/><path class="nline" d="M140 136 L200 180"/>
+          <path class="nline" d="M420 136 L420 180"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 순서도 (process flow) -->
+    <section id="procflow">
+      <h2>Infographics</h2>
+      <div class="sec-title">순서도</div>
+      <p class="cap">번호 매겨진 단계별 진행 흐름</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 120" role="img" aria-label="process flow">
+          <g>
+            <circle class="nfill" cx="60" cy="45" r="22"/><text class="nt-on" x="60" y="50" text-anchor="middle">1</text>
+            <text class="ns" x="60" y="90" text-anchor="middle">기획</text>
+          </g>
+          <g>
+            <circle class="nfill" cx="200" cy="45" r="22"/><text class="nt-on" x="200" y="50" text-anchor="middle">2</text>
+            <text class="ns" x="200" y="90" text-anchor="middle">설계</text>
+          </g>
+          <g>
+            <circle class="nfill" cx="340" cy="45" r="22"/><text class="nt-on" x="340" y="50" text-anchor="middle">3</text>
+            <text class="ns" x="340" y="90" text-anchor="middle">개발</text>
+          </g>
+          <g>
+            <circle class="nfill" cx="480" cy="45" r="22"/><text class="nt-on" x="480" y="50" text-anchor="middle">4</text>
+            <text class="ns" x="480" y="90" text-anchor="middle">배포</text>
+          </g>
+          <line class="nline" x1="82" y1="45" x2="178" y2="45" marker-end="url(#arrP)"/>
+          <line class="nline" x1="222" y1="45" x2="318" y2="45" marker-end="url(#arrP)"/>
+          <line class="nline" x1="362" y1="45" x2="458" y2="45" marker-end="url(#arrP)"/>
+          <defs><marker id="arrP" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.5"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- SWOT -->
+    <section id="swot">
+      <h2>Infographics</h2>
+      <div class="sec-title">SWOT(Strengths, Weaknesses, Opportunities, Threats) Analysis</div>
+      <p class="cap">강점·약점·기회·위협 전략 분석</p>
+      <div class="diagram">
+        <div class="swot">
+          <div class="cell s"><h4><span class="tag">S</span>강점 Strengths</h4><div class="it">· 빠른 개발 속도</div><div class="it">· 일관된 디자인 토큰</div></div>
+          <div class="cell w"><h4><span class="tag">W</span>약점 Weaknesses</h4><div class="it">· 문서 부족</div><div class="it">· 테스트 미흡</div></div>
+          <div class="cell o"><h4><span class="tag">O</span>기회 Opportunities</h4><div class="it">· AI 도구 확산</div><div class="it">· 신규 시장</div></div>
+          <div class="cell t"><h4><span class="tag">T</span>위협 Threats</h4><div class="it">· 경쟁 심화</div><div class="it">· 기술 변화</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Customer Journey Map -->
+    <section id="journey">
+      <h2>Infographics</h2>
+      <div class="sec-title">Customer Journey Map</div>
+      <p class="cap">단계별 사용자 행동과 감정 변화</p>
+      <div class="diagram">
+        <div class="journey">
+          <div class="stage"><div class="st-h">인지</div><div class="st-do">광고로 제품 발견</div><div class="st-emo">🙂</div></div>
+          <div class="stage"><div class="st-h">탐색</div><div class="st-do">기능 비교, 가격 확인</div><div class="st-emo">😐</div></div>
+          <div class="stage"><div class="st-h">구매</div><div class="st-do">복잡한 결제 단계</div><div class="st-emo">😟</div></div>
+          <div class="stage"><div class="st-h">사용</div><div class="st-do">기대대로 동작</div><div class="st-emo">😄</div></div>
+        </div>
+        <svg viewBox="0 0 520 80" style="margin-top:12px" role="img" aria-label="emotion line">
+          <polyline points="65,40 195,48 325,62 455,22" fill="none" stroke="var(--brand-yellow-deep)" stroke-width="2.5"/>
+          <circle cx="65" cy="40" r="5" fill="var(--brand-yellow)"/><circle cx="195" cy="48" r="5" fill="var(--brand-yellow)"/>
+          <circle cx="325" cy="62" r="5" fill="var(--error)"/><circle cx="455" cy="22" r="5" fill="var(--success)"/>
+          <text class="ns" x="20" y="44">감정</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Sankey -->
+    <section id="sankey">
+      <h2>Infographics</h2>
+      <div class="sec-title">Sankey Diagram</div>
+      <p class="cap">흐름의 양을 띠 굵기로 표현</p>
+      <div class="diagram">
+        <svg viewBox="0 0 520 240" role="img" aria-label="sankey diagram">
+          <rect class="ndark" x="30" y="40" width="16" height="160"/>
+          <text class="nt" x="38" y="30" text-anchor="middle">방문</text>
+          <rect class="nfill" x="280" y="40" width="16" height="80"/><text class="ns" x="288" y="32" text-anchor="middle">가입</text>
+          <rect class="nbox" x="280" y="140" width="16" height="60" fill="var(--muted)"/><text class="ns" x="288" y="218" text-anchor="middle">이탈</text>
+          <rect class="nfill" x="470" y="40" width="16" height="45"/><text class="ns" x="478" y="32" text-anchor="middle">결제</text>
+          <path d="M46 40 C160 40 160 40 280 40 L280 120 C160 120 160 120 46 120 Z" fill="var(--brand-yellow)" fill-opacity="0.5"/>
+          <path d="M46 120 C160 120 160 140 280 140 L280 200 C160 200 160 200 46 200 Z" fill="var(--muted)" fill-opacity="0.3"/>
+          <path d="M296 40 C380 40 380 40 470 40 L470 85 C380 85 380 90 296 90 Z" fill="var(--brand-yellow)" fill-opacity="0.6"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Gantt -->
+    <section id="gantt">
+      <h2>Infographics</h2>
+      <div class="sec-title">Gantt Chart</div>
+      <p class="cap">일정·기간을 막대로 표현</p>
+      <div class="diagram">
+        <div class="gantt">
+          <div class="grow"><span>기획</span><div class="gtrack"><div class="gbar" style="left:0%;width:25%">W1</div></div></div>
+          <div class="grow"><span>설계</span><div class="gtrack"><div class="gbar b" style="left:20%;width:30%">W2–3</div></div></div>
+          <div class="grow"><span>개발</span><div class="gtrack"><div class="gbar" style="left:45%;width:40%">W3–6</div></div></div>
+          <div class="grow"><span>배포</span><div class="gtrack"><div class="gbar g" style="left:82%;width:18%">W7</div></div></div>
+          <div class="gaxis"><span></span><div class="ticks"><span>W1</span><span>W3</span><span>W5</span><span>W7</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kanban -->
+    <section id="kanban">
+      <h2>Infographics</h2>
+      <div class="sec-title">Kanban Board</div>
+      <p class="cap">작업 상태별 카드 보드</p>
+      <div class="diagram">
+        <div class="kanban">
+          <div class="kcol"><div class="kh"><span>To Do</span><span class="cnt">2</span></div>
+            <div class="kcard">로그인 화면</div><div class="kcard">설정 페이지</div></div>
+          <div class="kcol"><div class="kh"><span>Doing</span><span class="cnt">1</span></div>
+            <div class="kcard b">다이어그램 추가</div></div>
+          <div class="kcol"><div class="kh"><span>Done</span><span class="cnt">2</span></div>
+            <div class="kcard g">다크 모드</div><div class="kcard g">디자인 토큰</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fishbone -->
+    <section id="fishbone">
+      <h2>Infographics</h2>
+      <div class="sec-title">Fishbone Diagram</div>
+      <p class="cap">원인 분석 (이시카와) — 여러 원인 갈래가 하나의 결과로 향함 (시간 흐름 아님)</p>
+      <div class="diagram">
+        <svg viewBox="0 0 640 340" role="img" aria-label="fishbone diagram">
+          <!-- 등뼈 + 머리(결과) -->
+          <line class="nline" x1="40" y1="170" x2="500" y2="170" stroke-width="2.5"/>
+          <polygon class="ndark" points="500,170 484,160 484,180"/>
+          <rect class="nfill" x="500" y="142" width="118" height="56" rx="8"/>
+          <text class="nt-on" x="559" y="166" text-anchor="middle">결과</text>
+          <text class="nt-on" x="559" y="184" text-anchor="middle" font-size="11">페이지 로딩 지연</text>
+
+          <!-- ===== 상단 분류 3 ===== -->
+          <!-- 코드 -->
+          <line class="nline" x1="150" y1="170" x2="95" y2="55" stroke-width="2"/>
+          <rect class="nbox" x="55" y="32" width="80" height="26" rx="13"/><text class="nt" x="95" y="49" text-anchor="middle">코드</text>
+          <line class="nline" x1="128" y1="124" x2="165" y2="118"/><text class="ns" x="170" y="121">무거운 번들</text>
+          <line class="nline" x1="113" y1="92" x2="150" y2="86"/><text class="ns" x="155" y="89">미최적 쿼리</text>
+          <!-- 인프라 -->
+          <line class="nline" x1="290" y1="170" x2="235" y2="55" stroke-width="2"/>
+          <rect class="nbox" x="195" y="32" width="80" height="26" rx="13"/><text class="nt" x="235" y="49" text-anchor="middle">인프라</text>
+          <line class="nline" x1="268" y1="124" x2="305" y2="118"/><text class="ns" x="310" y="121">서버 과부하</text>
+          <line class="nline" x1="253" y1="92" x2="290" y2="86"/><text class="ns" x="295" y="89">CDN 미사용</text>
+          <!-- 이미지 -->
+          <line class="nline" x1="430" y1="170" x2="375" y2="55" stroke-width="2"/>
+          <rect class="nbox" x="335" y="32" width="80" height="26" rx="13"/><text class="nt" x="375" y="49" text-anchor="middle">이미지</text>
+          <line class="nline" x1="408" y1="124" x2="445" y2="118"/><text class="ns" x="450" y="121">미압축</text>
+          <line class="nline" x1="393" y1="92" x2="430" y2="86"/><text class="ns" x="435" y="89">과대 해상도</text>
+
+          <!-- ===== 하단 분류 3 ===== -->
+          <!-- 캐시 -->
+          <line class="nline" x1="150" y1="170" x2="95" y2="285" stroke-width="2"/>
+          <rect class="nbox" x="55" y="282" width="80" height="26" rx="13"/><text class="nt" x="95" y="299" text-anchor="middle">캐시</text>
+          <line class="nline" x1="128" y1="216" x2="165" y2="222"/><text class="ns" x="170" y="225">캐시 미적용</text>
+          <line class="nline" x1="113" y1="248" x2="150" y2="254"/><text class="ns" x="155" y="257">짧은 TTL</text>
+          <!-- 네트워크 -->
+          <line class="nline" x1="290" y1="170" x2="235" y2="285" stroke-width="2"/>
+          <rect class="nbox" x="195" y="282" width="80" height="26" rx="13"/><text class="nt" x="235" y="299" text-anchor="middle">네트워크</text>
+          <line class="nline" x1="268" y1="216" x2="305" y2="222"/><text class="ns" x="310" y="225">요청 과다</text>
+          <line class="nline" x1="253" y1="248" x2="290" y2="254"/><text class="ns" x="295" y="257">느린 DNS</text>
+          <!-- 서드파티 -->
+          <line class="nline" x1="430" y1="170" x2="375" y2="285" stroke-width="2"/>
+          <rect class="nbox" x="335" y="282" width="90" height="26" rx="13"/><text class="nt" x="380" y="299" text-anchor="middle">서드파티</text>
+          <line class="nline" x1="408" y1="216" x2="445" y2="222"/><text class="ns" x="450" y="225">외부 스크립트</text>
+          <line class="nline" x1="393" y1="248" x2="430" y2="254"/><text class="ns" x="435" y="257">광고 태그</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Comparison Matrix -->
+    <section id="cmatrix">
+      <h2>Infographics</h2>
+      <div class="sec-title">Comparison Matrix</div>
+      <p class="cap">옵션 × 기준 평가 비교 (● 높음)</p>
+      <table class="cmatrix">
+        <thead><tr><th>기준</th><th>안 A</th><th>안 B</th><th>안 C</th></tr></thead>
+        <tbody>
+          <tr><td>비용</td><td><span class="dots">●●●<span class="off">●</span></span></td><td><span class="dots">●●<span class="off">●●</span></span></td><td><span class="dots">●●●●</span></td></tr>
+          <tr><td>속도</td><td><span class="dots">●●<span class="off">●●</span></span></td><td><span class="dots">●●●●</span></td><td><span class="dots">●●●<span class="off">●</span></span></td></tr>
+          <tr><td>유지보수</td><td><span class="dots">●●●●</span></td><td><span class="dots">●●<span class="off">●●</span></span></td><td><span class="dots">●●<span class="off">●●</span></span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============ 프로그래밍 ============ -->
+    <div class="banner">
+      <div class="b-eyebrow">Programming Diagrams</div>
+      <div class="b-title">Programming Diagram</div>
+      <div class="b-desc">UML(Unified Modeling Language) 구조·동작 다이어그램과 실무 다이어그램. 설계 문서·기획에 사용한다.</div>
+    </div>
+
+    <!-- 구조: 클래스 -->
+    <section id="uml-class">
+      <h2>구조 · Structure</h2>
+      <div class="sec-title">Class Diagram</div>
+      <p class="cap">클래스의 속성·메서드와 상속(▷) 관계</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 280" role="img" aria-label="class diagram">
+          <!-- Animal -->
+          <g>
+            <rect class="nbox" x="200" y="20" width="160" height="92" rx="4"/>
+            <line class="nline" x1="200" y1="46" x2="360" y2="46"/><line class="nline" x1="200" y1="82" x2="360" y2="82"/>
+            <text class="nt" x="280" y="39" text-anchor="middle">Animal</text>
+            <text class="ns" x="208" y="66">- name: string</text>
+            <text class="ns" x="208" y="100">+ speak(): void</text>
+          </g>
+          <!-- Dog -->
+          <g>
+            <rect class="nbox" x="40" y="180" width="160" height="80" rx="4"/>
+            <line class="nline" x1="40" y1="206" x2="200" y2="206"/><line class="nline" x1="40" y1="232" x2="200" y2="232"/>
+            <text class="nt" x="120" y="199" text-anchor="middle">Dog</text>
+            <text class="ns" x="48" y="224">- breed: string</text>
+            <text class="ns" x="48" y="250">+ bark(): void</text>
+          </g>
+          <!-- Cat -->
+          <g>
+            <rect class="nbox" x="360" y="180" width="160" height="80" rx="4"/>
+            <line class="nline" x1="360" y1="206" x2="520" y2="206"/><line class="nline" x1="360" y1="232" x2="520" y2="232"/>
+            <text class="nt" x="440" y="199" text-anchor="middle">Cat</text>
+            <text class="ns" x="368" y="224">- indoor: bool</text>
+            <text class="ns" x="368" y="250">+ meow(): void</text>
+          </g>
+          <!-- inheritance triangles -->
+          <path class="nline" d="M120 180 L120 130 L280 130 L280 112"/>
+          <path class="nline" d="M440 180 L440 130 L280 130"/>
+          <polygon class="nbox" points="280,112 272,128 288,128"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 구조: 오브젝트 -->
+    <section id="uml-object">
+      <h2>구조 · Structure</h2>
+      <div class="sec-title">Object Diagram</div>
+      <p class="cap">특정 시점의 인스턴스와 값(슬롯)</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 170" role="img" aria-label="object diagram">
+          <rect class="nbox" x="40" y="40" width="190" height="90" rx="4"/>
+          <line class="nline" x1="40" y1="68" x2="230" y2="68"/>
+          <text class="nt" x="135" y="60" text-anchor="middle" text-decoration="underline">rex : Dog</text>
+          <text class="ns" x="52" y="92">name = "Rex"</text>
+          <text class="ns" x="52" y="114">breed = "Jindo"</text>
+          <rect class="nbox" x="330" y="40" width="190" height="90" rx="4"/>
+          <line class="nline" x1="330" y1="68" x2="520" y2="68"/>
+          <text class="nt" x="425" y="60" text-anchor="middle" text-decoration="underline">owner : Person</text>
+          <text class="ns" x="342" y="92">name = "Kim"</text>
+          <line class="nline" x1="230" y1="85" x2="330" y2="85"/>
+          <text class="ns" x="280" y="78" text-anchor="middle">owns</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 구조: 패키지 -->
+    <section id="uml-package">
+      <h2>구조 · Structure</h2>
+      <div class="sec-title">Package Diagram</div>
+      <p class="cap">패키지 묶음과 의존성(점선 →)</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 220" role="img" aria-label="package diagram">
+          <g>
+            <path class="nbox" d="M40 40 h70 v18 h-70 z"/><rect class="nbox" x="40" y="58" width="160" height="70" rx="2"/>
+            <text class="nt" x="120" y="98" text-anchor="middle">ui</text>
+          </g>
+          <g>
+            <path class="nbox" d="M360 40 h70 v18 h-70 z"/><rect class="nbox" x="360" y="58" width="160" height="70" rx="2"/>
+            <text class="nt" x="440" y="98" text-anchor="middle">domain</text>
+          </g>
+          <g>
+            <path class="nbox" d="M200 150 h70 v18 h-70 z"/><rect class="nbox" x="200" y="168" width="160" height="44" rx="2"/>
+            <text class="nt" x="280" y="196" text-anchor="middle">data</text>
+          </g>
+          <path class="ndash" d="M200 93 L360 93" marker-end="url(#arr)"/>
+          <path class="ndash" d="M280 150 L280 128" marker-end="url(#arr)"/>
+          <path class="ndash" d="M440 128 L320 168" marker-end="url(#arr)"/>
+          <defs><marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.4"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 구조: 컴포넌트 -->
+    <section id="uml-component">
+      <h2>구조 · Structure</h2>
+      <div class="sec-title">Component Diagram</div>
+      <p class="cap">컴포넌트와 제공/요구 인터페이스 (lollipop · socket)</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 150" role="img" aria-label="component diagram">
+          <rect class="nbox" x="60" y="40" width="150" height="70" rx="4"/>
+          <rect class="nbox" x="40" y="52" width="20" height="12"/><rect class="nbox" x="40" y="78" width="20" height="12"/>
+          <text class="nt" x="135" y="80" text-anchor="middle">Web UI</text>
+          <rect class="nbox" x="370" y="40" width="150" height="70" rx="4"/>
+          <rect class="nbox" x="350" y="52" width="20" height="12"/><rect class="nbox" x="350" y="78" width="20" height="12"/>
+          <text class="nt" x="445" y="80" text-anchor="middle">Auth API</text>
+          <line class="nline" x1="210" y1="75" x2="330" y2="75"/>
+          <circle class="nline" cx="345" cy="75" r="9" fill="var(--surface)"/>
+          <path class="nline" d="M283 60 A18 18 0 0 0 283 90" fill="none"/>
+          <text class="ns" x="280" y="110" text-anchor="middle">IAuth</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 구조: 디플로이먼트 -->
+    <section id="uml-deploy">
+      <h2>구조 · Structure</h2>
+      <div class="sec-title">Deployment Diagram</div>
+      <p class="cap">물리 노드(서버·기기)와 배포된 아티팩트</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 200" role="img" aria-label="deployment diagram">
+          <g>
+            <polygon class="nbox" points="40,60 60,45 200,45 200,150 40,150"/>
+            <polygon class="nbox" points="200,45 220,30 220,135 200,150"/>
+            <polygon class="nbox" points="40,60 60,45 220,45 200,60" fill="var(--surface-soft)"/>
+            <text class="nt" x="120" y="80" text-anchor="middle">«device»</text>
+            <text class="nt" x="120" y="98" text-anchor="middle">Browser</text>
+            <rect class="nbox" x="60" y="110" width="120" height="30" rx="3"/><text class="ns" x="120" y="130" text-anchor="middle">app.js</text>
+          </g>
+          <g>
+            <polygon class="nbox" points="340,60 360,45 500,45 500,150 340,150"/>
+            <polygon class="nbox" points="500,45 520,30 520,135 500,150"/>
+            <polygon class="nbox" points="340,60 360,45 520,45 500,60" fill="var(--surface-soft)"/>
+            <text class="nt" x="420" y="80" text-anchor="middle">«server»</text>
+            <text class="nt" x="420" y="98" text-anchor="middle">API Node</text>
+            <rect class="nbox" x="360" y="110" width="120" height="30" rx="3"/><text class="ns" x="420" y="130" text-anchor="middle">server.jar</text>
+          </g>
+          <line class="nline" x1="220" y1="95" x2="340" y2="95"/><text class="ns" x="280" y="88" text-anchor="middle">HTTPS</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 구조: composite -->
+    <section id="uml-composite">
+      <h2>구조 · Structure</h2>
+      <div class="sec-title">Composite Structure</div>
+      <p class="cap">클래스 내부 부품(part)과 포트(port) 연결</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 180" role="img" aria-label="composite structure">
+          <rect class="nbox" x="60" y="30" width="440" height="120" rx="6"/>
+          <text class="nt" x="80" y="52">Order : System</text>
+          <rect class="nbox" x="100" y="75" width="130" height="55" rx="4" fill="var(--surface)"/>
+          <text class="nt" x="165" y="107" text-anchor="middle">: Cart</text>
+          <rect class="nbox" x="330" y="75" width="130" height="55" rx="4" fill="var(--surface)"/>
+          <text class="nt" x="395" y="107" text-anchor="middle">: Payment</text>
+          <line class="nline" x1="230" y1="102" x2="330" y2="102"/>
+          <rect class="nfill" x="52" y="95" width="16" height="16"/>
+          <rect class="nfill" x="492" y="95" width="16" height="16"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 동작: sequence -->
+    <section id="uml-sequence">
+      <h2>동작 · Behavior</h2>
+      <div class="sec-title">Sequence Diagram</div>
+      <p class="cap">시간 순서에 따른 객체 간 메시지</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 260" role="img" aria-label="sequence diagram">
+          <rect class="nbox" x="40" y="20" width="100" height="34" rx="4"/><text class="nt" x="90" y="42" text-anchor="middle">User</text>
+          <rect class="nbox" x="230" y="20" width="100" height="34" rx="4"/><text class="nt" x="280" y="42" text-anchor="middle">UI</text>
+          <rect class="nbox" x="420" y="20" width="100" height="34" rx="4"/><text class="nt" x="470" y="42" text-anchor="middle">API</text>
+          <line class="ndash" x1="90" y1="54" x2="90" y2="240"/>
+          <line class="ndash" x1="280" y1="54" x2="280" y2="240"/>
+          <line class="ndash" x1="470" y1="54" x2="470" y2="240"/>
+          <rect class="nfill" x="274" y="80" width="12" height="120"/>
+          <rect class="nfill" x="464" y="110" width="12" height="60"/>
+          <line class="nline" x1="90" y1="80" x2="274" y2="80" marker-end="url(#arr2)"/><text class="ns" x="180" y="74" text-anchor="middle">click</text>
+          <line class="nline" x1="286" y1="110" x2="464" y2="110" marker-end="url(#arr2)"/><text class="ns" x="375" y="104" text-anchor="middle">GET /data</text>
+          <line class="ndash" x1="464" y1="170" x2="286" y2="170" marker-end="url(#arr2)"/><text class="ns" x="375" y="164" text-anchor="middle">200 OK</text>
+          <line class="ndash" x1="274" y1="200" x2="90" y2="200" marker-end="url(#arr2)"/><text class="ns" x="180" y="194" text-anchor="middle">render</text>
+          <defs><marker id="arr2" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.5"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 동작: activity -->
+    <section id="uml-activity">
+      <h2>동작 · Behavior</h2>
+      <div class="sec-title">Activity Diagram</div>
+      <p class="cap">작업 흐름과 분기·병합</p>
+      <div class="diagram">
+        <svg viewBox="0 0 360 320" role="img" aria-label="activity diagram">
+          <circle class="ndark" cx="180" cy="28" r="12"/>
+          <rect class="nbox" x="110" y="60" width="140" height="38" rx="19"/><text class="nt" x="180" y="84" text-anchor="middle">로그인 입력</text>
+          <polygon class="nbox" points="180,118 230,150 180,182 130,150"/><text class="ns" x="180" y="154" text-anchor="middle">유효?</text>
+          <rect class="nbox" x="20" y="200" width="120" height="38" rx="19"/><text class="nt" x="80" y="224" text-anchor="middle">에러 표시</text>
+          <rect class="nbox" x="210" y="200" width="120" height="38" rx="19"/><text class="nt" x="270" y="224" text-anchor="middle">홈 이동</text>
+          <circle class="nbox" cx="270" cy="285" r="13" fill="var(--surface)"/><circle class="ndark" cx="270" cy="285" r="7"/>
+          <line class="nline" x1="180" y1="40" x2="180" y2="60" marker-end="url(#arr3)"/>
+          <line class="nline" x1="180" y1="98" x2="180" y2="118" marker-end="url(#arr3)"/>
+          <path class="nline" d="M130 150 L80 150 L80 200" marker-end="url(#arr3)"/><text class="ns" x="100" y="144">아니오</text>
+          <path class="nline" d="M230 150 L270 150 L270 200" marker-end="url(#arr3)"/><text class="ns" x="245" y="144">예</text>
+          <line class="nline" x1="270" y1="238" x2="270" y2="272" marker-end="url(#arr3)"/>
+          <path class="nline" d="M80 238 L80 285 L257 285" marker-end="url(#arr3)"/>
+          <defs><marker id="arr3" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.5"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 동작: state -->
+    <section id="uml-state">
+      <h2>동작 · Behavior</h2>
+      <div class="sec-title">State Machine Diagram</div>
+      <p class="cap">상태와 이벤트에 따른 전이</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 150" role="img" aria-label="state machine">
+          <circle class="ndark" cx="30" cy="75" r="10"/>
+          <rect class="nbox" x="70" y="55" width="110" height="40" rx="20"/><text class="nt" x="125" y="80" text-anchor="middle">Idle</text>
+          <rect class="nbox" x="240" y="55" width="110" height="40" rx="20"/><text class="nt" x="295" y="80" text-anchor="middle">Loading</text>
+          <rect class="nbox" x="410" y="55" width="110" height="40" rx="20"/><text class="nt" x="465" y="80" text-anchor="middle">Done</text>
+          <line class="nline" x1="40" y1="75" x2="70" y2="75" marker-end="url(#arr4)"/>
+          <line class="nline" x1="180" y1="75" x2="240" y2="75" marker-end="url(#arr4)"/><text class="ns" x="210" y="68" text-anchor="middle">fetch</text>
+          <line class="nline" x1="350" y1="75" x2="410" y2="75" marker-end="url(#arr4)"/><text class="ns" x="380" y="68" text-anchor="middle">success</text>
+          <path class="nline" d="M295 95 Q295 135 160 135 Q125 135 125 97" marker-end="url(#arr4)"/><text class="ns" x="215" y="130" text-anchor="middle">error / retry</text>
+          <defs><marker id="arr4" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.5"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 동작: use case -->
+    <section id="uml-usecase">
+      <h2>동작 · Behavior</h2>
+      <div class="sec-title">Use Case Diagram</div>
+      <p class="cap">액터와 시스템 기능(유스케이스)</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 220" role="img" aria-label="use case diagram">
+          <!-- actor -->
+          <circle class="nline" cx="50" cy="60" r="12" fill="var(--surface)"/>
+          <line class="nline" x1="50" y1="72" x2="50" y2="110"/><line class="nline" x1="30" y1="88" x2="70" y2="88"/>
+          <line class="nline" x1="50" y1="110" x2="34" y2="135"/><line class="nline" x1="50" y1="110" x2="66" y2="135"/>
+          <text class="nt" x="50" y="155" text-anchor="middle">사용자</text>
+          <!-- boundary -->
+          <rect class="nbox" x="170" y="20" width="360" height="180" rx="8" fill="none"/>
+          <text class="ns" x="350" y="40" text-anchor="middle">Shop System</text>
+          <ellipse class="nbox" cx="280" cy="80" rx="75" ry="26"/><text class="nt" x="280" y="85" text-anchor="middle">상품 검색</text>
+          <ellipse class="nbox" cx="280" cy="150" rx="75" ry="26"/><text class="nt" x="280" y="155" text-anchor="middle">장바구니</text>
+          <ellipse class="nbox" cx="440" cy="115" rx="75" ry="26"/><text class="nt" x="440" y="120" text-anchor="middle">결제</text>
+          <line class="nline" x1="70" y1="95" x2="205" y2="80"/>
+          <line class="nline" x1="70" y1="100" x2="205" y2="150"/>
+          <path class="ndash" d="M355 150 L370 120" marker-end="url(#arr5)"/><text class="ns" x="380" y="150">«include»</text>
+          <defs><marker id="arr5" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.5"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 동작: communication -->
+    <section id="uml-comm">
+      <h2>동작 · Behavior</h2>
+      <div class="sec-title">Communication Diagram</div>
+      <p class="cap">객체 간 연결과 번호 매겨진 메시지</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 160" role="img" aria-label="communication diagram">
+          <rect class="nbox" x="40" y="60" width="110" height="40" rx="4"/><text class="nt" x="95" y="85" text-anchor="middle">:UI</text>
+          <rect class="nbox" x="225" y="60" width="110" height="40" rx="4"/><text class="nt" x="280" y="85" text-anchor="middle">:Controller</text>
+          <rect class="nbox" x="410" y="60" width="110" height="40" rx="4"/><text class="nt" x="465" y="85" text-anchor="middle">:Service</text>
+          <line class="nline" x1="150" y1="80" x2="225" y2="80"/><text class="ns" x="187" y="72" text-anchor="middle">1: submit()</text>
+          <line class="nline" x1="335" y1="80" x2="410" y2="80"/><text class="ns" x="372" y="72" text-anchor="middle">2: save()</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 동작: timing -->
+    <section id="uml-timing">
+      <h2>동작 · Behavior</h2>
+      <div class="sec-title">Timing Diagram</div>
+      <p class="cap">시간축에 따른 상태 변화</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 160" role="img" aria-label="timing diagram">
+          <text class="ns" x="20" y="40">High</text><text class="ns" x="24" y="110">Low</text>
+          <line class="nline" x1="60" y1="30" x2="60" y2="130"/>
+          <line class="nline" x1="60" y1="130" x2="540" y2="130"/>
+          <polyline class="nfill" style="fill:none;stroke:var(--brand-yellow);stroke-width:2.5"
+            points="60,110 160,110 160,40 280,40 280,110 380,110 380,40 540,40"/>
+          <text class="ns" x="110" y="148">t0</text><text class="ns" x="270" y="148">t1</text><text class="ns" x="370" y="148">t2</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 동작: interaction overview -->
+    <section id="uml-ioverview">
+      <h2>동작 · Behavior</h2>
+      <div class="sec-title">Interaction Overview</div>
+      <p class="cap">액티비티 틀 안에 상호작용(ref) 흐름</p>
+      <div class="diagram">
+        <svg viewBox="0 0 420 250" role="img" aria-label="interaction overview">
+          <rect class="nbox" x="10" y="10" width="400" height="230" rx="6" fill="none"/>
+          <text class="ns" x="30" y="30">sd Checkout</text>
+          <circle class="ndark" cx="210" cy="50" r="10"/>
+          <rect class="nbox" x="140" y="80" width="140" height="44" rx="4"/><text class="ns" x="150" y="98">ref</text><text class="nt" x="210" y="112" text-anchor="middle">로그인</text>
+          <rect class="nbox" x="140" y="155" width="140" height="44" rx="4"/><text class="ns" x="150" y="173">ref</text><text class="nt" x="210" y="187" text-anchor="middle">결제 처리</text>
+          <line class="nline" x1="210" y1="60" x2="210" y2="80" marker-end="url(#arr6)"/>
+          <line class="nline" x1="210" y1="124" x2="210" y2="155" marker-end="url(#arr6)"/>
+          <circle class="nbox" cx="210" cy="222" r="11" fill="var(--surface)"/><circle class="ndark" cx="210" cy="222" r="6"/>
+          <line class="nline" x1="210" y1="199" x2="210" y2="211" marker-end="url(#arr6)"/>
+          <defs><marker id="arr6" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.5"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 기타: ERD -->
+    <section id="d-erd">
+      <h2>기타 · Practical</h2>
+      <div class="sec-title">ERD(Entity Relationship Diagram) — Database 설계</div>
+      <p class="cap">엔티티·키와 관계(까마귀발 표기)</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 200" role="img" aria-label="ERD">
+          <rect class="nbox" x="40" y="40" width="170" height="110" rx="4"/>
+          <line class="nline" x1="40" y1="66" x2="210" y2="66"/>
+          <text class="nt" x="125" y="59" text-anchor="middle">USER</text>
+          <text class="ns" x="52" y="88">🔑 id  PK</text><text class="ns" x="52" y="110">email</text><text class="ns" x="52" y="132">name</text>
+          <rect class="nbox" x="350" y="40" width="170" height="130" rx="4"/>
+          <line class="nline" x1="350" y1="66" x2="520" y2="66"/>
+          <text class="nt" x="435" y="59" text-anchor="middle">ORDER</text>
+          <text class="ns" x="362" y="88">🔑 id  PK</text><text class="ns" x="362" y="110">user_id  FK</text><text class="ns" x="362" y="132">total</text><text class="ns" x="362" y="154">created_at</text>
+          <line class="nline" x1="210" y1="95" x2="350" y2="95"/>
+          <path class="nline" d="M340 85 L350 95 L340 105 M345 95 L350 95"/>
+          <text class="ns" x="280" y="86" text-anchor="middle">1 : N</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 기타: flowchart -->
+    <section id="d-flowchart">
+      <h2>기타 · Practical</h2>
+      <div class="sec-title">Flowchart — Algorithm · Logic</div>
+      <div class="diagram">
+        <svg viewBox="0 0 360 310" role="img" aria-label="flowchart">
+          <rect class="nbox" x="120" y="20" width="120" height="36" rx="18"/><text class="nt" x="180" y="43" text-anchor="middle">시작</text>
+          <rect class="nbox" x="110" y="80" width="140" height="40"/><text class="nt" x="180" y="105" text-anchor="middle">입력 받기</text>
+          <polygon class="nbox" points="180,140 250,180 180,220 110,180"/><text class="ns" x="180" y="184" text-anchor="middle">n &gt; 0 ?</text>
+          <rect class="nbox" x="270" y="160" width="80" height="40"/><text class="ns" x="310" y="185" text-anchor="middle">출력</text>
+          <rect class="nbox" x="120" y="250" width="120" height="36" rx="18"/><text class="nt" x="180" y="273" text-anchor="middle">끝</text>
+          <line class="nline" x1="180" y1="56" x2="180" y2="80" marker-end="url(#arr7)"/>
+          <line class="nline" x1="180" y1="120" x2="180" y2="140" marker-end="url(#arr7)"/>
+          <path class="nline" d="M250 180 L310 180 L310 200" marker-end="url(#arr7)"/><text class="ns" x="275" y="172">예</text>
+          <path class="nline" d="M180 220 L180 250" marker-end="url(#arr7)"/><text class="ns" x="190" y="240">아니오</text>
+          <path class="nline" d="M310 200 L310 268 L240 268" marker-end="url(#arr7)"/>
+          <defs><marker id="arr7" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.5"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 기타: DFD -->
+    <section id="d-dfd">
+      <h2>기타 · Practical</h2>
+      <div class="sec-title">Data Flow Diagram (DFD)</div>
+      <p class="cap">외부 개체 · 프로세스(원) · 데이터 저장소 사이 흐름</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 180" role="img" aria-label="DFD">
+          <rect class="nbox" x="30" y="65" width="100" height="50"/><text class="nt" x="80" y="95" text-anchor="middle">사용자</text>
+          <circle class="nbox" cx="280" cy="90" r="45"/><text class="nt" x="280" y="88" text-anchor="middle">1.0</text><text class="ns" x="280" y="106" text-anchor="middle">주문처리</text>
+          <path class="nbox" d="M430 70 h110 v44 h-110" fill="var(--surface-soft)"/><line class="nline" x1="430" y1="70" x2="430" y2="114"/>
+          <text class="ns" x="490" y="96" text-anchor="middle">D1 주문</text>
+          <line class="nline" x1="130" y1="90" x2="233" y2="90" marker-end="url(#arr8)"/><text class="ns" x="180" y="82" text-anchor="middle">주문정보</text>
+          <line class="nline" x1="325" y1="90" x2="430" y2="90" marker-end="url(#arr8)"/><text class="ns" x="378" y="82" text-anchor="middle">저장</text>
+          <defs><marker id="arr8" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.5"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 기타: system architecture -->
+    <section id="d-sysarch">
+      <h2>기타 · Practical</h2>
+      <div class="sec-title">System Architecture</div>
+      <p class="cap">계층형 전체 시스템 구성</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 240" role="img" aria-label="system architecture">
+          <rect class="nbox" x="40" y="20" width="480" height="44" rx="4"/><text class="nt" x="280" y="47" text-anchor="middle">Client (Web · Mobile)</text>
+          <rect class="nfill" x="40" y="84" width="480" height="44" rx="4"/><text class="nt-on" x="280" y="111" text-anchor="middle">API Gateway</text>
+          <rect class="nbox" x="40" y="148" width="150" height="44" rx="4"/><text class="nt" x="115" y="175" text-anchor="middle">Auth</text>
+          <rect class="nbox" x="205" y="148" width="150" height="44" rx="4"/><text class="nt" x="280" y="175" text-anchor="middle">Orders</text>
+          <rect class="nbox" x="370" y="148" width="150" height="44" rx="4"/><text class="nt" x="445" y="175" text-anchor="middle">Payments</text>
+          <rect class="ndark" x="180" y="208" width="200" height="24" rx="4"/><text class="nt-d" x="280" y="225" text-anchor="middle">Database</text>
+          <line class="nline" x1="280" y1="64" x2="280" y2="84"/>
+          <line class="nline" x1="115" y1="128" x2="115" y2="148"/><line class="nline" x1="280" y1="128" x2="280" y2="148"/><line class="nline" x1="445" y1="128" x2="445" y2="148"/>
+          <line class="nline" x1="280" y1="192" x2="280" y2="208"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 기타: network -->
+    <section id="d-network">
+      <h2>기타 · Practical</h2>
+      <div class="sec-title">Network Diagram</div>
+      <p class="cap">서버·네트워크 연결</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 200" role="img" aria-label="network diagram">
+          <circle class="nline" cx="280" cy="40" r="22" fill="var(--surface)"/><text class="ns" x="280" y="44" text-anchor="middle">☁ WAN</text>
+          <rect class="nbox" x="230" y="90" width="100" height="36" rx="4"/><text class="nt" x="280" y="113" text-anchor="middle">Router</text>
+          <rect class="nbox" x="40" y="160" width="120" height="34" rx="4"/><text class="ns" x="100" y="182" text-anchor="middle">Web Server</text>
+          <rect class="nbox" x="220" y="160" width="120" height="34" rx="4"/><text class="ns" x="280" y="182" text-anchor="middle">App Server</text>
+          <rect class="nbox" x="400" y="160" width="120" height="34" rx="4"/><text class="ns" x="460" y="182" text-anchor="middle">DB Server</text>
+          <line class="nline" x1="280" y1="62" x2="280" y2="90"/>
+          <line class="nline" x1="280" y1="126" x2="100" y2="160"/><line class="nline" x1="280" y1="126" x2="280" y2="160"/><line class="nline" x1="280" y1="126" x2="460" y2="160"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 기타: API flow -->
+    <section id="d-apiflow">
+      <h2>기타 · Practical</h2>
+      <div class="sec-title">API(Application Programming Interface) Flow Diagram</div>
+      <p class="cap">API 호출 흐름</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 110" role="img" aria-label="API flow">
+          <rect class="nbox" x="20" y="35" width="100" height="44" rx="4"/><text class="nt" x="70" y="62" text-anchor="middle">Client</text>
+          <rect class="nbox" x="170" y="35" width="100" height="44" rx="4"/><text class="nt" x="220" y="62" text-anchor="middle">Gateway</text>
+          <rect class="nbox" x="320" y="35" width="100" height="44" rx="4"/><text class="nt" x="370" y="62" text-anchor="middle">Service</text>
+          <rect class="ndark" x="460" y="35" width="80" height="44" rx="4"/><text class="nt-d" x="500" y="62" text-anchor="middle">DB</text>
+          <line class="nline" x1="120" y1="57" x2="170" y2="57" marker-end="url(#arr9)"/>
+          <line class="nline" x1="270" y1="57" x2="320" y2="57" marker-end="url(#arr9)"/>
+          <line class="nline" x1="420" y1="57" x2="460" y2="57" marker-end="url(#arr9)"/>
+          <defs><marker id="arr9" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.5"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 기타: user flow -->
+    <section id="d-userflow">
+      <h2>기타 · Practical</h2>
+      <div class="sec-title">User Flow</div>
+      <p class="cap">사용자 화면 이동</p>
+      <div class="diagram">
+        <svg viewBox="0 0 560 110" role="img" aria-label="user flow">
+          <rect class="nbox" x="20" y="35" width="110" height="44" rx="8"/><text class="nt" x="75" y="62" text-anchor="middle">랜딩</text>
+          <rect class="nbox" x="180" y="35" width="110" height="44" rx="8"/><text class="nt" x="235" y="62" text-anchor="middle">로그인</text>
+          <rect class="nbox" x="340" y="35" width="110" height="44" rx="8"/><text class="nt" x="395" y="62" text-anchor="middle">대시보드</text>
+          <rect class="nfill" x="490" y="35" width="60" height="44" rx="8"/><text class="nt-on" x="520" y="62" text-anchor="middle">완료</text>
+          <line class="nline" x1="130" y1="57" x2="180" y2="57" marker-end="url(#arr10)"/>
+          <line class="nline" x1="290" y1="57" x2="340" y2="57" marker-end="url(#arr10)"/>
+          <line class="nline" x1="450" y1="57" x2="490" y2="57" marker-end="url(#arr10)"/>
+          <defs><marker id="arr10" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="var(--muted)" stroke-width="1.5"/></marker></defs>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 기타: wireframe -->
+    <section id="d-wireframe">
+      <h2>기타 · Practical</h2>
+      <div class="sec-title">Wireframe — UI 구조</div>
+      <div class="diagram">
+        <div class="wire">
+          <div class="wbar"><span class="wdot"></span><span class="wdot"></span><span class="wdot"></span></div>
+          <div class="wgrid">
+            <div class="wbox">로고</div><div class="wbox">검색</div><div class="wbox">메뉴</div>
+          </div>
+          <div class="wline"></div><div class="wline"></div><div class="wline s"></div>
+          <div class="wgrid" style="margin-top:10px">
+            <div class="wbox" style="height:90px">카드</div><div class="wbox" style="height:90px">카드</div><div class="wbox" style="height:90px">카드</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 기타: mind map -->
+    <section id="d-mindmap">
+      <h2>기타 · Practical</h2>
+      <div class="sec-title">Mind Map — 기능 기획</div>
+      <div class="diagram">
+        <svg viewBox="0 0 560 240" role="img" aria-label="mind map">
+          <rect class="nfill" x="225" y="100" width="110" height="40" rx="20"/><text class="nt-on" x="280" y="125" text-anchor="middle">앱 기능</text>
+          <path class="nline" d="M225 110 C160 90 130 60 90 50"/><rect class="nbox" x="20" y="32" width="120" height="34" rx="8"/><text class="ns" x="80" y="54" text-anchor="middle">회원</text>
+          <path class="nline" d="M225 130 C160 150 130 180 90 190"/><rect class="nbox" x="20" y="174" width="120" height="34" rx="8"/><text class="ns" x="80" y="196" text-anchor="middle">결제</text>
+          <path class="nline" d="M335 110 C420 90 450 60 480 50"/><rect class="nbox" x="420" y="32" width="120" height="34" rx="8"/><text class="ns" x="480" y="54" text-anchor="middle">알림</text>
+          <path class="nline" d="M335 130 C420 150 450 180 480 190"/><rect class="nbox" x="420" y="174" width="120" height="34" rx="8"/><text class="ns" x="480" y="196" text-anchor="middle">통계</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ATAM -->
+    <section id="d-atam">
+      <h2>기타 · Practical</h2>
+      <div class="sec-title">ATAM(Architecture Tradeoff Analysis Method) — 아키텍처 트레이드오프 분석</div>
+      <p class="cap">품질속성 → 시나리오를 (중요도, 위험도)로 평가하는 유틸리티 트리</p>
+      <div class="diagram">
+        <svg viewBox="0 0 640 300" role="img" aria-label="ATAM utility tree">
+          <!-- root -->
+          <rect class="nfill" x="10" y="130" width="96" height="44" rx="8"/>
+          <text class="nt-on" x="58" y="156" text-anchor="middle">유틸리티</text>
+          <!-- links root → QA -->
+          <path class="nline" d="M106 152 C140 152 130 40 170 40"/>
+          <path class="nline" d="M106 152 C140 152 130 110 170 110"/>
+          <path class="nline" d="M106 152 C140 152 130 180 170 180"/>
+          <path class="nline" d="M106 152 C140 152 130 250 170 250"/>
+          <!-- QA nodes -->
+          <rect class="nbox" x="170" y="20" width="130" height="40" rx="6"/><text class="nt" x="235" y="45" text-anchor="middle">성능</text>
+          <rect class="nbox" x="170" y="90" width="130" height="40" rx="6"/><text class="nt" x="235" y="115" text-anchor="middle">가용성</text>
+          <rect class="nbox" x="170" y="160" width="130" height="40" rx="6"/><text class="nt" x="235" y="185" text-anchor="middle">보안</text>
+          <rect class="nbox" x="170" y="230" width="130" height="40" rx="6"/><text class="nt" x="235" y="255" text-anchor="middle">변경 용이성</text>
+          <!-- links QA → scenario -->
+          <path class="nline" d="M300 40 h40"/>
+          <path class="nline" d="M300 110 h40"/>
+          <path class="nline" d="M300 180 h40"/>
+          <path class="nline" d="M300 250 h40"/>
+          <!-- scenarios -->
+          <rect class="nbox" x="340" y="20" width="290" height="40" rx="6"/>
+          <text class="ns" x="352" y="38">피크 부하서 응답 &lt; 200ms</text>
+          <text class="ns" x="352" y="54">(중요도 H · 위험도 M)</text>
+          <rect class="nbox" x="340" y="90" width="290" height="40" rx="6"/>
+          <text class="ns" x="352" y="108">월 가동률 99.9% 유지</text>
+          <text class="ns" x="352" y="124">(중요도 H · 위험도 L)</text>
+          <rect class="nbox" x="340" y="160" width="290" height="40" rx="6"/>
+          <text class="ns" x="352" y="178">전 구간 인증·암호화</text>
+          <text class="ns" x="352" y="194">(중요도 H · 위험도 H)</text>
+          <rect class="nbox" x="340" y="230" width="290" height="40" rx="6"/>
+          <text class="ns" x="352" y="248">신규 기능 1일 내 추가</text>
+          <text class="ns" x="352" y="264">(중요도 M · 위험도 M)</text>
+        </svg>
+      </div>
+      <p class="cap">분석 지점 분류 — 결정이 품질속성에 미치는 영향</p>
+      <div class="diagram">
+        <table>
+          <thead><tr><th>지점</th><th>아키텍처 결정</th><th>영향</th><th>분류</th></tr></thead>
+          <tbody>
+            <tr><td>민감점</td><td>캐시 TTL 설정</td><td>응답속도 ↔ 데이터 신선도</td><td><span class="badge dot b-info">Sensitivity</span></td></tr>
+            <tr><td>트레이드오프</td><td>전체 암호화 적용</td><td>보안 ↑ · 성능 ↓</td><td><span class="badge dot b-warning">Tradeoff</span></td></tr>
+            <tr><td>위험</td><td>단일 DB 인스턴스</td><td>가용성 목표 미달 가능</td><td><span class="badge dot b-error">Risk</span></td></tr>
+            <tr><td>위험 아님</td><td>모듈식 레이어 분리</td><td>변경 용이성 충족</td><td><span class="badge dot b-success">Non-risk</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TOKENS -->
+    <section id="token">
+      <h2>Development</h2>
+      <div class="sec-title">Token 사용법</div>
+      <p style="margin-bottom:16px;color:var(--muted)">하드코딩 금지. 항상 CSS 변수로 참조한다.</p>
+      <div class="code-block">
+<span class="c">/* ✗ 하지 말 것 */</span><br>
+.box{ background:<span class="y">#FFD400</span>; }<br><br>
+<span class="c">/* ✓ 토큰 참조 */</span><br>
+.box{<br>
+&nbsp;&nbsp;background: <span class="y">var(--brand-yellow)</span>;<br>
+&nbsp;&nbsp;color: <span class="y">var(--ink)</span>;<br>
+&nbsp;&nbsp;padding: <span class="y">var(--s4)</span>;<br>
+&nbsp;&nbsp;border-radius: <span class="y">var(--r-md)</span>;<br>
+&nbsp;&nbsp;box-shadow: <span class="y">var(--sh-md)</span>;<br>
+}
+      </div>
+    </section>
+
+    <footer>
+      One The Lab Design System · v1.0 · 모든 값은 <code>:root</code> CSS 변수로 정의됨.
+    </footer>
+  </main>
+</div>
+<script>
+  // 저장된 테마 복원 (기본 다크)
+  (function(){
+    var saved = localStorage.getItem('brand-theme');
+    if(saved){ document.documentElement.setAttribute('data-theme', saved); }
+  })();
+  function toggleTheme(){
+    var el = document.documentElement;
+    var next = el.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    el.setAttribute('data-theme', next);
+    localStorage.setItem('brand-theme', next);
+  }
+</script>
+</body>
+</html>

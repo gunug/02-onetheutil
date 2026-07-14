@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="DB">
+  <ellipse class="ins" cx="12" cy="8" rx="4.6" ry="1.8"/>
+  <path class="ins" d="M 7.4 8 V 16 A 4.6 1.8 0 0 0 16.6 16 V 8"/>
+  <path class="ins" d="M 7.4 12 A 4.6 1.8 0 0 0 16.6 12"/>
+</svg>

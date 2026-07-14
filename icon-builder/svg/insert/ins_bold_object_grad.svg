@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="programming-education">
+  <path class="ins" d="M 12 7 L 18 9.5 L 12 12 L 6 9.5 Z"/>
+  <path class="ins" d="M 8.5 10.5 V 13 A 3.5 1.6 0 0 0 15.5 13 V 10.5"/>
+  <path class="ins" d="M 18 9.5 V 13"/>
+  <circle class="ins-dot" cx="18" cy="13.3" r="0.6"/>
+</svg>

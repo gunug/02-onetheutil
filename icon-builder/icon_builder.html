@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon-icon-builder.svg">
+<title>icon builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Supabase (OAuth 로그인 + generated 업로드) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // anon key 는 공개용(브라우저 노출 전제) — 실제 권한은 Storage RLS 정책이 통제.
+  // 업로드는 OAuth 로그인 + RLS(authenticated/허용 이메일)로만 허용됨.
+  // 아래 ANON KEY 를 실제 값으로 채우면 업로드/갤러리가 동작함.
+  const SUPABASE_URL = "https://pstpexrnusiwrkcdypjq.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzdHBleHJudXNpd3JrY2R5cGpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMTQ2MTMsImV4cCI6MjA5ODU5MDYxM30._913UewzlbfF8lumTSlwzBd6748QWYHtfjXA8f1pLus";
+  window.SB_CLIENT = (window.supabase && SUPABASE_ANON_KEY !== "PASTE_ANON_KEY_HERE")
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+</script>
+<style>
+  :root {
+    /* Brand */
+    --brand-yellow:#FFD400; --brand-yellow-soft:#FFE766; --brand-yellow-deep:#C9A600; --on-brand:#1A1A17;
+    /* Dark theme (기본) */
+    --ink:#F5F4EC; --body:#CFCDC2; --muted:#8E8C82; --hairline:#33332B;
+    --canvas:#121210; --surface:#1C1C17; --surface-soft:#26261F;
+    --sh-sm:0 1px 2px rgba(0,0,0,.4); --sh-md:0 4px 16px rgba(0,0,0,.45);
+    --r-sm:6px; --r-md:10px; --r-lg:16px;
+    --font:"Inter",-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+    /* 아이콘 색 (피커 제어) */
+    --brand-main:#F5F4EC;   /* frame stroke */
+    --brand-point:#FFD400;  /* front center */
+    --brand-back:#8E8C82;   /* back center */
+    --brand-fill:none;      /* frame fill */
+    --stroke-w:0.75;      /* 썸네일 등 기본 선두께 (그룹 안에서 레이어별로 덮임) */
+    /* 레이어별 선두께 (완전 독립) */
+    --sw-frame:0.75; --sw-front:0.75; --sw-back:0.75;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; padding: 48px 32px;
+    display: flex; flex-direction: column; align-items: center; gap: 28px;
+    font-family: var(--font); background: var(--canvas); color: var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  .eyebrow { display:inline-block; background:#161613; color:var(--brand-yellow); font-size:11px; font-weight:600;
+             letter-spacing:.12em; text-transform:uppercase; padding:5px 12px; border-radius:9999px; margin-bottom:10px; }
+  .head { text-align:center; }
+  h1 { font-size: 30px; font-weight: 800; letter-spacing:-.02em; color: var(--ink); margin: 0; }
+  h2 { font-size: 11px; font-weight: 700; margin: 0 0 10px; text-transform: uppercase; letter-spacing: .1em;
+       color: var(--brand-yellow-deep); }
+  h4.subsection { font-size: 10px; font-weight: 700; margin: 10px 0 6px; letter-spacing: .05em; color: var(--body); opacity: .7; }
+
+  /* 에러 배너 */
+  .banner { display:none; width:100%; max-width:600px; background:#2a1a14; border:1px solid #6b3a2a;
+            border-radius: var(--r-lg); padding:14px 18px; color:#ffd0c0; font-size:13px; line-height:1.5; }
+  .banner.show { display:block; }
+  .banner code { font-family: var(--mono); background:#3a221a; padding:1px 6px; border-radius:4px; color:#ffe; }
+
+  /* 미리보기 */
+  /* 미리보기: 투명 배경 확인용 체커보드 */
+  .preview { width: 240px; height: 240px; border:1px solid var(--hairline);
+             border-radius: var(--r-lg); box-shadow: var(--sh-md); display: flex; align-items: center; justify-content: center;
+             background-color: #3a3a33;
+             background-image:
+               linear-gradient(45deg, #22221d 25%, transparent 25%),
+               linear-gradient(-45deg, #22221d 25%, transparent 25%),
+               linear-gradient(45deg, transparent 75%, #22221d 75%),
+               linear-gradient(-45deg, transparent 75%, #22221d 75%);
+             background-size: 16px 16px;
+             background-position: 0 0, 0 8px, 8px -8px, -8px 0; }
+  .preview svg { width: 190px; height: 190px; }
+  .preview-row { display: flex; align-items: center; gap: 16px; }
+  .export-btn { font-family: var(--font); font-size: 13px; font-weight: 600; padding: 8px 18px; border: none;
+                border-radius: var(--r-md); background: var(--brand-yellow); color: var(--on-brand); cursor: pointer; transition: .12s; }
+  .export-btn:hover { background: var(--brand-yellow-deep); color: #fff; }
+  .export-btn:disabled { opacity: .5; cursor: default; }
+  .preview-actions { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+  .export-btn.upload { background: var(--surface-soft); color: var(--ink); border: 1px solid var(--hairline); }
+  .export-btn.upload:hover { border-color: var(--brand-yellow); background: var(--surface); color: var(--brand-yellow); }
+  .auth-line { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+  .auth-status { font-family: var(--mono); flex: 1; word-break: break-all; }
+  .auth-btn { font-family: var(--font); font-size: 11px; font-weight: 600; padding: 4px 10px; border: 1px solid var(--hairline);
+              border-radius: var(--r-sm); background: var(--surface-soft); color: var(--body); cursor: pointer; transition: .12s; }
+  .auth-btn:hover { border-color: var(--brand-yellow); color: var(--ink); }
+
+  /* 작업 상태 저장/불러오기 */
+  .name-input { flex:1; min-width:140px; background:var(--surface-soft); border:1px solid var(--hairline);
+            border-radius:var(--r-md); color:var(--ink); font-family:var(--font); font-size:14px; padding:9px 14px; }
+  .name-input:focus { outline:none; border-color:var(--brand-yellow); }
+  .btn { font-family:var(--font); font-size:12px; font-weight:700; padding:9px 14px; border:1px solid var(--hairline);
+         border-radius:var(--r-md); background:var(--surface); color:var(--body); cursor:pointer; transition:.12s; white-space:nowrap; }
+  .btn:hover { border-color:var(--brand-yellow); color:var(--ink); }
+  .btn:disabled { opacity:.45; cursor:default; }
+  .state-row { display:flex; flex-wrap:wrap; gap:8px; width:100%; max-width:600px; }
+
+  /* 모달 공용 (불러오기 목록) */
+  .modal-bg { position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index:100; padding:24px; }
+  .modal-bg.show { display:flex; }
+  .modal { background:var(--surface); border:1px solid var(--hairline); border-radius:var(--r-lg); padding:20px;
+           width:min(480px,100%); max-height:82vh; display:flex; flex-direction:column; gap:12px; box-shadow:var(--sh-md); }
+  .modal h3 { margin:0; color:var(--ink); font-size:15px; }
+  .modal-head { display:flex; align-items:center; gap:10px; }
+  .modal .close { cursor:pointer; background:none; border:none; color:var(--muted); font-size:20px; line-height:1; padding:2px 6px; }
+  .modal .close:hover { color:var(--ink); }
+  .llist { overflow:auto; display:flex; flex-direction:column; gap:6px; }
+  .litem { display:flex; align-items:center; gap:8px; background:var(--surface-soft); border:1px solid var(--hairline);
+           border-radius:var(--r-md); padding:8px 12px; }
+  .litem .nm { flex:1; font-family:var(--mono); font-size:12.5px; color:var(--ink); word-break:break-all; }
+  .litem .btn { padding:5px 10px; font-size:11px; }
+  .litem .btn.del { background:#3a1a1a; border-color:#6b3a2a; color:#ffc9bd; }
+  .litem .btn.del:hover { border-color:#ff8a6a; color:#fff; }
+  .empty-msg { color:var(--muted); font-size:12.5px; padding:12px 4px; }
+
+  /* 섹션 */
+  .sections { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; width: 100%; max-width: 600px; }
+  .section { background: var(--surface); border:1px solid var(--hairline); border-radius: var(--r-lg);
+             padding: 16px; box-shadow: var(--sh-sm); }
+  .section.center { grid-column: 1 / -1; }
+  .parts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .part { width: 72px; cursor: pointer; border: 1.5px solid transparent; border-radius: var(--r-md);
+          padding: 6px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+          background: var(--surface-soft); transition: .12s; }
+  .part:hover { border-color: var(--hairline); }
+  .part.active { border-color: var(--brand-yellow); background: rgba(255,212,0,.10); }
+  .part svg { width: 52px; height: 52px; }
+  .part .nm { font-size: 10px; font-family: var(--mono); color: var(--muted); text-align: center; word-break: break-all; }
+  .part.active .nm { color: var(--ink); }
+
+  /* bold line — 색은 CSS 변수로, svg 파일엔 클래스만 둔다 */
+  .arc { fill: var(--brand-fill); stroke-width: var(--stroke-w); stroke-linecap: round; stroke-linejoin: round; }
+  /* 분면: 바깥선(edge)만 stroke, 중앙까지 채움(fill) */
+  .edge { fill: none; stroke-width: var(--stroke-w); stroke-linecap: round; stroke-linejoin: round; }
+  .fill { fill: var(--brand-fill); stroke: none; }
+  .dot { fill: var(--brand-main); stroke: none; }   /* 카메라 점 등 frame 채움 점 */
+  #frame-group .arc, #frame-group .edge { stroke: var(--brand-main); }   /* 미리보기 frame */
+  .part .arc, .part .edge { stroke: var(--brand-main); }                 /* 썸네일 frame = frame stroke 색 */
+  .part .dot { fill: var(--brand-main); }                                /* 썸네일 점 */
+  .ins { fill: none; stroke: var(--brand-point); stroke-width: calc(var(--stroke-w)*0.7); stroke-linecap: round; stroke-linejoin: round; }
+  .ins-dot { fill: var(--brand-point); stroke: none; }
+  .ins-solid { fill: var(--brand-point); }   /* .ins 와 함께 → 외곽선 + 채움 */
+  .ins-text { fill: var(--brand-point); font-family: var(--font); font-weight: 800; }
+  /* back 레이어: 전용 색(--brand-back) — front(point) 와 분리 */
+  #slot-ins-back .ins { stroke: var(--brand-back); }
+  #slot-ins-back .ins-dot, #slot-ins-back .ins-text, #slot-ins-back .ins-solid { fill: var(--brand-back); }
+  /* 레이어별 선두께 스코프 — 그룹 안에서 --stroke-w 를 해당 레이어 값으로 (.arc/.ins/inline calc 전부 반영) */
+  #frame-group { --stroke-w: var(--sw-frame); }
+  #slot-ins-front, #slot-ins-front-outline { --stroke-w: var(--sw-front); }
+  #slot-ins-back, #slot-ins-back-outline { --stroke-w: var(--sw-back); }
+  /* back 탭 썸네일도 back 색으로 구분 표시 */
+  .parts[data-layer="back"] .part .ins { stroke: var(--brand-back); }
+  .parts[data-layer="back"] .part .ins-dot, .parts[data-layer="back"] .part .ins-text, .parts[data-layer="back"] .part .ins-solid { fill: var(--brand-back); }
+
+  /* 탭바 */
+  .tabbar { display: flex; gap: 6px; width: 100%; max-width: 600px; }
+  .tab { flex: 1; font-family: var(--font); font-size: 13px; font-weight: 700; padding: 10px 0; border: 1px solid var(--hairline);
+         border-radius: var(--r-md); background: var(--surface); color: var(--muted); cursor: pointer; transition: .12s;
+         text-transform: uppercase; letter-spacing: .08em; }
+  .tab:hover { color: var(--body); }
+  .tab.active { background: var(--brand-yellow); color: var(--on-brand); border-color: var(--brand-yellow); }
+  .panel { width: 100%; max-width: 600px; }
+  .panel[hidden] { display: none; }
+
+  /* center · text 입력 */
+  .textcol { display: flex; flex-direction: column; gap: 10px; }
+  .textcol textarea { width: 100%; resize: vertical; min-height: 88px; background: var(--surface-soft); border: 1px solid var(--hairline);
+                      border-radius: var(--r-md); color: var(--ink); font-family: var(--font); font-size: 14px; line-height: 1.4; padding: 8px 12px; }
+  .textrow { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .textrow label { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--body); white-space: nowrap; cursor: pointer; }
+  .textrow input[type="range"] { width: 120px; accent-color: var(--brand-yellow); }
+  .textrow .val { font-family: var(--mono); font-size: 12px; color: var(--muted); min-width: 26px; }
+  .textrow input[type="checkbox"] { accent-color: var(--brand-yellow); width: 16px; height: 16px; cursor: pointer; }
+  .textrow button { font-family: var(--font); font-size: 13px; font-weight: 600; padding: 8px 18px; border: none; margin-left: auto;
+                    border-radius: var(--r-md); background: var(--brand-yellow); color: var(--on-brand); cursor: pointer; transition: .12s; }
+  .textrow button:hover { background: var(--brand-yellow-deep); color: #fff; }
+
+  /* 컨트롤 */
+  .optgrid { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 600px; }
+  /* 서브섹션 (fill / line) 구획 */
+  .controls .subhead { flex-basis: 100%; margin: 2px 0 0; font-size: 10px; font-weight: 700;
+                       text-transform: uppercase; letter-spacing: .08em; color: var(--brand-yellow-deep); }
+  .controls hr { flex-basis: 100%; width: 100%; border: none; border-top: 1px solid var(--hairline); margin: 6px 0 2px; }
+  /* 탭에 맞춰 해당 option 박스만 표시 */
+  .controls[data-opt][hidden] { display: none; }
+  .controls { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; background: var(--surface);
+              border:1px solid var(--hairline); border-radius: var(--r-lg); padding: 14px 20px; box-shadow: var(--sh-sm); }
+  .controls label, .controls .anchor-row { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--body); }
+  .controls input[type="color"] { width: 30px; height: 30px; padding: 0; border: 1px solid var(--hairline);
+                                  border-radius: var(--r-sm); cursor: pointer; background: var(--surface-soft); }
+  .controls input[type="range"] { width: 110px; accent-color: var(--brand-yellow); }
+  .controls input[type="range"].alpha { width: 56px; }
+  .controls .val { font-family: var(--mono); font-size: 12px; color: var(--muted); min-width: 30px; }
+  .controls select { font-family: var(--font); font-size: 12px; color: var(--ink); background: var(--surface-soft);
+                     border: 1px solid var(--hairline); border-radius: var(--r-sm); padding: 4px 6px; cursor: pointer; }
+  /* 9방향 anchor 선택 (3x3) */
+  .anchor { display: inline-grid; grid-template-columns: repeat(3, 13px); grid-template-rows: repeat(3, 13px); gap: 2px; }
+  /* .controls button 규칙 덮어쓰기 방지 위해 .controls .anchor 로 우선순위 ↑ */
+  .controls .anchor button { width: 13px; height: 13px; padding: 0; border: 1px solid var(--hairline); border-radius: 3px;
+                   background: var(--surface-soft); cursor: pointer; transition: .1s; }
+  .controls .anchor button:hover { background: var(--surface-soft); border-color: var(--muted); color: inherit; }
+  .controls .anchor button.active { background: var(--brand-yellow); border-color: var(--brand-yellow); }
+  .controls button { font-family: var(--font); font-size: 13px; font-weight: 600; padding: 8px 18px; border: none;
+                     border-radius: var(--r-md); background: var(--brand-yellow); color: var(--on-brand); cursor: pointer; transition:.12s; }
+  .controls button:hover { background: var(--brand-yellow-deep); color: #fff; }
+
+  /* 제작 가이드 */
+  .guide { width: 100%; max-width: 600px; background: var(--surface); border:1px solid var(--hairline);
+           border-radius: var(--r-lg); padding: 18px 22px; box-shadow: var(--sh-sm); }
+  .guide h2 { margin-bottom: 12px; }
+  .guide table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .guide th, .guide td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+  .guide tr:last-child th, .guide tr:last-child td { border-bottom: none; }
+  .guide th { color: var(--muted); font-weight: 600; width: 38%; }
+  .guide td { color: var(--body); }
+  .guide td code, .guide th code { font-family: var(--mono); background: var(--surface-soft); padding: 1px 6px;
+                                   border-radius: 4px; font-size: 11px; color: var(--ink); }
+</style>
+</head>
+<body>
+  <div class="head">
+    <span class="eyebrow">Icon Builder</span>
+    <h1>Icon Builder</h1>
+  </div>
+
+  <!-- fetch 실패(주로 file://) 안내 -->
+  <div class="banner" id="banner"></div>
+
+  <!-- 상단 미리보기 + export -->
+  <div class="preview-row">
+  <div class="preview">
+    <svg viewBox="-2 -2 28 28" xmlns="http://www.w3.org/2000/svg">
+      <g id="frame-group">
+        <g id="slot-full"></g>
+      </g>
+      <g id="slot-ins-wrap">
+        <g id="slot-ins-back-outline"></g>
+        <g id="slot-ins-back"></g>
+        <g id="slot-ins-front-outline"></g>
+        <g id="slot-ins-front"></g>
+      </g>
+    </svg>
+  </div>
+    <div class="preview-actions">
+      <button id="c-export" type="button" class="export-btn">export svg</button>
+      <button id="c-upload" type="button" class="export-btn upload">☁ generated 업로드</button>
+      <div class="auth-line">
+        <span id="auth-status" class="auth-status">로그인 확인 중…</span>
+        <button id="auth-btn" type="button" class="auth-btn">로그인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 작업 상태(파츠/색/텍스트 선택) 저장·불러오기. svg/generated 에 올라간 완성 아이콘과는 별개 —
+       "다시 열어서 계속 편집" 하기 위한 설계도 저장임 -->
+  <div class="state-row">
+    <input type="text" id="state-name" class="name-input" placeholder="저장 이름 (예: my-icon-draft)">
+    <button type="button" id="state-save" class="btn">저장</button>
+    <button type="button" id="state-save-copy" class="btn">사본으로 저장</button>
+    <button type="button" id="state-load" class="btn">불러오기</button>
+  </div>
+
+  <!-- 저장된 상태 불러오기 모달 -->
+  <div class="modal-bg" id="state-load-bg">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>저장된 상태 불러오기</h3>
+        <button class="close" id="state-load-close" type="button">&times;</button>
+      </div>
+      <div class="llist" id="state-load-list"></div>
+    </div>
+  </div>
+
+  <!-- 탭: frame / front / back / guide (미리보기 아래) -->
+  <div class="tabbar">
+    <button type="button" class="tab active" data-tab="frame">frame</button>
+    <button type="button" class="tab" data-tab="front">front</button>
+    <button type="button" class="tab" data-tab="back">back</button>
+    <button type="button" class="tab" data-tab="guide">guide</button>
+  </div>
+
+  <!-- 컨트롤: frame / front / back -->
+  <div class="optgrid">
+    <div class="controls" data-opt="frame">
+      <h2 style="flex-basis:100%; margin:0 0 2px;">frame</h2>
+      <h3 class="subhead">fill</h3>
+      <label>color <input type="color" id="c-fill" value="#1c1c17"></label>
+      <label>transparent <input type="range" class="alpha" id="c-fill-a" min="0" max="1" step="0.05" value="1"></label>
+      <hr>
+      <h3 class="subhead">line</h3>
+      <label>color <input type="color" id="c-main" value="#f5f4ec"></label>
+      <label>weight <input type="range" id="c-stroke" min="0.25" max="1.25" step="0.25" value="0.75"><span class="val" id="c-stroke-v">1.50</span></label>
+    </div>
+
+    <div class="controls" data-opt="front">
+      <h2 style="flex-basis:100%; margin:0 0 2px;">front</h2>
+      <h3 class="subhead">common</h3>
+      <label>size <input type="range" id="c-front-size" min="0.5" max="1" step="0.05" value="1"><span class="val" id="c-front-size-v">1.00</span></label>
+      <div class="anchor-row">pos <span class="anchor" id="c-front-anchor">
+        <button type="button" data-a="tl"></button><button type="button" data-a="t"></button><button type="button" data-a="tr"></button>
+        <button type="button" data-a="l"></button><button type="button" data-a="c" class="active"></button><button type="button" data-a="r"></button>
+        <button type="button" data-a="bl"></button><button type="button" data-a="b"></button><button type="button" data-a="br"></button>
+      </span></div>
+      <hr>
+      <h3 class="subhead">fill</h3>
+      <label>color <input type="color" id="c-point" value="#ffd400"></label>
+      <label>weight <input type="range" id="c-front-line" min="0.25" max="1.25" step="0.25" value="0.75"><span class="val" id="c-front-line-v">1.50</span></label>
+      <hr>
+      <h3 class="subhead">line</h3>
+      <label>weight <input type="range" id="c-front-stroke" min="0" max="1.5" step="0.1" value="0"><span class="val" id="c-front-stroke-v">0.0</span></label>
+      <label>color <input type="color" id="c-front-ocolor" value="#f5f4ec"></label>
+    </div>
+
+    <div class="controls" data-opt="back">
+      <h2 style="flex-basis:100%; margin:0 0 2px;">back</h2>
+      <h3 class="subhead">common</h3>
+      <label>size <input type="range" id="c-back-size" min="0.5" max="1" step="0.05" value="1"><span class="val" id="c-back-size-v">1.00</span></label>
+      <div class="anchor-row">pos <span class="anchor" id="c-back-anchor">
+        <button type="button" data-a="tl"></button><button type="button" data-a="t"></button><button type="button" data-a="tr"></button>
+        <button type="button" data-a="l"></button><button type="button" data-a="c" class="active"></button><button type="button" data-a="r"></button>
+        <button type="button" data-a="bl"></button><button type="button" data-a="b"></button><button type="button" data-a="br"></button>
+      </span></div>
+      <hr>
+      <h3 class="subhead">fill</h3>
+      <label>color <input type="color" id="c-back" value="#8e8c82"></label>
+      <label>weight <input type="range" id="c-back-line" min="0.25" max="1.25" step="0.25" value="0.75"><span class="val" id="c-back-line-v">1.50</span></label>
+      <hr>
+      <h3 class="subhead">line</h3>
+      <label>weight <input type="range" id="c-back-stroke" min="0" max="1.5" step="0.1" value="0"><span class="val" id="c-back-stroke-v">0.0</span></label>
+      <label>color <input type="color" id="c-back-ocolor" value="#f5f4ec"></label>
+    </div>
+
+  </div>
+
+  <!-- frame 탭 -->
+  <div class="panel" data-panel="frame">
+    <div class="sections">
+      <div class="section center"><h2>full frame</h2><div class="parts" data-full="1"></div></div>
+      <div class="section center"><h2>simple frame</h2><div class="parts" data-simple="1"></div></div>
+    </div>
+  </div>
+
+  <!-- front / back 탭 (center 파츠 — JS 가 채움) -->
+  <div class="panel" data-panel="front" hidden><div class="sections" data-center="front"></div></div>
+  <div class="panel" data-panel="back" hidden><div class="sections" data-center="back"></div></div>
+
+  <!-- guide 탭 -->
+  <div class="panel" data-panel="guide" hidden>
+  <div class="guide">
+    <h2>제작 가이드 · bold</h2>
+    <table>
+      <tr><th>viewBox (최대영역)</th><td><code>-2 -2 28 28</code> (28×28)</td></tr>
+      <tr><th>중심</th><td>(12, 12)</td></tr>
+      <tr><th>설계 영역 / 라이브</th><td>좌표 1~23 (22×22), 중심 기준 ±11</td></tr>
+      <tr><th>여백 (28 - 24)</th><td>각 변 2 (viewBox -2~26, 콘텐츠 0~24)</td></tr>
+      <tr><th>oct 코너 꼭지 (45°)</th><td>(4.22,4.22)·(19.78,4.22)·(19.78,19.78)·(4.22,19.78)</td></tr>
+      <tr><th>arc 반경</th><td>11</td></tr>
+      <tr><th>cloud-asym (full frame)</th><td>아래 납작·위 2봉우리 · 가운데 cusp 완화(y5.8, 중심 6.22) · 바닥 y18.5(중심 6.5) → 보호 반경 6 충족, ic(12,12)</td></tr>
+      <tr><th>tail 깊이</th><td>tail = 2 / tail-long = 4 (arc-long apex r15)</td></tr>
+      <tr><th>rect-cut 깊이</th><td>cut = 3 / cut-deep = 6</td></tr>
+      <tr><th>stroke</th><td>표시 1~2 (실제 0.25~1.25, +0.75 보정) · linecap/join round</td></tr>
+      <tr><th>최대영역 보장</th><td>stroke 2 시 외곽 0~24, viewBox -2~26 내 여유 2 (초과 없음)</td></tr>
+      <tr><th>full frame vs simple frame</th><td>상호배타 — 같은 <code>slot-full</code> 공유, 한쪽 선택 시 다른쪽 해제</td></tr>
+      <tr><th>simple frame</th><td>분면 조합(TL/TR/BL/BR 믹스) 폐기 → 도형별 4방향 통일본을 정적 svg로 미리 병합해 등록(이음매 틈 문제 원천 차단). tail 계열만 예외로 tail-long 하나만 한쪽 방향에 붙여 4방향(tl/tr/bl/br) variant 생성 (말풍선 꼬리처럼 방향성)</td></tr>
+      <tr><th>insert 영역, logo 영역</th><td>반경 6 (중심 12, 또는 frame ic) · 로고 scale 0.5, 공통 영역 scale 0.85 적용</td></tr>
+      <tr><th>조항 1 · frame</th><td>frame · full frame 은 insert/logo 영역(반경 6)을 침범 불가 → 가장 안쪽 꼭지가 ≥6</td></tr>
+      <tr><th>조항 2 · insert/logo</th><td>insert · logo 는 자기 영역(반경 6) 밖으로 나갈 수 없음 → 콘텐츠에 scale 0.85 적용해 반경 내 유지</td></tr>
+      <tr><th>색 매핑</th><td>frame stroke → <code>--brand-main</code> · frame fill → <code>--brand-fill</code>(+alpha) · front → <code>--brand-point</code> · back → <code>--brand-back</code> · 배경 항상 투명</td></tr>
+      <tr><th>center 레이어</th><td>탭 frame/front/back · 렌더 순서 frame → back → front(맨 위) · front/back 각자 center 1개 + text · back 은 50% 대신 전용색</td></tr>
+    </table>
+
+    <h2 style="margin-top:22px">SVG 외부 파일 구조</h2>
+    <table>
+      <tr><th>파일 위치</th><td>frame → <code>svg/frame/</code> · insert → <code>svg/insert/</code> · logo → <code>svg/logo/</code></td></tr>
+      <tr><th>파일명 = id</th><td>full/simple 공통 <code>frm_full_bold_{name}.svg</code> (simple 은 <code>simple-{family}</code> · tail 은 <code>simple-{family}-tail-{tl|tr|bl|br}</code>) · <code>ins_bold_{cat}_{name}.svg</code> · <code>logo_*.svg</code></td></tr>
+      <tr><th>모양 변경</th><td>해당 <code>.svg</code> 1개만 단독 수정 → HTML 손 안 댐</td></tr>
+      <tr><th>새 파츠 추가</th><td>① <code>.svg</code> 파일 생성 → ② HTML <code>MANIFEST</code> 배열에 id 한 줄 추가 (HTML 수정은 이 1곳뿐)</td></tr>
+      <tr><th>파츠 제거</th><td><code>MANIFEST</code> 에서 id 삭제 (파일은 둬도 무방)</td></tr>
+      <tr><th>svg 내부 규칙</th><td>루트 <code>&lt;svg viewBox="-2 -2 28 28"&gt;</code> · 색 속성 금지 → 클래스만: frame <code>.arc</code>, center <code>.ins</code>/<code>.ins-dot</code> (색은 HTML CSS 변수가 입힘)</td></tr>
+      <tr><th>메타데이터 (파일 안)</th><td><code>data-name</code> = 버튼 표시명 (필수) · <code>data-ic="x,y"</code> = insert 중심 보정 (full frame 만, 선택)</td></tr>
+      <tr><th>로드 방식</th><td>HTML 이 <code>fetch</code> 로 svg 를 읽어 슬롯에 주입 (frame=path, center=inner 마크업)</td></tr>
+      <tr><th>⚠ 로컬 서버 필요</th><td><code>file://</code> 직접 열기는 fetch 차단 → <code>icon/</code> 에서 <code>python -m http.server 8000</code> 후 <code>localhost:8000/arc-circle-frame.html</code> 접속</td></tr>
+    </table>
+  </div>
+  </div>
+
+<script>
+  // ───────── 파츠 목록 (새 파츠 추가 시 여기만 수정) ─────────
+  // id = 파일명(확장자 제외). full/simple → svg/frame/, insert → svg/insert/, logo → svg/logo/
+  const MANIFEST = {
+    full: [
+      "frm_full_bold_cloud-asym", "frm_full_bold_ratio-16-9", "frm_full_bold_ratio-9-16",
+      "frm_full_bold_ratio-16-10", "frm_full_bold_ratio-10-16", "frm_full_bold_monitor-4-3",
+      "frm_full_bold_gift-box", "frm_full_bold_box-closed", "frm_full_bold_box-open",
+      "frm_full_bold_photo-frame", "frm_full_bold_server", "frm_full_bold_person", "frm_full_bold_waiter",
+      "frm_full_bold_warehouse",
+      "frm_full_bold_arrow-up", "frm_full_bold_arrow-down", "frm_full_bold_arrow-left", "frm_full_bold_arrow-right",
+      "frm_full_bold_arrow-ur", "frm_full_bold_arrow-ul", "frm_full_bold_arrow-dr", "frm_full_bold_arrow-dl",
+      "frm_full_bold_circle-trio"
+    ],
+    // 도형별 4방향 통일 조합을 정적으로 미리 병합한 완성본 (분면 믹스매치 폐기 → 이음매 틈 문제 없음)
+    simple: [
+      "frm_full_bold_simple-arc", "frm_full_bold_simple-rect", "frm_full_bold_simple-oct", "frm_full_bold_simple-dia",
+      "frm_full_bold_simple-flower4", "frm_full_bold_simple-flower8", "frm_full_bold_simple-hexagon", "frm_full_bold_simple-hexagon-v",
+      "frm_full_bold_simple-hexagon6-h", "frm_full_bold_simple-hexagon6-v",
+      "frm_full_bold_simple-arc-tail-tl", "frm_full_bold_simple-arc-tail-tr", "frm_full_bold_simple-arc-tail-bl", "frm_full_bold_simple-arc-tail-br",
+      "frm_full_bold_simple-oct-tail-tl", "frm_full_bold_simple-oct-tail-tr", "frm_full_bold_simple-oct-tail-bl", "frm_full_bold_simple-oct-tail-br",
+      "frm_full_bold_simple-dia-tail-tl", "frm_full_bold_simple-dia-tail-tr", "frm_full_bold_simple-dia-tail-bl", "frm_full_bold_simple-dia-tail-br"
+    ],
+    insert: [
+      "ins_bold_text_lines", "ins_bold_text_lines3", "ins_bold_list_rows", "ins_bold_text_code",
+      "ins_bold_sign_plus", "ins_bold_sign_minus", "ins_bold_sign_times", "ins_bold_sign_divide", "ins_bold_sign_equals",
+      "ins_bold_mark_x", "ins_bold_mark_dots",
+      "ins_bold_shape_heart", "ins_bold_shape_cloud", "ins_bold_shape_o", "ins_bold_shape_shuriken", "ins_bold_shape_gear",
+      "ins_bold_shape_person", "ins_bold_shape_people", "ins_bold_shape_waiter", "ins_bold_shape_flag",
+      "ins_bold_hand_like",
+      "ins_bold_chart_bar", "ins_bold_chart_line", "ins_bold_chart_pie", "ins_bold_chart_stock",
+      "ins_bold_object_table", "ins_bold_object_link", "ins_bold_object_key", "ins_bold_object_lock", "ins_bold_object_token",
+      "ins_bold_object_server", "ins_bold_object_db", "ins_bold_object_interface", "ins_bold_object_apps", "ins_bold_object_search", "ins_bold_object_refresh",
+      "ins_bold_object_mail", "ins_bold_object_mailopen", "ins_bold_object_codewin", "ins_bold_object_chip",
+      "ins_bold_object_remodel", "ins_bold_object_nodes", "ins_bold_object_grad", "ins_bold_object_sparkcode"
+    ],
+    logo: ["logo_openai", "logo_claude", "logo_gemini", "logo_github", "logo_git", "logo_flutter",
+           "logo_android", "logo_ios", "logo_web", "logo_obsidian", "logo_usb", "logo_wifi", "logo_onethelab_v1-5", "logo_onethelab_v2"],
+    face: ["face_smile", "face_laugh", "face_neutral", "face_sad", "face_angry",
+           "face_surprise", "face_wink", "face_love"]
+  };
+
+  // 그룹 → 폴더 (full/simple frame 은 같은 폴더)
+  const FOLDER = { full:"frame", simple:"frame", insert:"insert", logo:"logo", face:"face" };
+
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const VIEWBOX = "-2 -2 28 28";
+  const NONE = { id:"none", name:"none", inner:"", ic:null };
+  const textApplied = { front: false, back: false }; // 레이어별 text 적용 상태
+  let rebuildOutline = () => {}; // init 에서 실제 구현 주입 (front/back 벡터 stroke)
+
+  // ───────── svg 파일 로더 ─────────
+  // Supabase Storage(public 버킷 icons) 에서 로드 → file:// 로컬서버 불필요.
+  // 네트워크 실패 시 상대경로(svg/...) 폴백.
+  const SVG_BASE = "https://pstpexrnusiwrkcdypjq.supabase.co/storage/v1/object/public/icons/svg/";
+  const BUCKET_BASE = "https://pstpexrnusiwrkcdypjq.supabase.co/storage/v1/object/public/icons/";
+  async function loadSvg(folder, id) {
+    const path = folder + "/" + id + ".svg";
+    let res;
+    try {
+      res = await fetch(SVG_BASE + path);
+      if (!res.ok) throw new Error("remote " + res.status); // 원격 404 도 로컬 폴백 타도록
+    } catch (e) {
+      res = await fetch("svg/" + path); // 폴백: 로컬 상대경로
+    }
+    if (!res.ok) throw new Error(path + " → " + res.status);
+    const doc = new DOMParser().parseFromString(await res.text(), "image/svg+xml");
+    const svg = doc.querySelector("svg");
+    if (!svg || doc.querySelector("parsererror")) throw new Error("parse fail: " + id);
+    const ic = svg.getAttribute("data-ic");
+    return {
+      id,
+      name: svg.getAttribute("data-name") || id,
+      inner: svg.innerHTML.trim(),
+      ic: ic ? ic.split(",").map(Number) : null
+    };
+  }
+  async function loadGroup(key) {
+    const items = await Promise.all(MANIFEST[key].map(id => loadSvg(FOLDER[key], id)));
+    return [NONE, ...items];
+  }
+
+  // insert 그룹 세부 섹션 분류 (UI 표시용, MANIFEST.insert 순서와 무관하게 id 로 매칭)
+  const INSERT_SECTIONS = [
+    { title: "텍스트 · 목록", ids: ["ins_bold_text_lines", "ins_bold_text_lines3", "ins_bold_list_rows", "ins_bold_text_code"] },
+    { title: "기호", ids: ["ins_bold_sign_plus", "ins_bold_sign_minus", "ins_bold_sign_times", "ins_bold_sign_divide", "ins_bold_sign_equals", "ins_bold_mark_x", "ins_bold_mark_dots"] },
+    { title: "도형", ids: ["ins_bold_shape_heart", "ins_bold_shape_cloud", "ins_bold_shape_o", "ins_bold_shape_shuriken", "ins_bold_shape_gear", "ins_bold_shape_person", "ins_bold_shape_people", "ins_bold_shape_waiter", "ins_bold_shape_flag"] },
+    { title: "손", ids: ["ins_bold_hand_like"] },
+    { title: "차트", ids: ["ins_bold_chart_bar", "ins_bold_chart_line", "ins_bold_chart_pie", "ins_bold_chart_stock"] },
+    { title: "오브젝트", ids: [
+      "ins_bold_object_table", "ins_bold_object_link", "ins_bold_object_key", "ins_bold_object_lock", "ins_bold_object_token",
+      "ins_bold_object_server", "ins_bold_object_db", "ins_bold_object_interface", "ins_bold_object_apps", "ins_bold_object_search", "ins_bold_object_refresh",
+      "ins_bold_object_mail", "ins_bold_object_mailopen", "ins_bold_object_codewin", "ins_bold_object_chip",
+      "ins_bold_object_remodel", "ins_bold_object_nodes", "ins_bold_object_grad", "ins_bold_object_sparkcode"
+    ] }
+  ];
+
+  // ───────── 슬롯 제어 ─────────
+  // insert/logo 를 frame 빈공간 중심에 정렬 + 영역(반경≈6) 안으로 scale 0.85
+  const INS_SCALE = 0.85;
+  function applyInsCenter(cx, cy) {
+    document.getElementById("slot-ins-wrap").setAttribute("transform",
+      "translate(" + (cx - 12) + "," + (cy - 12) + ") translate(12,12) scale(" + INS_SCALE + ") translate(-12,-12)");
+  }
+
+  // full frame / simple frame 은 같은 slot-full 공유 → 상호배타
+  function selectWhole(part, el) {
+    document.getElementById("slot-full").innerHTML = part.inner;
+    document.querySelectorAll('.parts[data-full="1"] .part, .parts[data-simple="1"] .part')
+      .forEach(p => p.classList.remove("active"));
+    el.classList.add("active");
+    const c = part.ic || [12, 12]; // frame 빈공간 중심
+    applyInsCenter(c[0], c[1]);
+  }
+  function clearLayerHighlight(layer) {
+    document.querySelectorAll('.parts[data-layer="' + layer + '"] .part')
+      .forEach(p => p.classList.remove("active"));
+  }
+  function selectCenter(layer, item, el) {
+    document.getElementById("slot-ins-" + layer).innerHTML = item.inner;
+    clearLayerHighlight(layer);
+    el.classList.add("active");
+    textApplied[layer] = false; // 파츠 선택 시 글자 해제
+    rebuildOutline(layer); // 내용 바뀜 → 벡터 stroke 갱신
+  }
+
+  // ───────── 썸네일 빌더 ─────────
+  function thumb(item) {
+    const el = document.createElement("div");
+    el.className = "part";
+    el.dataset.id = item.id;
+    const svg = document.createElementNS(SVGNS, "svg");
+    svg.setAttribute("viewBox", VIEWBOX);
+    svg.innerHTML = item.inner;
+    const nm = document.createElement("div");
+    nm.className = "nm";
+    nm.textContent = item.name;
+    el.appendChild(svg);
+    el.appendChild(nm);
+    return el;
+  }
+
+  // ───────── 초기화 (async: 모든 svg 로드 후 렌더) ─────────
+  (async function init() {
+    let DATA;
+    try {
+      const keys = ["full", "simple", "insert", "logo", "face"];
+      const loaded = await Promise.all(keys.map(loadGroup));
+      DATA = {};
+      keys.forEach((k, i) => DATA[k] = loaded[i]);
+    } catch (e) {
+      const b = document.getElementById("banner");
+      b.className = "banner show";
+      b.innerHTML = "SVG 파일을 못 읽음: <code>" + e.message + "</code><br>" +
+        "<b>file:// 로 직접 열면 fetch 가 차단됩니다.</b> 터미널에서 <code>icon/</code> 폴더로 이동 후 " +
+        "<code>python -m http.server 8000</code> 실행하고 <code>http://localhost:8000/arc-circle-frame.html</code> 접속하세요.";
+      console.error(e);
+      return;
+    }
+
+    // full frame
+    const fullContainer = document.querySelector('.parts[data-full="1"]');
+    DATA.full.forEach((part, i) => {
+      const el = thumb(part);
+      el.addEventListener("click", () => selectWhole(part, el));
+      fullContainer.appendChild(el);
+      if (i === 0) el.classList.add("active"); // 기본 none
+    });
+
+    // simple frame
+    const simpleContainer = document.querySelector('.parts[data-simple="1"]');
+    DATA.simple.forEach((part, i) => {
+      const el = thumb(part);
+      el.addEventListener("click", () => selectWhole(part, el));
+      simpleContainer.appendChild(el);
+      if (i === 0) el.classList.add("active"); // 기본 none
+    });
+
+    // ───────── center 패널 (front / back 공통 빌더) ─────────
+    const CEN = ["logo", "insert", "face"]; // 섹션 = MANIFEST 키
+    const insContainers = {};               // 레이어별 insert 컨테이너 (random 용)
+    const MAX_LINES = 4;
+    const escapeXml = s => s.replace(/[<>&"']/g,
+      c => ({ "<":"&lt;", ">":"&gt;", "&":"&amp;", '"':"&quot;", "'":"&#39;" }[c]));
+
+    function renderText(layer) {
+      const slot = document.getElementById("slot-ins-" + layer);
+      const input = document.getElementById("t-input-" + layer);
+      const size = document.getElementById("t-size-" + layer);
+      let lines = input.value.replace(/\r/g, "").split("\n").slice(0, MAX_LINES);
+      while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
+      if (!lines.length) { slot.innerHTML = ""; rebuildOutline(layer); return; }
+      const fs = parseFloat(size.value);
+      const gap = fs * 1.2, n = lines.length, y0 = 12 - (n - 1) * gap / 2;
+      const tspans = lines.map((l, i) =>
+        '<tspan x="12" y="' + (y0 + i * gap).toFixed(2) + '">' + escapeXml(l || " ") + "</tspan>").join("");
+      slot.innerHTML = '<text text-anchor="middle" dominant-baseline="central" ' +
+        'font-size="' + fs + '" class="ins-text">' + tspans + "</text>";
+      rebuildOutline(layer); // text 갱신 → stroke 갱신
+    }
+    function wireText(layer) {
+      const input = document.getElementById("t-input-" + layer);
+      const apply = document.getElementById("t-apply-" + layer);
+      const size = document.getElementById("t-size-" + layer);
+      const sizeV = document.getElementById("t-size-v-" + layer);
+      const insNone = document.querySelector('.parts[data-cen="insert"][data-layer="' + layer + '"] .part');
+      apply.addEventListener("click", () => {
+        textApplied[layer] = true;
+        clearLayerHighlight(layer);
+        if (insNone) insNone.classList.add("active");
+        renderText(layer);
+      });
+      input.addEventListener("input", () => {
+        const ls = input.value.replace(/\r/g, "").split("\n");
+        if (ls.length > MAX_LINES) input.value = ls.slice(0, MAX_LINES).join("\n");
+        if (textApplied[layer]) renderText(layer);
+      });
+      size.addEventListener("input", () => {
+        sizeV.textContent = parseFloat(size.value).toFixed(1);
+        if (textApplied[layer]) renderText(layer);
+      });
+    }
+
+    function buildCenterPanel(layer) {
+      const host = document.querySelector('.sections[data-center="' + layer + '"]');
+      CEN.forEach(cen => {
+        const sec = document.createElement("div");
+        sec.className = "section center";
+        sec.innerHTML = "<h2>" + cen + "</h2>";
+        host.appendChild(sec);
+
+        if (cen !== "insert") {
+          const parts = document.createElement("div");
+          parts.className = "parts";
+          parts.dataset.cen = cen; parts.dataset.layer = layer;
+          sec.appendChild(parts);
+          DATA[cen].forEach(item => {
+            const el = thumb(item);
+            el.addEventListener("click", () => selectCenter(layer, item, el));
+            parts.appendChild(el);
+          });
+          return;
+        }
+
+        // insert: "없음" + 세부 섹션(INSERT_SECTIONS)별로 나눠 표시
+        const byId = new Map(DATA.insert.map(item => [item.id, item]));
+        const none = DATA.insert[0];
+        const noneParts = document.createElement("div");
+        noneParts.className = "parts";
+        noneParts.dataset.cen = cen; noneParts.dataset.layer = layer;
+        sec.appendChild(noneParts);
+        const noneEl = thumb(none);
+        noneEl.addEventListener("click", () => selectCenter(layer, none, noneEl));
+        noneParts.appendChild(noneEl);
+        if (layer === "front") selectCenter(layer, none, noneEl);
+        else noneEl.classList.add("active");
+
+        INSERT_SECTIONS.forEach(group => {
+          const h = document.createElement("h4");
+          h.className = "subsection";
+          h.textContent = group.title;
+          sec.appendChild(h);
+          const parts = document.createElement("div");
+          parts.className = "parts";
+          parts.dataset.cen = cen; parts.dataset.layer = layer;
+          sec.appendChild(parts);
+          group.ids.forEach(id => {
+            const item = byId.get(id);
+            if (!item) return;
+            const el = thumb(item);
+            el.addEventListener("click", () => selectCenter(layer, item, el));
+            parts.appendChild(el);
+          });
+        });
+        insContainers[layer] = sec;
+      });
+      const tsec = document.createElement("div");
+      tsec.className = "section center";
+      tsec.innerHTML =
+        "<h2>text</h2><div class=\"textcol\">" +
+        "<textarea id=\"t-input-" + layer + "\" rows=\"4\" placeholder=\"최대 4줄 입력\"></textarea>" +
+        "<div class=\"textrow\"><label>size <input type=\"range\" id=\"t-size-" + layer +
+        "\" min=\"2\" max=\"12\" step=\"0.5\" value=\"6\"><span class=\"val\" id=\"t-size-v-" + layer + "\">6.0</span></label>" +
+        "<button type=\"button\" id=\"t-apply-" + layer + "\">적용</button></div></div>";
+      host.appendChild(tsec);
+      wireText(layer);
+    }
+    buildCenterPanel("front");
+    buildCenterPanel("back");
+
+    // ───────── 탭 전환 ─────────
+    // 탭 → option 박스 표시/숨김 (해당 탭 박스만 보임, guide 는 전부 숨김)
+    const syncOptBoxes = (tabName) => {
+      document.querySelectorAll(".controls[data-opt]").forEach(box =>
+        box.hidden = box.dataset.opt !== tabName);
+    };
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        document.querySelectorAll(".panel").forEach(p =>
+          p.hidden = p.dataset.panel !== tab.dataset.tab);
+        syncOptBoxes(tab.dataset.tab);
+      });
+    });
+    syncOptBoxes("frame"); // 초기 활성 탭
+
+    // ───────── 컨트롤 바인딩 ─────────
+    const rootStyle = document.documentElement.style;
+    const bind = (inputId, cssVar) => {
+      const el = document.getElementById(inputId);
+      const apply = () => rootStyle.setProperty(cssVar, el.value);
+      el.addEventListener("input", apply);
+      apply();
+    };
+    bind("c-main", "--brand-main");
+    bind("c-point", "--brand-point");
+    bind("c-back", "--brand-back");
+
+    // hex + alpha → rgba()
+    const hexToRgba = (hex, a) => {
+      const h = hex.replace("#", "");
+      const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+      return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+    };
+
+    // fill (frame 채움) — 기본 불투명
+    const cFill = document.getElementById("c-fill");
+    const cFillA = document.getElementById("c-fill-a");
+    const applyFill = () => rootStyle.setProperty("--brand-fill", hexToRgba(cFill.value, cFillA.value));
+    cFill.addEventListener("input", applyFill);
+    cFillA.addEventListener("input", applyFill);
+    applyFill();
+
+    // 레이어별 선두께 (완전 독립) — frame/front/back 각자 CSS 변수
+    const wireLine = (sliderId, valId, cssVar, layer) => {
+      const sl = document.getElementById(sliderId);
+      const vv = document.getElementById(valId);
+      const apply = () => {
+        rootStyle.setProperty(cssVar, sl.value);
+        vv.textContent = (parseFloat(sl.value) + 0.75).toFixed(2);
+        if (layer) rebuildOutline(layer); // 선두께 바뀌면 해당 outline 도 갱신
+      };
+      sl.addEventListener("input", apply);
+      apply();
+    };
+    wireLine("c-stroke", "c-stroke-v", "--sw-frame", null);
+    wireLine("c-front-line", "c-front-line-v", "--sw-front", "front");
+    wireLine("c-back-line", "c-back-line-v", "--sw-back", "back");
+
+    // 레이어 위치 offset — 9방향 anchor (중심 영역 내, wrap scale 0.85 후 적용됨)
+    const POS_OFF = {
+      tl:[-5,-5], t:[0,-5], tr:[5,-5],
+      l:[-5,0],   c:[0,0],  r:[5,0],
+      bl:[-5,5],  b:[0,5],  br:[5,5]
+    };
+    const anchorVal = (container) => {
+      const b = container.querySelector("button.active");
+      return b ? b.dataset.a : "c";
+    };
+    const wireAnchor = (container, onPick) => {
+      container.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => {
+        container.querySelectorAll("button").forEach(x => x.classList.remove("active"));
+        btn.classList.add("active");
+        onPick();
+      }));
+    };
+
+    // ── front/back 바깥 stroke = 뒤에 복제본 굵게 (진짜 벡터, 칼각) ──
+    // 원본 path 무수정. 복제본을 outline 그룹에 넣고 stroke 두껍게+같은 변형으로 정렬.
+    const SHAPES = "path,circle,line,rect,polygon,polyline,ellipse,text,tspan";
+    rebuildOutline = (layer) => {
+      const src = document.getElementById("slot-ins-" + layer);
+      const out = document.getElementById("slot-ins-" + layer + "-outline");
+      if (!src || !out) return;
+      const tf = src.getAttribute("transform");           // 위치/크기 동일 정렬
+      if (tf) out.setAttribute("transform", tf); else out.removeAttribute("transform");
+      const R = parseFloat(document.getElementById("c-" + layer + "-stroke").value) || 0;
+      if (R <= 0) { out.innerHTML = ""; return; }           // 0 = stroke 없음
+      const color = document.getElementById("c-" + layer + "-ocolor").value; // 레이어별 outline 색
+      out.innerHTML = src.innerHTML;                          // 복제
+      const srcEls = src.querySelectorAll(SHAPES);
+      const outEls = out.querySelectorAll(SHAPES);
+      const isFillNone = (cs) => cs.fill === "none" || cs.fill === "rgba(0, 0, 0, 0)";
+      outEls.forEach((el, i) => {
+        const cs = getComputedStyle(srcEls[i]);
+        // strokeWidth 가 calc(var()*k) 면 "calc(0.525px)" 처럼 미해결 → parseFloat NaN.
+        // px 앞 숫자만 추출해 실제 값 확보.
+        const swm = cs.strokeWidth.match(/(-?[\d.]+)px/);
+        const baseSW = swm ? parseFloat(swm[1]) : (parseFloat(cs.strokeWidth) || 0);
+        const fillNone = isFillNone(cs);
+        const strokeNone = cs.stroke === "none" || cs.stroke === "rgba(0, 0, 0, 0)";
+        el.style.stroke = color;
+        el.style.strokeLinejoin = "round";
+        el.style.strokeLinecap = "round";
+        // 선 요소: 항상 baseSW+2R → 외곽선 안쪽 끝이 fill 선 바깥 끝에서 시작,
+        //  fill weight 커지면 외곽선이 자동으로 더 바깥으로 밀려 겹치지 않음 (두께는 R 유지).
+        // 채움 요소: 2R (실루엣 양쪽 R 확장).
+        const lineBase = strokeNone ? 0 : baseSW;
+        el.style.strokeWidth = (lineBase + 2 * R) + "px";
+        el.style.fill = fillNone ? "none" : color;
+      });
+    };
+
+    // front 전용 크기(중심 12,12 기준 scale) + 위치 — back 은 영향 없음
+    const frontSize = document.getElementById("c-front-size");
+    const frontSizeV = document.getElementById("c-front-size-v");
+    const frontAnchor = document.getElementById("c-front-anchor");
+    const applyFront = () => {
+      const s = parseFloat(frontSize.value);
+      const o = POS_OFF[anchorVal(frontAnchor)] || [0, 0];
+      document.getElementById("slot-ins-front").setAttribute("transform",
+        "translate(" + o[0] + "," + o[1] + ") translate(12,12) scale(" + s + ") translate(-12,-12)");
+      frontSizeV.textContent = s.toFixed(2);
+      rebuildOutline("front");
+    };
+    frontSize.addEventListener("input", applyFront);
+    wireAnchor(frontAnchor, applyFront);
+    applyFront();
+
+    // back 크기 + 위치 (front 와 동일 구조)
+    const backSize = document.getElementById("c-back-size");
+    const backSizeV = document.getElementById("c-back-size-v");
+    const backAnchor = document.getElementById("c-back-anchor");
+    const applyBackPos = () => {
+      const s = parseFloat(backSize.value);
+      const o = POS_OFF[anchorVal(backAnchor)] || [0, 0];
+      document.getElementById("slot-ins-back").setAttribute("transform",
+        "translate(" + o[0] + "," + o[1] + ") translate(12,12) scale(" + s + ") translate(-12,-12)");
+      backSizeV.textContent = s.toFixed(2);
+      rebuildOutline("back");
+    };
+    backSize.addEventListener("input", applyBackPos);
+    wireAnchor(backAnchor, applyBackPos);
+    applyBackPos();
+
+    // stroke 두께 슬라이더
+    const wireInsStroke = (sliderId, valId, layer) => {
+      const sl = document.getElementById(sliderId);
+      const vv = document.getElementById(valId);
+      const apply = () => { vv.textContent = parseFloat(sl.value).toFixed(1); rebuildOutline(layer); };
+      sl.addEventListener("input", apply);
+      apply();
+    };
+    wireInsStroke("c-front-stroke", "c-front-stroke-v", "front");
+    wireInsStroke("c-back-stroke", "c-back-stroke-v", "back");
+
+    // outline 색 (레이어별 독립) — 바뀌면 해당 outline 만 갱신
+    document.getElementById("c-front-ocolor").addEventListener("input", () => rebuildOutline("front"));
+    document.getElementById("c-back-ocolor").addEventListener("input", () => rebuildOutline("back"));
+
+    // ───────── 합본 svg 빌더 (export·copy 공용) ─────────
+    // CSS 변수(색·선두께)는 standalone svg 에서 안 풀리므로 실제 값으로 인라인
+    function buildStandaloneSvg() {
+      const src = document.querySelector(".preview svg");
+      const clone = src.cloneNode(true);
+      clone.setAttribute("xmlns", SVGNS);
+      clone.setAttribute("width", "512");
+      clone.setAttribute("height", "512");
+      // 배경 rect 없음 → 항상 투명 배경
+
+      // 빈 여백 제거: 실제 벡터 경계(getBBox) + stroke 여유로 viewBox 재계산 (정사각 유지)
+      try {
+        const bb = src.getBBox();
+        if (bb.width > 0 && bb.height > 0) {
+          let maxSW = 0;
+          src.querySelectorAll("path,circle,line,rect,polygon,polyline,ellipse,text,tspan").forEach(el => {
+            const ecs = getComputedStyle(el);
+            if (ecs.stroke && ecs.stroke !== "none" && ecs.stroke !== "rgba(0, 0, 0, 0)") {
+              const m = ecs.strokeWidth.match(/(-?[\d.]+)px/);
+              const sw = m ? parseFloat(m[1]) : (parseFloat(ecs.strokeWidth) || 0);
+              if (sw > maxSW) maxSW = sw;
+            }
+          });
+          const pad = maxSW / 2 + 0.25;                       // stroke 절반 + 미세 여유
+          const x = bb.x - pad, y = bb.y - pad, w = bb.width + 2 * pad, h = bb.height + 2 * pad;
+          const side = Math.max(w, h);                        // 정사각
+          const vx = x + w / 2 - side / 2, vy = y + h / 2 - side / 2;
+          clone.setAttribute("viewBox",
+            vx.toFixed(3) + " " + vy.toFixed(3) + " " + side.toFixed(3) + " " + side.toFixed(3));
+        }
+      } catch (e) { /* getBBox 실패 시 원본 viewBox 유지 */ }
+
+      // ── flatten: 계산된 색·두께를 각 요소에 presentation 속성으로 직접 박는다.
+      //    style/class/CSS변수를 안 쓰므로 Obsidian·Quartz·GitHub 등이 <style> 를 sanitize 로
+      //    지워도 색이 유지됨(과거 "검은 덩어리" 원인 제거). src(라이브)의 computed 값을 clone 에 복사. ──
+      const SHAPE_SEL = "path,circle,line,rect,polygon,polyline,ellipse,text,tspan";
+      const srcShapes = src.querySelectorAll(SHAPE_SEL);
+      const clShapes = clone.querySelectorAll(SHAPE_SEL);
+      const isNone = c => !c || c === "none" || c === "rgba(0, 0, 0, 0)";
+      clShapes.forEach((el, i) => {
+        const ecs = getComputedStyle(srcShapes[i]);
+        el.setAttribute("fill", isNone(ecs.fill) ? "none" : ecs.fill);
+        if (isNone(ecs.stroke)) {
+          el.setAttribute("stroke", "none");
+        } else {
+          el.setAttribute("stroke", ecs.stroke);
+          const m = ecs.strokeWidth.match(/(-?[\d.]+)px/);
+          el.setAttribute("stroke-width", m ? m[1] : ecs.strokeWidth);
+          el.setAttribute("stroke-linecap", ecs.strokeLinecap || "round");
+          el.setAttribute("stroke-linejoin", ecs.strokeLinejoin || "round");
+        }
+        const tag = el.tagName.toLowerCase();
+        if (tag === "text" || tag === "tspan") {
+          el.setAttribute("font-family", ecs.fontFamily);
+          el.setAttribute("font-weight", ecs.fontWeight);
+          if (!el.getAttribute("font-size")) el.setAttribute("font-size", ecs.fontSize);
+        }
+        el.removeAttribute("class");
+        el.removeAttribute("style");
+      });
+      // 그룹 등에 남은 class 잔재 제거 + 혹시 있는 <style> 제거
+      clone.querySelectorAll("[class]").forEach(el => el.removeAttribute("class"));
+      clone.querySelectorAll("style").forEach(el => el.remove());
+      return new XMLSerializer().serializeToString(clone);
+    }
+
+    // ───────── 파일명 생성 ─────────
+    // icon_<frame>__<front>__<back>__<timestamp>.svg  (구조는 이름, 색·두께 등 변형은 timestamp로 구분)
+    const sanitize = s => (s || "").toLowerCase()
+      .replace(/[^a-z0-9가-힣]+/g, "-").replace(/^-+|-+$/g, "") || "x";
+    const stripPrefix = id => id
+      .replace(/^frm_full_bold_/, "")
+      .replace(/^ins_bold_/, "").replace(/^logo_/, "").replace(/^face_/, "");
+    function frameName() {
+      const a = document.querySelector('.parts[data-full="1"] .part.active, .parts[data-simple="1"] .part.active');
+      if (a && a.dataset.id !== "none") return sanitize(stripPrefix(a.dataset.id));
+      return "x";
+    }
+    function layerName(L) {
+      if (textApplied[L]) {
+        const ti = document.getElementById("t-input-" + L);
+        const first = (ti ? ti.value : "").replace(/\r/g, "").split("\n")[0] || "";
+        return "t-" + sanitize(first.slice(0, 8));
+      }
+      const a = document.querySelector('.parts[data-cen][data-layer="' + L + '"] .part.active');
+      if (!a || a.dataset.id === "none") return "x";
+      return sanitize(stripPrefix(a.dataset.id));
+    }
+    function exportFilename() {
+      const d = new Date(), p = n => String(n).padStart(2, "0");
+      const ts = d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) +
+                 "-" + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+      return "icon_" + [frameName(), layerName("front"), layerName("back"), ts].join("__") + ".svg";
+    }
+
+    // ───────── export: 합본 svg 다운로드 ─────────
+    document.getElementById("c-export").addEventListener("click", () => {
+      const xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + buildStandaloneSvg();
+      const url = URL.createObjectURL(new Blob([xml], { type: "image/svg+xml" }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = exportFilename();
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // ───────── Supabase 인증 + generated 업로드 ─────────
+    // 로그인(OAuth Google)한 사용자만 svg/generated/ 로 업로드. 실권한은 Storage RLS 가 통제.
+    const sb = window.SB_CLIENT;
+    const authStatus = document.getElementById("auth-status");
+    const authBtn = document.getElementById("auth-btn");
+    const uploadBtn = document.getElementById("c-upload");
+
+    let canEdit = false;
+    async function currentUser() {
+      if (!sb) return null;
+      const { data } = await sb.auth.getUser();
+      return (data && data.user) || null;
+    }
+    async function checkPermission() {
+      try { const { data } = await sb.rpc("can_edit_generated"); return data === true; }
+      catch (e) { return false; }
+    }
+    async function refreshAuth() {
+      if (!sb) { authStatus.textContent = "supabase 미설정 (ANON KEY 필요)"; authBtn.disabled = true; if (uploadBtn) uploadBtn.disabled = true; return null; }
+      const user = await currentUser();
+      if (user) {
+        authBtn.textContent = "로그아웃";
+        canEdit = await checkPermission();
+        authStatus.textContent = (user.email || "로그인됨") + (canEdit ? " · 편집 가능" : " · 권한 없음");
+        if (uploadBtn) uploadBtn.disabled = !canEdit;
+      } else {
+        canEdit = false;
+        authStatus.textContent = "로그인 필요";
+        authBtn.textContent = "로그인";
+        if (uploadBtn) uploadBtn.disabled = false; // 눌러서 로그인 유도
+      }
+      return user;
+    }
+    async function signIn() {
+      await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.href.split("#")[0] } });
+    }
+    if (authBtn) authBtn.addEventListener("click", async () => {
+      if (!sb) return;
+      if (await currentUser()) { await sb.auth.signOut(); refreshAuth(); }
+      else signIn();
+    });
+    if (sb) sb.auth.onAuthStateChange(() => refreshAuth());
+    refreshAuth();
+
+    // 타임스탬프 (파일명 뒤에 붙임)
+    const stamp = () => {
+      const d = new Date(), p = n => String(n).padStart(2, "0");
+      return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) +
+             "-" + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+    };
+
+    if (uploadBtn) uploadBtn.addEventListener("click", async () => {
+      if (!sb) { alert("Supabase 미설정: HTML 상단 SUPABASE_ANON_KEY 를 채우세요."); return; }
+      let user = await currentUser();
+      if (!user) { alert("업로드하려면 먼저 로그인하세요. Google 로그인 창으로 이동합니다."); signIn(); return; }
+      if (!(await checkPermission())) { alert("업로드 권한이 없습니다. 관리자에게 editors 테이블 등록을 요청하세요."); return; }
+      const nameIn = prompt("아이콘 이름 입력 (뒤에 타임스탬프 자동 추가):", "");
+      if (nameIn === null) return;                       // 취소
+      const filename = sanitize(nameIn) + "_" + stamp() + ".svg";
+      const xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + buildStandaloneSvg();
+      const blob = new Blob([xml], { type: "image/svg+xml" });
+      uploadBtn.disabled = true;
+      const orig = uploadBtn.textContent; uploadBtn.textContent = "업로드 중…";
+      const { error } = await sb.storage.from("icons")
+        .upload("svg/generated/" + filename, blob, { contentType: "image/svg+xml", upsert: false });
+      uploadBtn.disabled = false; uploadBtn.textContent = orig;
+      if (error) { alert("업로드 실패: " + error.message); return; }
+      alert("업로드 완료 → svg/generated/" + filename);
+    });
+
+    // ───────── 작업 상태 저장/불러오기 (Supabase state/*.json) ─────────
+    // 여기서 저장하는 건 "화면 상태"(파츠 선택/색/텍스트, gatherState() 그대로) — svg/generated 에 올라간
+    // 완성 아이콘 파일과는 별개. 나중에 다시 열어서 계속 편집하기 위한 설계도 저장임.
+    const stateNameInput = document.getElementById("state-name");
+    const stateSaveBtn = document.getElementById("state-save");
+    const stateSaveCopyBtn = document.getElementById("state-save-copy");
+    const stateLoadBtn = document.getElementById("state-load");
+    const stateLoadBg = document.getElementById("state-load-bg");
+    const stateLoadList = document.getElementById("state-load-list");
+
+    async function listStateFiles() {
+      const { data, error } = await sb.storage.from("icons").list("state", {
+        limit: 1000, sortBy: { column: "created_at", order: "desc" }
+      });
+      if (error) throw error;
+      return (data || []).filter(f => f.name && /\.json$/i.test(f.name));
+    }
+    async function saveStateAs(name) {
+      if (!sb) { alert("Supabase 미설정: HTML 상단 SUPABASE_ANON_KEY 를 채우세요."); return; }
+      const user = await currentUser();
+      if (!user) { alert("저장하려면 먼저 로그인하세요. Google 로그인 창으로 이동합니다."); signIn(); return; }
+      if (!(await checkPermission())) { alert("저장 권한이 없습니다. 관리자에게 editors 테이블 등록을 요청하세요."); return; }
+      const filename = sanitize(name) + ".json";
+      try {
+        const files = await listStateFiles();
+        if (files.some(f => f.name === filename) &&
+            !confirm("이미 있는 이름입니다.\n\"" + name + "\" 덮어쓸까요?\n되돌릴 수 없습니다.")) return;
+      } catch (e) { /* 목록 확인 실패해도 저장 자체는 시도 */ }
+      const blob = new Blob([JSON.stringify(gatherState())], { type: "application/json" });
+      const { error } = await sb.storage.from("icons")
+        .upload("state/" + filename, blob, { contentType: "application/json", upsert: true });
+      if (error) { alert("저장 실패: " + error.message); return; }
+      alert("저장됨 → state/" + filename);
+    }
+    if (stateSaveBtn) stateSaveBtn.addEventListener("click", () => {
+      const name = stateNameInput.value.trim();
+      if (!name) { alert("저장할 이름을 입력하세요."); return; }
+      saveStateAs(name);
+    });
+    if (stateSaveCopyBtn) stateSaveCopyBtn.addEventListener("click", () => {
+      const base = stateNameInput.value.trim() || "icon-state";
+      const nameIn = prompt("사본으로 저장할 새 이름:", base + "-copy-" + stamp());
+      if (nameIn === null) return;
+      const name = nameIn.trim();
+      if (!name) { alert("이름을 입력하세요."); return; }
+      stateNameInput.value = name;
+      saveStateAs(name);
+    });
+    function openStateLoadModal() {
+      stateLoadList.innerHTML = '<div class="empty-msg">목록 불러오는 중…</div>';
+      stateLoadBg.classList.add("show");
+      if (!sb) { stateLoadList.innerHTML = '<div class="empty-msg">supabase 미설정</div>'; return; }
+      listStateFiles().then(files => {
+        stateLoadList.innerHTML = "";
+        if (!files.length) { stateLoadList.innerHTML = '<div class="empty-msg">저장된 상태 없음</div>'; return; }
+        files.forEach(f => {
+          const label = f.name.replace(/\.json$/i, "");
+          const row = document.createElement("div");
+          row.className = "litem";
+          row.innerHTML = '<span class="nm">' + label + '</span>' +
+            '<button type="button" class="btn load">불러오기</button>' +
+            (canEdit ? '<button type="button" class="btn del">삭제</button>' : "");
+          row.querySelector(".load").addEventListener("click", async () => {
+            try {
+              const res = await fetch(BUCKET_BASE + "state/" + f.name);
+              if (!res.ok) throw new Error(res.status);
+              const data = await res.json();
+              applyState(data);
+              stateNameInput.value = label;
+              stateLoadBg.classList.remove("show");
+            } catch (e) { alert("불러오기 실패: " + (e.message || e)); }
+          });
+          const delBtn = row.querySelector(".del");
+          if (delBtn) delBtn.addEventListener("click", async () => {
+            if (!confirm("삭제할까요?\n" + label)) return;
+            if (!confirm("진짜로 삭제 하겠습니까?\n되돌릴 수 없습니다.")) return;
+            const { error } = await sb.storage.from("icons").remove(["state/" + f.name]);
+            if (error) { alert("삭제 실패: " + error.message); return; }
+            openStateLoadModal();
+          });
+          stateLoadList.appendChild(row);
+        });
+      }).catch(e => { stateLoadList.innerHTML = '<div class="empty-msg">목록을 못 읽음: ' + (e.message || e) + '</div>'; });
+    }
+    if (stateLoadBtn) stateLoadBtn.addEventListener("click", openStateLoadModal);
+    document.getElementById("state-load-close").addEventListener("click", () => stateLoadBg.classList.remove("show"));
+    stateLoadBg.addEventListener("click", e => { if (e.target.id === "state-load-bg") stateLoadBg.classList.remove("show"); });
+
+    // ───────── 설정값 영속화 (localStorage) ─────────
+    const LS_KEY = "brand-icon-builder-v1";
+    let restoring = false;
+    const CTL_IDS = [
+      "c-fill", "c-fill-a", "c-main", "c-point", "c-back", "c-front-ocolor", "c-back-ocolor",
+      "c-stroke", "c-front-size", "c-front-line", "c-front-stroke",
+      "c-back-size", "c-back-line", "c-back-stroke"
+    ];
+    const activeAnchor = id => {
+      const b = document.querySelector("#" + id + " button.active");
+      return b ? b.dataset.a : "c";
+    };
+    const layerState = L => {
+      const a = document.querySelector('.parts[data-cen][data-layer="' + L + '"] .part.active');
+      const ti = document.getElementById("t-input-" + L);
+      const ts = document.getElementById("t-size-" + L);
+      return {
+        cen: a ? a.parentNode.dataset.cen : "insert",
+        id: a ? a.dataset.id : "none",
+        text: !!textApplied[L],
+        tinput: ti ? ti.value : "",
+        tsize: ts ? ts.value : "6"
+      };
+    };
+    function gatherState() {
+      const ctl = {};
+      CTL_IDS.forEach(id => { const e = document.getElementById(id); if (e) ctl[id] = e.value; });
+      const fullA = document.querySelector('.parts[data-full="1"] .part.active');
+      const simpleA = document.querySelector('.parts[data-simple="1"] .part.active');
+      const tabA = document.querySelector(".tab.active");
+      return {
+        ctl,
+        aFront: activeAnchor("c-front-anchor"),
+        aBack: activeAnchor("c-back-anchor"),
+        tab: tabA ? tabA.dataset.tab : "frame",
+        frame: { full: fullA ? fullA.dataset.id : "none", simple: simpleA ? simpleA.dataset.id : "none" },
+        front: layerState("front"),
+        back: layerState("back")
+      };
+    }
+    function saveState() {
+      if (restoring) return;
+      try { localStorage.setItem(LS_KEY, JSON.stringify(gatherState())); } catch (e) {}
+    }
+    // s = gatherState() 가 만든 객체 하나를 화면에 그대로 되입힘. localStorage 자동복원과
+    // "저장된 상태 불러오기"(state/*.json) 둘 다 이 함수 하나를 공유.
+    function applyState(s) {
+      if (!s) return;
+      restoring = true;
+      try {
+        const fire = el => el.dispatchEvent(new Event("input", { bubbles: true }));
+        const clickById = (sel, id) => {
+          if (!id) return;
+          const e = document.querySelector(sel + ' .part[data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+          if (e) e.click();
+        };
+        // 컨트롤 입력값
+        if (s.ctl) Object.keys(s.ctl).forEach(id => {
+          const e = document.getElementById(id);
+          if (e && s.ctl[id] != null) { e.value = s.ctl[id]; fire(e); }
+        });
+        // anchor
+        const clickAnchor = (cid, a) => {
+          const b = document.querySelector("#" + cid + ' button[data-a="' + a + '"]');
+          if (b) b.click();
+        };
+        if (s.aFront) clickAnchor("c-front-anchor", s.aFront);
+        if (s.aBack) clickAnchor("c-back-anchor", s.aBack);
+        // frame (full 우선, 없으면 simple)
+        if (s.frame) {
+          if (s.frame.full && s.frame.full !== "none") clickById('.parts[data-full="1"]', s.frame.full);
+          else if (s.frame.simple && s.frame.simple !== "none") clickById('.parts[data-simple="1"]', s.frame.simple);
+        }
+        // center 레이어
+        ["front", "back"].forEach(L => {
+          const st = s[L]; if (!st) return;
+          const ti = document.getElementById("t-input-" + L);
+          const ts = document.getElementById("t-size-" + L);
+          if (ti && st.tinput != null) ti.value = st.tinput;
+          if (ts && st.tsize != null) { ts.value = st.tsize; fire(ts); }
+          if (st.text) { const ap = document.getElementById("t-apply-" + L); if (ap) ap.click(); }
+          else clickById('.parts[data-cen="' + (st.cen || "insert") + '"][data-layer="' + L + '"]', st.id);
+        });
+        // 탭
+        if (s.tab) { const t = document.querySelector('.tab[data-tab="' + s.tab + '"]'); if (t) t.click(); }
+      } catch (e) { console.error(e); }
+      restoring = false;
+      saveState();
+    }
+    function restoreState() {
+      let s;
+      try { s = JSON.parse(localStorage.getItem(LS_KEY)); } catch (e) {}
+      applyState(s);
+    }
+
+    // 모든 입력/클릭에서 저장 (선택 핸들러가 DOM 갱신한 뒤 버블링으로 도달)
+    document.addEventListener("input", saveState);
+    document.addEventListener("click", saveState);
+    restoreState();
+  })();
+</script>
+
+<!-- 부모 iframe 높이 보고: 모든 탭(frame/front/back/guide) 중 가장 긴 것 기준으로 고정.
+     탭 변경으로 높이가 바뀌지 않도록 최대 높이를 measure→body min-height 로 잠금. -->
+<script>
+(function(){
+  var TAB_NAMES=["frame","front","back","guide"];
+  function contentHeight(){
+    var b=document.body, max=0, k=b.children;
+    for(var i=0;i<k.length;i++){
+      var r=k[i].getBoundingClientRect();
+      if(r.bottom>max) max=r.bottom;
+    }
+    var pb=parseFloat(getComputedStyle(b).paddingBottom)||0;
+    return Math.ceil(max + pb + window.scrollY);
+  }
+  // 클릭 핸들러와 동일한 DOM 토글(단, click 미발생 → localStorage 저장 안 건드림)
+  function setTab(name){
+    document.querySelectorAll(".tab").forEach(function(t){ t.classList.toggle("active", t.dataset.tab===name); });
+    document.querySelectorAll(".panel").forEach(function(p){ p.hidden = p.dataset.panel!==name; });
+    document.querySelectorAll(".controls[data-opt]").forEach(function(box){ box.hidden = box.dataset.opt!==name; });
+  }
+  // 탭을 하나씩 켜서 각 높이 측정 → 최댓값. 동기 실행 후 원상복구라 화면 깜빡임 없음.
+  function measureMax(){
+    var tabs=document.querySelectorAll(".tab");
+    if(!tabs.length) return contentHeight();
+    var a=document.querySelector(".tab.active"), cur=a?a.dataset.tab:"frame", max=0;
+    TAB_NAMES.forEach(function(n){ setTab(n); var h=contentHeight(); if(h>max) max=h; });
+    setTab(cur); // 복구
+    return max;
+  }
+  var locked=0, raf=null;
+  function report(){
+    var h=measureMax();
+    if(h>locked){ locked=h; document.body.style.minHeight=locked+"px"; }
+    if(locked){ try{ parent.postMessage({type:'iconFrameHeight',height:locked},'*'); }catch(e){} }
+  }
+  function schedule(){ if(raf) cancelAnimationFrame(raf); raf=requestAnimationFrame(report); }
+  function relock(){ locked=0; document.body.style.minHeight=""; schedule(); } // 폭 변경 시 재계산
+  window.addEventListener('load', schedule);
+  window.addEventListener('resize', relock);
+  [0,100,300,600,1200,2000].forEach(function(t){ setTimeout(schedule,t); });
+})();
+</script>
+</body>
+</html>

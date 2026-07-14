@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="waiter" data-ic="12,8.5">
+  <path class="arc" d="M 2.5 23 C 2.5 16.5 7 15 12 15 C 17 15 21.5 16.5 21.5 23 Z"/>
+  <circle class="arc" cx="12" cy="8.5" r="6.3"/>
+  <path class="arc" d="M 12 14.6 L 8.5 13.1 L 8.5 16.1 Z M 12 14.6 L 15.5 13.1 L 15.5 16.1 Z"/>
+  <ellipse class="arc" cx="19" cy="19" rx="4.68" ry="1.43"/>
+  <path class="arc" d="M 14.32 19 A 4.68 4.68 0 0 1 23.68 19 Z"/>
+  <circle class="arc" cx="19" cy="13.87" r="1.04"/>
+</svg>

@@ -26,27 +26,30 @@
         }
         .preamble {
             border: 1px solid var(--hairline);
-            padding: 1rem;
-            margin-bottom: 2rem;
-            background-color: var(--surface-soft);
+            border-radius: var(--r-lg);
+            padding: var(--s6);
+            margin-bottom: var(--s6);
+            background-color: var(--surface);
+            box-shadow: var(--sh-sm);
         }
         .contract-body {
             line-height: 1.8;
         }
         .contract-body h4 {
-            margin-top: 2rem;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 0.5rem;
+            margin-top: var(--s6);
+            border-bottom: 1px solid var(--hairline);
+            padding-bottom: var(--s2);
         }
         .signature-block {
             margin-top: 3rem;
         }
         #contract-form {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
+            margin-bottom: var(--s6);
+            padding: var(--s6);
             border: 1px solid var(--hairline);
-            border-radius: 8px;
-            background-color: var(--surface-soft);
+            border-radius: var(--r-lg);
+            background-color: var(--surface);
+            box-shadow: var(--sh-sm);
         }
         #contract-form h2 {
             text-align: left;
@@ -58,15 +61,27 @@
             gap: 1rem;
         }
         .form-section {
-            margin-bottom: 2rem;
+            margin-bottom: var(--s6);
         }
         .form-section h3 {
             text-align: left;
             font-size: 1.2rem;
             color: var(--ink);
             border-bottom: 2px solid var(--hairline);
-            padding-bottom: 0.5rem;
-            margin-bottom: 1rem;
+            padding-bottom: var(--s2);
+            margin-bottom: var(--s4);
+        }
+        #contract-form input,
+        #contract-form textarea,
+        #contract-form select {
+            border-radius: var(--r-sm);
+            border: 1px solid var(--hairline);
+            background: var(--surface-soft);
+        }
+        .container table {
+            border: 1px solid var(--hairline);
+            border-radius: var(--r-md);
+            overflow: hidden;
         }
         span.placeholder {
             color: var(--brand-yellow-deep);

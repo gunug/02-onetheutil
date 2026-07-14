@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="content-programming">
+  <rect class="ins" x="6" y="7" width="12" height="10" rx="1.5"/>
+  <line class="ins" x1="6" y1="9.6" x2="18" y2="9.6"/>
+  <path class="ins" d="M 10.2 11.8 L 8.7 13.6 L 10.2 15.4"/>
+  <path class="ins" d="M 13.8 11.8 L 15.3 13.6 L 13.8 15.4"/>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="table">
+  <rect class="ins" x="7.5" y="7" width="9" height="10" rx="1"/>
+  <line class="ins" x1="7.5" y1="10.3" x2="16.5" y2="10.3"/>
+  <line class="ins" x1="9.3" y1="7" x2="9.3" y2="17"/>
+  <line class="ins" x1="12.9" y1="7" x2="12.9" y2="17"/>
+</svg>

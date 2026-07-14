@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="smile">
+  <circle class="ins" cx="12" cy="12" r="5.2"/>
+  <circle class="ins-dot" cx="9.9" cy="10.4" r="0.85"/>
+  <circle class="ins-dot" cx="14.1" cy="10.4" r="0.85"/>
+  <path class="ins" d="M 9.6 13.4 Q 12 15.8 14.4 13.4"/>
+</svg>

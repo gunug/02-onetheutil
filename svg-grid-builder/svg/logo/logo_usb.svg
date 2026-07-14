@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="USB">
+  <g transform="translate(6,6) scale(0.5)">
+    <path class="ins" style="stroke-width:calc(var(--stroke-w)*2.2)" d="M 12 3 L 12 20"/>
+    <path class="ins" style="stroke-width:calc(var(--stroke-w)*2.2)" d="M 9.6 6 L 12 2.5 L 14.4 6"/>
+    <path class="ins" style="stroke-width:calc(var(--stroke-w)*2.2)" d="M 12 15.5 L 7.8 11.9"/>
+    <path class="ins" style="stroke-width:calc(var(--stroke-w)*2.2)" d="M 12 12.5 L 16.2 9.7"/>
+    <circle class="ins-dot" cx="12" cy="20.5" r="1.9"/>
+    <circle class="ins-dot" cx="7.5" cy="11.5" r="1.7"/>
+    <rect class="ins-dot" x="15" y="8.1" width="2.8" height="2.8"/>
+  </g>
+</svg>

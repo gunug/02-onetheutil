@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon-svg-gallery.svg">
+<title>svg gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Supabase (generated 폴더 나열) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://pstpexrnusiwrkcdypjq.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzdHBleHJudXNpd3JrY2R5cGpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMTQ2MTMsImV4cCI6MjA5ODU5MDYxM30._913UewzlbfF8lumTSlwzBd6748QWYHtfjXA8f1pLus";
+  window.SB_CLIENT = (window.supabase && SUPABASE_ANON_KEY !== "PASTE_ANON_KEY_HERE")
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+</script>
+<style>
+  :root {
+    --brand-yellow:#FFD400; --brand-yellow-soft:#FFE766; --brand-yellow-deep:#C9A600; --on-brand:#1A1A17;
+    --ink:#F5F4EC; --body:#CFCDC2; --muted:#8E8C82; --hairline:#33332B;
+    --canvas:#121210; --surface:#1C1C17; --surface-soft:#26261F;
+    --sh-sm:0 1px 2px rgba(0,0,0,.4); --sh-md:0 4px 16px rgba(0,0,0,.45);
+    --r-sm:6px; --r-md:10px; --r-lg:16px;
+    --font:"Inter",-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; padding: 40px 24px 64px;
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+    font-family: var(--font); background: var(--canvas); color: var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  .eyebrow { display:inline-block; background:#161613; color:var(--brand-yellow); font-size:11px; font-weight:600;
+             letter-spacing:.12em; text-transform:uppercase; padding:5px 12px; border-radius:9999px; margin-bottom:8px; }
+  .head { text-align:center; }
+  h1 { font-size: 28px; font-weight: 800; letter-spacing:-.02em; color: var(--ink); margin: 0; }
+  .sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  /* 에러/상태 배너 */
+  .banner { display:none; width:100%; max-width:1400px; background:#2a1a14; border:1px solid #6b3a2a;
+            border-radius: var(--r-lg); padding:14px 18px; color:#ffd0c0; font-size:13px; line-height:1.5; }
+  .banner.show { display:block; }
+  .banner code { font-family: var(--mono); background:#3a221a; padding:1px 6px; border-radius:4px; color:#ffe; }
+
+  /* 툴바 */
+  .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; width:100%; max-width:1400px; }
+  .search { flex:1; min-width:180px; background:var(--surface-soft); border:1px solid var(--hairline);
+            border-radius:var(--r-md); color:var(--ink); font-family:var(--font); font-size:14px; padding:9px 14px; }
+  .search:focus { outline:none; border-color:var(--brand-yellow); }
+  .filters { display:flex; gap:6px; flex-wrap:wrap; }
+  .filter { font-family:var(--font); font-size:12px; font-weight:700; padding:8px 14px; border:1px solid var(--hairline);
+            border-radius:var(--r-md); background:var(--surface); color:var(--muted); cursor:pointer; transition:.12s;
+            text-transform:uppercase; letter-spacing:.06em; }
+  .filter:hover { color:var(--body); }
+  .filter.active { background:var(--brand-yellow); color:var(--on-brand); border-color:var(--brand-yellow); }
+
+  /* size 슬라이더 */
+  .sizerow { display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--body); }
+  .sizerow input[type="range"] { width:90px; accent-color:var(--brand-yellow); }
+
+  /* 섹션 */
+  #sections { width:100%; max-width:1400px; }
+  .section { width:100%; }
+  .section h2 { font-size:11px; font-weight:700; margin:18px 0 10px; text-transform:uppercase; letter-spacing:.1em;
+                color:var(--brand-yellow-deep); }
+  .section[hidden] { display:none; }
+
+  /* 그리드 */
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:12px; }
+  .card { background:var(--surface); border:1px solid var(--hairline); border-radius:var(--r-md);
+          padding:10px; display:flex; flex-direction:column; align-items:center; gap:8px; transition:.12s; }
+  .card[hidden] { display:none; }
+  .card:hover { border-color:var(--brand-yellow); }
+  .thumb { width:100%; height:96px; display:flex; align-items:center; justify-content:center;
+           border-radius:var(--r-sm); background-color:#26261f;
+           background-image:
+             linear-gradient(45deg, #1c1c17 25%, transparent 25%),
+             linear-gradient(-45deg, #1c1c17 25%, transparent 25%),
+             linear-gradient(45deg, transparent 75%, #1c1c17 75%),
+             linear-gradient(-45deg, transparent 75%, #1c1c17 75%);
+           background-size:14px 14px; background-position:0 0,0 7px,7px -7px,-7px 0; }
+  .thumb img { width:var(--thumb, 64px); height:var(--thumb, 64px); display:block; }
+  .nm { font-size:10.5px; font-family:var(--mono); color:var(--muted); text-align:center; word-break:break-all; line-height:1.3; }
+  .btns { display:grid; grid-template-columns:repeat(2, 1fr); gap:6px; width:100%; }
+  .btn { font-family:var(--font); font-size:11px; font-weight:600; padding:6px 0; border:1px solid var(--hairline);
+         border-radius:var(--r-sm); background:var(--surface-soft); color:var(--body); cursor:pointer; transition:.1s; }
+  .btn:hover { border-color:var(--brand-yellow); color:var(--ink); }
+
+  /* 토스트 */
+  .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+           background:var(--ink); color:var(--on-brand); font-size:13px; font-weight:600; padding:10px 18px;
+           border-radius:9999px; box-shadow:var(--sh-md); opacity:0; pointer-events:none; transition:.18s; z-index:50; }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .count { font-size:12px; color:var(--muted); font-family:var(--mono); }
+
+  /* 로그인 / 업로드 컨트롤 */
+  .auth-status { font-size:11px; font-family:var(--mono); color:var(--muted); max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .auth-btn { font-family:var(--font); font-size:12px; font-weight:600; padding:8px 14px; border:1px solid var(--hairline);
+              border-radius:var(--r-md); background:var(--surface); color:var(--body); cursor:pointer; transition:.12s; }
+  .auth-btn:hover { border-color:var(--brand-yellow); color:var(--ink); }
+  .upload-lbl { display:none; align-items:center; font-family:var(--font); font-size:12px; font-weight:700; padding:8px 14px;
+                border:1px solid var(--brand-yellow); border-radius:var(--r-md); background:var(--brand-yellow); color:var(--on-brand); cursor:pointer; transition:.12s; }
+  .upload-lbl:hover { background:var(--brand-yellow-deep); color:#fff; }
+  body.edit-on .upload-lbl { display:inline-flex; }
+  /* 삭제 버튼: 편집 모드에서만 노출 */
+  .btn.del { display:none; background:#3a1a1a; border-color:#6b3a2a; color:#ffc9bd; }
+  .btn.del:hover { border-color:#ff8a6a; color:#fff; }
+  body.edit-on .btn.del { display:block; }
+</style>
+</head>
+<body>
+  <div class="head">
+    <span class="eyebrow">SVG Gallery</span>
+    <h1>SVG Gallery</h1>
+    <div class="sub">Icon Builder 에서 업로드한 <b>generated</b> 아이콘만 표시. <b>DOWN</b> = svg 파일 다운로드</div>
+  </div>
+
+  <div class="banner" id="banner"></div>
+
+  <div class="toolbar">
+    <input type="search" class="search" id="search" placeholder="이름·폴더 검색 (예: arc, logo, heart)">
+    <div class="filters" id="filters"></div>
+    <div class="sizerow">size <input type="range" id="size" min="32" max="120" step="4" value="64"></div>
+    <span class="count" id="count"></span>
+    <label class="upload-lbl" id="upload-lbl" title="svg 파일 업로드">
+      <input type="file" id="file-input" accept=".svg,image/svg+xml" multiple hidden>＋ 업로드</label>
+    <span class="auth-status" id="auth-status">로그인 확인 중…</span>
+    <button class="auth-btn" id="auth-btn" type="button">로그인</button>
+  </div>
+
+  <div id="sections"></div>
+
+  <div class="toast" id="toast">다운로드됨</div>
+
+<script>
+  // ───────── 설정 ─────────
+  const SB_BASE = "https://pstpexrnusiwrkcdypjq.supabase.co/storage/v1/object/public/icons/";
+  const publicUrl = path => SB_BASE + path; // path = "svg/<folder>/<id>.svg"
+
+  // ───────── 로드 & 렌더 ─────────
+  // grid = SVG Grid Builder 에서 export 한 10x10 합성 svg (svg/grid/*.svg). generated 와 동일하게 열람/삭제.
+  const FOLDER_ORDER = ["generated", "grid"];
+  const state = { filter: "all", q: "" };
+  const cards = []; // {folder, name, el}
+
+  (async function init() {
+    const sb = window.SB_CLIENT;
+    if (!sb) {
+      showBanner("Supabase 미설정: HTML 상단 <code>SUPABASE_ANON_KEY</code> 를 채우세요.");
+      return;
+    }
+    let items = [];
+    let anyFolderFailed = false;
+    for (const folder of FOLDER_ORDER) {
+      try {
+        const { data, error } = await sb.storage.from("icons").list("svg/" + folder, {
+          limit: 1000, sortBy: { column: "created_at", order: "desc" }
+        });
+        if (error) throw error;
+        const files = (data || []).filter(f => f.name && /\.svg$/i.test(f.name));
+        files.forEach(f => items.push({
+          folder,
+          name: f.name.replace(/\.svg$/i, ""),
+          path: "svg/" + folder + "/" + f.name
+        }));
+      } catch (e) {
+        anyFolderFailed = true;
+        showBanner("<code>svg/" + folder + "</code> 목록을 못 읽음: <code>" + (e.message || e) + "</code><br>" +
+          "Storage 의 <code>icons/svg/" + folder + "</code> SELECT(list) 정책을 확인하세요.");
+      }
+    }
+    if (!items.length && !anyFolderFailed) {
+      showBanner("generated 아이콘이 아직 없음. Icon Builder 에서 <b>☁ generated 업로드</b> 로 추가하세요.");
+    }
+    document.getElementById("count").textContent = items.length + " icons";
+
+    // 폴더별 그룹 (각 폴더 섹션은 비어도 항상 생성 → 업로드 카드 append 대상 확보)
+    const byFolder = {};
+    FOLDER_ORDER.forEach(f => (byFolder[f] = []));
+    items.forEach(it => (byFolder[it.folder] = byFolder[it.folder] || []).push(it));
+    const folders = FOLDER_ORDER.filter(f => byFolder[f]).concat(
+      Object.keys(byFolder).filter(f => !FOLDER_ORDER.includes(f)));
+
+    // 필터 버튼
+    const filters = document.getElementById("filters");
+    [["all", "all"]].concat(folders.map(f => [f, f])).forEach(([key, label], i) => {
+      const b = document.createElement("button");
+      b.className = "filter" + (i === 0 ? " active" : "");
+      b.textContent = label; b.dataset.f = key;
+      b.addEventListener("click", () => {
+        filters.querySelectorAll(".filter").forEach(x => x.classList.remove("active"));
+        b.classList.add("active"); state.filter = key; applyFilter();
+      });
+      filters.appendChild(b);
+    });
+
+    // 섹션 + 카드
+    const host = document.getElementById("sections");
+    folders.forEach(folder => {
+      const sec = document.createElement("div");
+      sec.className = "section"; sec.dataset.folder = folder;
+      sec.innerHTML = "<h2>" + folder + " · " + byFolder[folder].length + "</h2>";
+      const grid = document.createElement("div"); grid.className = "grid";
+      sec.appendChild(grid); host.appendChild(sec);
+      byFolder[folder].forEach(it => grid.appendChild(buildCard(it)));
+    });
+
+    // 검색
+    document.getElementById("search").addEventListener("input", e => {
+      state.q = e.target.value.trim().toLowerCase(); applyFilter();
+    });
+    // size
+    const size = document.getElementById("size");
+    const applySize = () => document.documentElement.style.setProperty("--thumb", size.value + "px");
+    size.addEventListener("input", applySize); applySize();
+
+    wireAuth(); // 로그인 · 편집 UI
+  })();
+
+  function buildCard(it) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.name = it.name.toLowerCase();
+    card.dataset.folder = it.folder;
+    const thumb = document.createElement("div"); thumb.className = "thumb";
+    const nm = document.createElement("div"); nm.className = "nm"; nm.textContent = it.name;
+    const btns = document.createElement("div"); btns.className = "btns";
+    const bDown = document.createElement("button"); bDown.className = "btn"; bDown.textContent = "down";
+    const bDel = document.createElement("button"); bDel.className = "btn del"; bDel.textContent = "del";
+    btns.appendChild(bDown); btns.appendChild(bDel);
+    card.appendChild(thumb); card.appendChild(nm); card.appendChild(btns);
+
+    const rec = { folder: it.folder, name: it.name, path: it.path, el: card, thumb, url: publicUrl(it.path) };
+    const img = document.createElement("img");
+    img.alt = ""; img.src = rec.url;
+    img.onerror = () => { thumb.innerHTML = '<div style="color:#8e8c82;font-size:10px">load fail</div>'; };
+    thumb.appendChild(img);
+    bDown.addEventListener("click", () => downloadSvg(rec, bDown));
+    bDel.addEventListener("click", () => removeIcon(rec, bDel));
+    cards.push(rec);
+    return card;
+  }
+
+  // ───────── 필터/검색 ─────────
+  function applyFilter() {
+    const { filter, q } = state;
+    const secCount = {};
+    cards.forEach(rec => {
+      const okF = filter === "all" || rec.folder === filter;
+      const okQ = !q || rec.name.toLowerCase().includes(q) || rec.folder.includes(q);
+      const show = okF && okQ;
+      rec.el.hidden = !show;
+      if (show) secCount[rec.folder] = (secCount[rec.folder] || 0) + 1;
+    });
+    document.querySelectorAll(".section").forEach(sec => {
+      sec.hidden = !secCount[sec.dataset.folder];
+    });
+    const total = Object.values(secCount).reduce((a, b) => a + b, 0);
+    document.getElementById("count").textContent = total + " icons";
+  }
+
+  // ───────── svg 파일 다운로드 ─────────
+  async function downloadSvg(rec, btn) {
+    try {
+      const res = await fetch(rec.url);
+      if (!res.ok) throw new Error(res.status);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = rec.name + ".svg";
+      a.click();
+      URL.revokeObjectURL(url);
+      toast("다운로드됨");
+    } catch (e) { toast("다운로드 실패"); }
+  }
+
+  let toastTimer = null;
+  function toast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 1400);
+  }
+  function showBanner(html) {
+    const b = document.getElementById("banner"); b.className = "banner show"; b.innerHTML = html;
+  }
+
+  // ───────── 인증 · 편집(업로드/삭제) ─────────
+  // 열람/다운로드는 공개. 추가/삭제는 로그인 + editors.can_edit=true 인 사람만.
+  const SB = window.SB_CLIENT;
+  let galCanEdit = false;
+  const sanitize = s => (s || "").toLowerCase().replace(/\.svg$/, "")
+    .replace(/[^a-z0-9가-힣]+/g, "-").replace(/^-+|-+$/g, "") || "x";
+  const stamp = () => { const d = new Date(), p = n => String(n).padStart(2, "0");
+    return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) +
+           "-" + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds()); };
+
+  async function galUser() { if (!SB) return null; const { data } = await SB.auth.getUser(); return (data && data.user) || null; }
+  async function galPerm() { try { const { data } = await SB.rpc("can_edit_generated"); return data === true; } catch (e) { return false; } }
+  async function refreshGalAuth() {
+    const st = document.getElementById("auth-status"), bt = document.getElementById("auth-btn");
+    if (!SB) { st.textContent = "supabase 미설정 (ANON KEY 필요)"; bt.disabled = true; return; }
+    const u = await galUser();
+    if (u) {
+      bt.textContent = "로그아웃";
+      galCanEdit = await galPerm();
+      st.textContent = (u.email || "로그인됨") + (galCanEdit ? " · 편집 가능" : " · 권한 없음");
+    } else { bt.textContent = "로그인"; galCanEdit = false; st.textContent = "로그인 필요"; }
+    document.body.classList.toggle("edit-on", galCanEdit);
+  }
+  function wireAuth() {
+    const bt = document.getElementById("auth-btn");
+    bt.addEventListener("click", async () => {
+      if (!SB) return;
+      if (await galUser()) { await SB.auth.signOut(); refreshGalAuth(); }
+      else await SB.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.href.split("#")[0] } });
+    });
+    if (SB) SB.auth.onAuthStateChange(() => refreshGalAuth());
+    const fi = document.getElementById("file-input");
+    if (fi) fi.addEventListener("change", onUploadFiles);
+    refreshGalAuth();
+  }
+  async function onUploadFiles(e) {
+    const files = [...(e.target.files || [])]; e.target.value = "";
+    if (!files.length) return;
+    if (!SB) { toast("supabase 미설정"); return; }
+    if (!(await galPerm())) { toast("업로드 권한 없음"); return; }
+    const grid = document.querySelector('.section[data-folder="generated"] .grid');
+    let ok = 0;
+    for (const f of files) {
+      const name = sanitize(f.name) + "_" + stamp();
+      const path = "svg/generated/" + name + ".svg";
+      const { error } = await SB.storage.from("icons").upload(path, f, { contentType: "image/svg+xml", upsert: false });
+      if (error) { toast("업로드 실패: " + error.message); continue; }
+      ok++;
+      if (grid) grid.appendChild(buildCard({ folder: "generated", name, path }));
+    }
+    if (ok) toast(ok + "개 업로드됨");
+  }
+  async function removeIcon(rec, btn) {
+    if (!SB) { toast("supabase 미설정"); return; }
+    if (!galCanEdit) { toast("삭제 권한 없음"); return; }
+    if (!confirm("삭제할까요?\n" + rec.name)) return;
+    if (!confirm("진짜로 삭제 하겠습니까?\n되돌릴 수 없으며 이미 사용중인 링크가 유실될 수 있습니다.")) return;
+    btn.disabled = true;
+    const { error } = await SB.storage.from("icons").remove([rec.path]);
+    btn.disabled = false;
+    if (error) { toast("삭제 실패: " + error.message); return; }
+    rec.el.remove();
+    const i = cards.indexOf(rec); if (i >= 0) cards.splice(i, 1);
+    toast("삭제됨");
+  }
+</script>
+
+<!-- 부모 iframe 높이 보고: 모든 필터(탭) 중 가장 긴 것 기준으로 고정.
+     필터 변경으로 높이가 바뀌지 않도록 최대 높이를 measure→body min-height 로 잠금. -->
+<script>
+(function(){
+  function contentHeight(){
+    var b=document.body, max=0, k=b.children;
+    for(var i=0;i<k.length;i++){
+      var r=k[i].getBoundingClientRect();
+      if(r.bottom>max) max=r.bottom;
+    }
+    var pb=parseFloat(getComputedStyle(b).paddingBottom)||0;
+    return Math.ceil(max + pb + window.scrollY);
+  }
+  // 필터를 하나씩 적용해 각 상태 높이 측정 → 최댓값. 동기 실행 후 원상복구라 화면 깜빡임 없음.
+  function measureMax(){
+    var btns=document.querySelectorAll("#filters .filter");
+    if(!btns.length || typeof applyFilter!=="function") return contentHeight();
+    var savedFilter=state.filter, max=0, vals=["all"];
+    btns.forEach(function(b){ if(b.dataset.f!=="all") vals.push(b.dataset.f); });
+    vals.forEach(function(v){ state.filter=v; applyFilter(); var h=contentHeight(); if(h>max) max=h; });
+    state.filter=savedFilter; applyFilter(); // 복구
+    return max;
+  }
+  var locked=0, raf=null;
+  function report(){
+    var h=measureMax();
+    if(h>locked){ locked=h; document.body.style.minHeight=locked+"px"; }
+    if(locked){ try{ parent.postMessage({type:'iconFrameHeight',height:locked},'*'); }catch(e){} }
+  }
+  function schedule(){ if(raf) cancelAnimationFrame(raf); raf=requestAnimationFrame(report); }
+  function relock(){ locked=0; document.body.style.minHeight=""; schedule(); } // 폭/크기 변경 시 재계산
+  window.addEventListener('load', schedule);
+  window.addEventListener('resize', relock);
+  var sz=document.getElementById("size"); if(sz) sz.addEventListener("input", relock); // 썸네일 크기 변경도 재잠금
+  [0,100,300,600,1200,2000].forEach(function(t){ setTimeout(schedule,t); });
+})();
+</script>
+</body>
+</html>

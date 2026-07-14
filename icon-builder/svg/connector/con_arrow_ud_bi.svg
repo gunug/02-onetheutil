@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-name="arrow-ud-bi">
+  <line x1="12.0" y1="6.0" x2="12.0" y2="18.0" stroke="#F5F4EC" stroke-width="2.4" stroke-linecap="round"/>
+  <polygon points="8,6 12,0 16,6" fill="#F5F4EC"/>
+  <polygon points="8,18 12,24 16,18" fill="#F5F4EC"/>
+</svg>

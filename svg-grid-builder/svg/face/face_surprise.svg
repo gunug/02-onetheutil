@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="surprise">
+  <circle class="ins" cx="12" cy="12" r="5.2"/>
+  <circle class="ins-dot" cx="9.9" cy="10.2" r="0.95"/>
+  <circle class="ins-dot" cx="14.1" cy="10.2" r="0.95"/>
+  <circle class="ins" cx="12" cy="14.3" r="1.4"/>
+</svg>
