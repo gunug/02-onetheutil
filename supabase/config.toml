@@ -1,0 +1,6 @@
+project_id = "pstpexrnusiwrkcdypjq"
+
+[functions.memo]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/memo/index.ts"

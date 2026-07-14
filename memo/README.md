@@ -18,8 +18,7 @@ supabase db push
 
 <https://dash.cloudflare.com> → Turnstile → 위젯 추가 (도메인 등록)
 
-- **사이트 키** → `memo/memo.html` 의 `TURNSTILE_SITE_KEY` 교체
-  (기본값 `1x00000000000000000000AA` 는 항상 통과하는 **테스트 키**. 실서비스 전 반드시 교체)
+- **사이트 키** → `memo/memo.html` 의 `TURNSTILE_SITE_KEY` (적용됨: `0x4AAAAAAD1oUhtJksDN5AFi`)
 - **시크릿 키** → 아래 3번 `TURNSTILE_SECRET`
 
 ## 3. Edge Function 배포

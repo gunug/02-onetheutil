@@ -19,9 +19,8 @@
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzdHBleHJudXNpd3JrY2R5cGpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMTQ2MTMsImV4cCI6MjA5ODU5MDYxM30._913UewzlbfF8lumTSlwzBd6748QWYHtfjXA8f1pLus";
   const MEMO_FN_URL = SUPABASE_URL + "/functions/v1/memo";
 
-  // ⚠️ Cloudflare 대시보드에서 발급한 Turnstile 사이트 키로 교체하세요.
-  //    1x00000000000000000000AA 는 "항상 통과" 테스트 키입니다.
-  const TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
+  // Cloudflare Turnstile 사이트 키 (공개값)
+  const TURNSTILE_SITE_KEY = "0x4AAAAAAD1oUhtJksDN5AFi";
 
   window.SB_CLIENT = window.supabase
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
