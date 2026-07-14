@@ -553,14 +553,19 @@
             }
             .container {
                 padding: 0;
+                margin: 0;
+                width: 100%;
+                max-width: none;
             }
             h1, .eyebrow {
                 display: none !important;
             }
             .calendar {
-                background: none;
+                background: none !important;
                 backdrop-filter: none;
-                border: none;
+                border: none !important;
+                border-radius: 0;
+                box-shadow: none !important;
                 padding: 0;
                 min-width: auto;
                 width: 100%;
@@ -640,8 +645,11 @@
                 margin-left: 4px;
             }
             .memo-section {
-                background: none;
+                background: none !important;
                 backdrop-filter: none;
+                border: none !important;
+                border-radius: 0;
+                box-shadow: none !important;
                 min-width: auto;
                 width: 100%;
                 padding: 0;
