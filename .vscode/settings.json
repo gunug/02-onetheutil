@@ -19,5 +19,6 @@
     "list.inactiveSelectionForeground": "#FFFFFF",
     "list.focusForeground": "#FFFFFF",
     "list.highlightForeground": "#FFFFFF"
-  }
+  },
+  "liveServer.settings.port": 5501
 }

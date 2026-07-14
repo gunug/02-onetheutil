@@ -28,45 +28,55 @@
 </script>
 
 <style>
+  /* 카드 1장 = 가로 220px, 세로는 황금비(1.618) */
+  :root{--card-w:220px;--card-h:356px;}
+
   body{margin:0;min-height:100vh;padding:40px 24px 64px;}
-  .wrap{max-width:900px;margin:0 auto;}
+  .wrap{max-width:1200px;margin:0 auto;}
   .head{text-align:center;margin-bottom:var(--s6);}
   .head h1{font-size:28px;margin:0;}
   .head .sub{font-size:13px;color:var(--muted);margin-top:6px;}
 
-  /* 작성 폼 */
-  .composer{padding:var(--s5);margin-bottom:var(--s6);}
-  .composer textarea{width:100%;min-height:110px;resize:vertical;
-    font-family:var(--font);font-size:14px;line-height:1.6;
+  /* 보드: 폭 되는 만큼 가로 배치, 부족하면 줄내림 */
+  .board{display:flex;flex-wrap:wrap;gap:var(--s4);justify-content:center;align-items:flex-start;}
+  #list{display:contents;}
+
+  /* 모든 카드(작성창 포함) 동일 크기 */
+  .board > .card,.memo{flex:0 0 var(--card-w);width:var(--card-w);height:var(--card-h);
+    padding:var(--s4);display:flex;flex-direction:column;gap:var(--s2);overflow:hidden;}
+
+  /* 작성 카드 */
+  .composer textarea{flex:1;min-height:0;width:100%;resize:none;
+    font-family:var(--font);font-size:13px;line-height:1.6;
     color:var(--ink);background:var(--canvas);
-    border:1px solid var(--hairline);border-radius:var(--r-md);padding:12px 14px;}
+    border:1px solid var(--hairline);border-radius:var(--r-md);padding:10px 12px;}
   .composer textarea:focus,.composer input:focus{outline:none;border-color:var(--brand-yellow);}
-  .row{display:flex;align-items:center;gap:var(--s3);margin-top:var(--s3);flex-wrap:wrap;}
-  .composer input.masked{flex:1;min-width:180px;
-    font-family:var(--font);font-size:14px;color:var(--ink);background:var(--canvas);
-    border:1px solid var(--hairline);border-radius:var(--r-md);padding:10px 14px;}
+  .composer input.masked{width:100%;
+    font-family:var(--font);font-size:13px;color:var(--ink);background:var(--canvas);
+    border:1px solid var(--hairline);border-radius:var(--r-md);padding:8px 12px;}
+  .composer .btn{justify-content:center;width:100%;padding:9px 0;}
+  .cf-turnstile{flex:none;display:flex;justify-content:center;min-height:140px;}
 
   /* type=password 대신 텍스트 마스킹 → 브라우저 비밀번호 관리자 저장/업데이트 제안 차단 */
   input.masked{-webkit-text-security:disc;text-security:disc;letter-spacing:.08em;}
-  .hint{font-size:12px;color:var(--muted);margin-top:var(--s2);}
-  .cf-turnstile{margin-top:var(--s3);}
 
-  /* 메모 목록 */
-  .list{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s4);}
-  @media(max-width:700px){.list{grid-template-columns:1fr;}}
-  .memo{display:flex;flex-direction:column;gap:var(--s3);padding:var(--s4);}
+  /* 메모 카드 — 내용 넘치면 세로 스크롤 */
   .memo .content{
+    flex:1;min-height:0;overflow-y:auto;
     /* 내용은 드래그(부분 선택) 가능 */
     user-select:text;-webkit-user-select:text;cursor:text;
     white-space:pre-wrap;overflow-wrap:anywhere;
-    font-size:14px;line-height:1.65;color:var(--body);margin:0;}
-  .memo .foot{display:flex;align-items:center;gap:var(--s2);
-    border-top:1px solid var(--hairline);padding-top:var(--s3);}
-  .memo time{font-family:var(--mono);font-size:11px;color:var(--muted);margin-right:auto;}
-  .del-row{display:none;gap:var(--s2);align-items:center;}
+    font-size:13px;line-height:1.65;color:var(--body);margin:0;padding-right:4px;}
+  .memo .content::-webkit-scrollbar{width:6px;}
+  .memo .content::-webkit-scrollbar-thumb{background:var(--hairline);border-radius:3px;}
+  .memo .foot{flex:none;display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    border-top:1px solid var(--hairline);padding-top:var(--s2);}
+  .memo time{font-family:var(--mono);font-size:10px;color:var(--muted);margin-right:auto;}
+  .memo .foot .btn{padding:5px 10px;font-size:12px;}
+  .del-row{display:none;gap:6px;align-items:center;width:100%;}
   .del-row.open{display:flex;}
-  .del-row input{width:130px;font-size:13px;color:var(--ink);background:var(--canvas);
-    border:1px solid var(--hairline);border-radius:var(--r-sm);padding:6px 10px;}
+  .del-row input{flex:1;min-width:0;font-size:12px;color:var(--ink);background:var(--canvas);
+    border:1px solid var(--hairline);border-radius:var(--r-sm);padding:5px 8px;}
   .del-row input:focus{outline:none;border-color:var(--brand-yellow);}
   .empty{color:var(--muted);font-size:14px;text-align:center;padding:var(--s7) 0;}
 
@@ -87,20 +97,20 @@
     <p class="sub">누구나 남기는 공개 메모. 비밀번호로 본인 메모만 삭제.</p>
   </header>
 
-  <!-- <form> 없음 + type=password 없음 → 브라우저 비밀번호 저장 제안 안 뜸 -->
-  <div class="card composer" id="composer">
-    <textarea id="content" maxlength="2000" placeholder="메모 내용 (최대 2000자)"></textarea>
-    <div class="row">
+  <div class="board">
+    <!-- <form> 없음 + type=password 없음 → 브라우저 비밀번호 저장 제안 안 뜸 -->
+    <div class="card composer" id="composer">
+      <textarea id="content" maxlength="2000" placeholder="메모 내용 (최대 2000자)"></textarea>
       <input type="text" class="masked" id="password" placeholder="삭제용 비밀번호"
              autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
              name="memo-key" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other">
+      <div class="cf-turnstile" id="cf" data-theme="dark"></div>
       <button class="btn btn-primary" type="button" id="submitBtn">게시</button>
     </div>
-    <div class="cf-turnstile" id="cf" data-theme="dark"></div>
-    <p class="hint">스팸 방지: 봇 검증 · 한국 IP만 게시 · 작성 3초 이내 게시 차단</p>
-  </div>
 
-  <div class="list" id="list"></div>
+    <!-- display:contents → 메모 카드가 .board 의 flex 아이템으로 흐름 -->
+    <div id="list"></div>
+  </div>
   <p class="empty" id="empty" hidden>아직 메모가 없습니다.</p>
 </div>
 
@@ -132,6 +142,7 @@
     widgetId = turnstile.render("#cf", {
       sitekey: TURNSTILE_SITE_KEY,
       theme: "dark",
+      size: "compact",          // 카드 폭(220px)에 맞춤
       "refresh-expired": "auto",
     });
   };

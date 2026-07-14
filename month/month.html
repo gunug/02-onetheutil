@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>월간 달력</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/favicon-util.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/ds.css">
+    <style>
+        /* OneTheLab 디자인 시스템 토큰에 매핑 (기존 --c-* 이름 유지) */
+        :root {
+            --c-primary: var(--brand-yellow);
+            --c-primary-light: #2C2712;   /* 노랑 계열 어두운 배경 */
+            --c-primary-dark: var(--brand-yellow-soft);
+            --c-secondary: var(--muted);
+            --c-secondary-light: var(--surface-soft);
+            --c-secondary-dark: var(--body);
+            --c-accent: var(--brand-yellow-deep);
+            --c-accent-light: #2C2712;
+            --c-accent-dark: var(--brand-yellow-soft);
+            --c-surface: var(--surface);
+            --c-surface-alt: var(--surface-soft);
+            --c-on-surface: var(--body);
+            --c-muted: var(--muted);
+            --c-divider: var(--hairline);
+            --c-success: var(--success);
+            --c-danger: var(--error);
+            --c-caution: var(--warning);
+            --c-radius-sm: var(--r-sm);
+            --c-radius-md: var(--r-md);
+            --c-radius-lg: var(--r-lg);
+            --c-shadow: var(--sh-sm);
+            --c-shadow-lg: var(--sh-md);
+            --c-font: var(--font);
+            --c-btn-py: 10px;
+            --c-btn-px: 20px;
+            --c-btn-min-h: 38px;
+            --c-font-weight: 600;
+            --c-heading-weight: 800;
+            --c-letter-spacing: -.01em;
+            --c-border-w: 1px;
+            --c-card-p: var(--s5);
+            --c-input-py: 10px;
+        }
+        body {
+            font-family: var(--c-font);
+            letter-spacing: var(--c-letter-spacing);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 0 64px;
+            background: var(--canvas);
+            color: var(--body);
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            text-align: center;
+            padding: 0;
+            width: 100%;
+            max-width: none;   /* ds.css .container 의 max-width:1024px 해제 */
+            margin: 0 32px;
+        }
+        .container > .eyebrow { margin-bottom: var(--s2); }
+        h1 {
+            font-size: 28px;
+            margin: 0 0 var(--s6);
+            font-weight: var(--c-heading-weight);
+            color: var(--ink);
+        }
+        .calendar, .memo-section { border: 1px solid var(--hairline); }
+        .calendar {
+            background: var(--c-surface);
+            border-radius: var(--c-radius-lg);
+            padding: var(--c-card-p);
+            width: 100%;
+            box-shadow: var(--c-shadow-lg);
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .calendar-header button {
+            background: var(--brand-yellow);
+            border: none;
+            color: var(--on-brand);
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: var(--c-shadow);
+        }
+        .calendar-header button:hover {
+            background: var(--brand-yellow-deep);
+            color: #fff;
+        }
+        .calendar-header .month-year {
+            font-size: 1.3rem;
+            font-weight: var(--c-font-weight);
+            color: var(--ink);
+        }
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        .calendar-weekdays span {
+            font-size: 0.85rem;
+            font-weight: var(--c-font-weight);
+            color: var(--c-muted);
+            padding: 6px 0;
+        }
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .calendar-days .day {
+            min-height: 80px;
+            padding: 6px 8px;
+            border-radius: var(--c-radius-sm);
+            font-size: 0.95rem;
+            text-align: left;
+            transition: background 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--c-divider);
+            display: flex;
+            flex-direction: column;
+        }
+        .calendar-days .day.empty {
+            border-color: transparent;
+        }
+        .calendar-days .day:not(.empty):hover {
+            background: var(--c-surface-alt);
+            box-shadow: var(--c-shadow);
+            cursor: pointer;
+        }
+        .calendar-days .day .day-number {
+            font-weight: var(--c-font-weight);
+            margin-bottom: 4px;
+        }
+        .calendar-days .day .day-content {
+            flex: 1;
+            font-size: 0.75rem;
+            overflow: hidden;
+        }
+        .calendar-days .day .day-content .event {
+            background: var(--c-primary-light);
+            color: var(--c-primary-dark);
+            border-radius: var(--c-radius-sm);
+            padding: 2px 6px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: var(--c-font-weight);
+        }
+        .calendar-days .day .day-content .event.repeat {
+            background: var(--c-secondary-light);
+            color: var(--c-secondary-dark);
+        }
+        .calendar-days .day.today {
+            background: var(--c-primary-light);
+        }
+        .calendar-days .day.today .day-number {
+            font-weight: 700;
+            color: var(--c-primary-dark);
+        }
+        .calendar-days .day.sunday .day-number {
+            color: var(--c-danger);
+        }
+        .calendar-days .day.saturday .day-number {
+            color: var(--c-primary);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: var(--c-surface);
+            border-radius: var(--c-radius-lg);
+            padding: 2rem;
+            min-width: 340px;
+            box-shadow: var(--c-shadow-lg);
+            color: var(--c-on-surface);
+        }
+        .modal h2 {
+            margin: 0 0 1.2rem 0;
+            font-size: 1.3rem;
+            font-weight: var(--c-heading-weight);
+        }
+        .modal label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--c-muted);
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .modal input[type="text"] {
+            width: 100%;
+            padding: var(--c-input-py) 12px;
+            border: 1px solid var(--c-divider);
+            border-radius: var(--c-radius-sm);
+            background: var(--c-surface-alt);
+            color: var(--c-on-surface);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .modal input[type="text"]::placeholder {
+            color: var(--c-muted);
+        }
+        .modal input[type="text"]:focus {
+            border-color: var(--c-primary);
+        }
+        .modal .repeat-options {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .modal .repeat-options button {
+            padding: 8px 14px;
+            border: 1px solid var(--c-divider);
+            border-radius: var(--c-radius-sm);
+            background: var(--c-surface-alt);
+            color: var(--c-on-surface);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: var(--c-font-weight);
+        }
+        .modal .repeat-options button:hover {
+            background: var(--c-primary-light);
+            color: var(--c-primary-dark);
+        }
+        .modal .repeat-options button.selected {
+            background: var(--brand-yellow);
+            color: var(--on-brand);
+            border-color: var(--brand-yellow);
+        }
+        .repeat-interval {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 1.2rem;
+            font-size: 0.85rem;
+        }
+        .repeat-interval.active {
+            display: flex;
+        }
+        .repeat-interval input {
+            width: 50px;
+            padding: 6px 8px;
+            border: 1px solid var(--c-divider);
+            border-radius: var(--c-radius-sm);
+            background: var(--c-surface-alt);
+            color: var(--c-on-surface);
+            font-size: 0.9rem;
+            text-align: center;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .repeat-interval input:focus {
+            border-color: var(--c-primary);
+        }
+        .modal textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 10px 12px;
+            border: 1px solid var(--c-divider);
+            border-radius: var(--c-radius-sm);
+            background: var(--c-surface-alt);
+            color: var(--c-on-surface);
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            resize: vertical;
+        }
+        .modal textarea::placeholder {
+            color: var(--c-muted);
+        }
+        .modal textarea:focus {
+            border-color: var(--c-primary);
+        }
+        .modal .warning-text {
+            font-size: 0.8rem;
+            color: var(--c-danger);
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .modal .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        .modal .modal-actions button {
+            padding: var(--c-btn-py) var(--c-btn-px);
+            border: none;
+            border-radius: var(--c-radius-sm);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            min-height: var(--c-btn-min-h);
+            font-weight: var(--c-font-weight);
+        }
+        .modal .btn-cancel {
+            background: var(--c-surface-alt);
+            color: var(--c-muted);
+        }
+        .modal .btn-cancel:hover {
+            background: var(--c-divider);
+        }
+        .modal .btn-save {
+            background: var(--brand-yellow);
+            color: var(--on-brand);
+        }
+        .modal .btn-save:hover {
+            background: var(--brand-yellow-deep);
+            color: #fff;
+        }
+
+        /* Event list in modal */
+        .modal .existing-events {
+            margin-bottom: 1rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .modal .existing-events .event-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--c-surface-alt);
+            border-radius: var(--c-radius-sm);
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal .existing-events .event-item:hover {
+            background: var(--c-primary-light);
+        }
+        .modal .existing-events .event-item.editing {
+            background: var(--c-primary-light);
+            border: 1px solid var(--c-primary);
+        }
+        .modal .existing-events .event-item .event-info {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .modal .existing-events .event-item .event-repeat-tag {
+            font-size: 0.7rem;
+            background: var(--c-secondary-light);
+            color: var(--c-secondary-dark);
+            padding: 1px 6px;
+            border-radius: var(--c-radius-sm);
+            font-weight: var(--c-font-weight);
+        }
+        .modal .existing-events .event-item .btn-delete {
+            background: none;
+            border: none;
+            color: var(--c-danger);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0 4px;
+        }
+        .modal .existing-events .event-item .btn-delete:hover {
+            color: var(--c-accent-dark);
+        }
+
+        /* Memo section */
+        .memo-section {
+            background: var(--c-surface);
+            border-radius: var(--c-radius-lg);
+            padding: var(--c-card-p);
+            margin-top: 1rem;
+            width: 100%;
+            text-align: left;
+            box-shadow: var(--c-shadow-lg);
+        }
+        .memo-section h2 {
+            font-size: 1.2rem;
+            margin: 0 0 1rem 0;
+            text-align: center;
+            font-weight: var(--c-heading-weight);
+            color: var(--c-primary);
+        }
+        .memo-input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+        .memo-input-area textarea {
+            width: 100%;
+            min-height: 60px;
+            padding: var(--c-input-py) 12px;
+            border: 1px solid var(--c-divider);
+            border-radius: var(--c-radius-sm);
+            background: var(--c-surface-alt);
+            color: var(--c-on-surface);
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .memo-input-area textarea::placeholder {
+            color: var(--c-muted);
+        }
+        .memo-input-area textarea:focus {
+            border-color: var(--c-primary);
+        }
+        .memo-input-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .memo-input-row label {
+            font-size: 0.85rem;
+            color: var(--c-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .memo-input-row input[type="checkbox"] {
+            accent-color: var(--c-primary);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .memo-input-row .btn-memo-save {
+            padding: var(--c-btn-py) var(--c-btn-px);
+            border: none;
+            border-radius: var(--r-md);
+            background: var(--brand-yellow);
+            color: var(--on-brand);
+            font-weight: var(--c-font-weight);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            min-height: var(--c-btn-min-h);
+        }
+        .memo-input-row .btn-memo-save:hover {
+            background: var(--brand-yellow-deep);
+            color: #fff;
+        }
+        .memo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .memo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background: var(--c-surface-alt);
+            border-radius: var(--c-radius-sm);
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .memo-item:hover {
+            background: var(--c-primary-light);
+        }
+        .memo-item.editing {
+            background: var(--c-primary-light);
+            border: 1px solid var(--c-primary);
+        }
+        .memo-item-content {
+            flex: 1;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .memo-item-tag {
+            font-size: 0.7rem;
+            background: var(--c-secondary-light);
+            color: var(--c-secondary-dark);
+            padding: 1px 6px;
+            border-radius: var(--c-radius-sm);
+            margin-left: 8px;
+            white-space: nowrap;
+            align-self: center;
+            font-weight: var(--c-font-weight);
+        }
+        .memo-item .btn-delete {
+            background: none;
+            border: none;
+            color: var(--c-danger);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0 0 0 8px;
+            align-self: center;
+        }
+        .memo-item .btn-delete:hover {
+            color: var(--c-accent-dark);
+        }
+
+        /* Toolbar buttons — ds .btn-secondary 와 동일 톤 */
+        .toolbar-btn {
+            background: var(--surface);
+            border: 1px solid var(--hairline);
+            color: var(--ink);
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: var(--r-md);
+            cursor: pointer;
+            transition: .15s;
+            font-weight: var(--c-font-weight);
+        }
+        .toolbar-btn:hover {
+            background: var(--surface-soft);
+            border-color: var(--brand-yellow);
+        }
+
+        @page {
+            size: landscape;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+                display: block;
+                min-height: auto;
+                padding: 0;
+            }
+            .container {
+                padding: 0;
+            }
+            h1, .eyebrow {
+                display: none !important;
+            }
+            .calendar {
+                background: none;
+                backdrop-filter: none;
+                border: none;
+                padding: 0;
+                min-width: auto;
+                width: 100%;
+            }
+            .calendar-header button,
+            .toolbar-btn,
+            .modal-overlay {
+                display: none !important;
+            }
+            .calendar-header {
+                justify-content: center;
+            }
+            .calendar-header .month-year {
+                color: black;
+                font-size: 1.5rem;
+            }
+            .calendar-weekdays span {
+                color: black !important;
+                opacity: 1;
+                border-bottom: 2px solid black;
+                padding-bottom: 4px;
+            }
+            .calendar-days .day {
+                border: 1px solid #999;
+                color: black;
+                min-height: 60px;
+                border-radius: 0;
+            }
+            .calendar-days .day.empty {
+                border-color: transparent;
+            }
+            .calendar-days .day .day-number {
+                color: black !important;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .calendar-days .day .day-number::after {
+                content: '';
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border: 1px solid #999;
+            }
+            .calendar-days .day.today {
+                background: none;
+            }
+            .calendar-days .day.today .day-number {
+                text-decoration: underline;
+            }
+            .calendar-days .day.sunday .day-number,
+            .calendar-days .day.saturday .day-number {
+                color: black !important;
+            }
+            .calendar-days .day .day-content {
+                opacity: 1;
+                color: black;
+            }
+            .calendar-days .day .day-content .event,
+            .calendar-days .day .day-content .event.repeat {
+                background: none;
+                border-bottom: 1px solid #ccc;
+                border-radius: 0;
+                padding: 1px 0;
+                color: black;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .calendar-days .day .day-content .event::after {
+                content: '';
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                min-width: 8px;
+                border: 1px solid #999;
+                margin-left: 4px;
+            }
+            .memo-section {
+                background: none;
+                backdrop-filter: none;
+                min-width: auto;
+                width: 100%;
+                padding: 0;
+                margin-top: 0.5rem;
+            }
+            .memo-section h2 {
+                display: none !important;
+            }
+            .memo-input-area {
+                display: none !important;
+            }
+            .memo-list {
+                display: none !important;
+            }
+            .memo-empty-print {
+                display: block !important;
+                border: 1px solid #999;
+                min-height: 2em;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 6px 8px;
+                font-size: 0.75rem;
+                color: black;
+            }
+
+            /* Nozzle cleaning pattern - print only */
+            .nozzle-clean {
+                display: block !important;
+                margin-top: 1.5rem;
+                page-break-inside: avoid;
+            }
+            .nozzle-clean .nc-label {
+                font-size: 0.6rem;
+                color: #999;
+                text-align: center;
+                margin-bottom: 4px;
+            }
+            .nozzle-bars {
+                display: flex;
+                gap: 2px;
+                height: 9px;
+            }
+            .nozzle-bars div {
+                flex: 1;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .nc-cyan    { background: #00ffff; }
+            .nc-magenta { background: #ff00ff; }
+            .nc-yellow  { background: #ffff00; }
+            .nc-black   { background: #000000; }
+            .nc-red     { background: #ff0000; }
+            .nc-green   { background: #00ff00; }
+            .nc-blue    { background: #0000ff; }
+            .nc-pattern {
+                display: flex;
+                gap: 0;
+                height: 5px;
+                margin-top: 2px;
+            }
+            .nc-pattern div {
+                flex: 1;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .nc-stripe-cm { background: repeating-linear-gradient(90deg, #00ffff 0px, #00ffff 2px, #ff00ff 2px, #ff00ff 4px); }
+            .nc-stripe-yk { background: repeating-linear-gradient(90deg, #ffff00 0px, #ffff00 2px, #000000 2px, #000000 4px); }
+            .nc-stripe-rb { background: repeating-linear-gradient(90deg, #ff0000 0px, #ff0000 2px, #0000ff 2px, #0000ff 4px); }
+            .nc-stripe-gm { background: repeating-linear-gradient(90deg, #00ff00 0px, #00ff00 2px, #ff00ff 2px, #ff00ff 4px); }
+            .nc-grad-cmyk { background: linear-gradient(90deg, #00ffff, #ff00ff, #ffff00, #000000); }
+            .nc-grad-rgb  { background: linear-gradient(90deg, #ff0000, #00ff00, #0000ff, #ff0000); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="eyebrow">OneThe Util</span>
+        <h1>월간 달력</h1>
+        <div class="calendar">
+            <div class="calendar-header">
+                <button id="prev-month">&#8249;</button>
+                <span class="month-year" id="month-year"></span>
+                <button id="next-month">&#8250;</button>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 8px;">
+                <button class="toolbar-btn" id="btn-export">내보내기</button>
+                <button class="toolbar-btn" id="btn-import">가져오기</button>
+                <button class="toolbar-btn" id="btn-print">&#128438; 인쇄</button>
+            </div>
+            <div class="calendar-weekdays">
+                <span class="sunday">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="saturday">토</span>
+            </div>
+            <div class="calendar-days" id="calendar-days"></div>
+        </div>
+        <div class="memo-section">
+            <h2>메모</h2>
+            <div class="memo-input-area">
+                <textarea id="memo-text" placeholder="메모 입력"></textarea>
+                <div class="memo-input-row">
+                    <label><input type="checkbox" id="memo-repeat"> 매월 반복</label>
+                    <button class="btn-memo-save" id="btn-memo-save">저장</button>
+                </div>
+            </div>
+            <div class="memo-list" id="memo-list"></div>
+            <div class="memo-empty-print" style="display:none;"></div>
+        </div>
+        <div class="nozzle-clean" style="display:none;">
+            <div class="nc-label">Nozzle Check Pattern</div>
+            <div class="nozzle-bars">
+                <div class="nc-cyan"></div>
+                <div class="nc-magenta"></div>
+                <div class="nc-yellow"></div>
+                <div class="nc-black"></div>
+                <div class="nc-red"></div>
+                <div class="nc-green"></div>
+                <div class="nc-blue"></div>
+            </div>
+            <div class="nc-pattern">
+                <div class="nc-stripe-cm"></div>
+                <div class="nc-stripe-yk"></div>
+                <div class="nc-stripe-rb"></div>
+                <div class="nc-stripe-gm"></div>
+            </div>
+            <div class="nc-pattern">
+                <div class="nc-grad-cmyk"></div>
+                <div class="nc-grad-rgb"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <h2 id="modal-title"></h2>
+            <div class="existing-events" id="existing-events"></div>
+            <label for="event-title">제목</label>
+            <input type="text" id="event-title" placeholder="일정 제목 입력">
+            <label>반복</label>
+            <div class="repeat-options">
+                <button type="button" data-repeat="none" class="selected">없음</button>
+                <button type="button" data-repeat="daily">매일</button>
+                <button type="button" data-repeat="daily-n">n일마다</button>
+                <button type="button" data-repeat="weekly">매주 같은 요일</button>
+                <button type="button" data-repeat="weekly-n">n주마다</button>
+                <button type="button" data-repeat="monthly">매월 같은 날짜</button>
+                <button type="button" data-repeat="monthly-nth">매월 첫째 요일</button>
+            </div>
+            <div class="repeat-interval" id="daily-interval">
+                <span>반복 간격:</span>
+                <input type="number" id="daily-interval-input" min="2" value="2">
+                <span>일마다</span>
+            </div>
+            <div class="repeat-interval" id="weekly-interval">
+                <span>반복 간격:</span>
+                <input type="number" id="weekly-interval-input" min="2" value="2">
+                <span>주마다</span>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="btn-cancel">취소</button>
+                <button class="btn-save" id="btn-save">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="export-overlay">
+        <div class="modal">
+            <h2>데이터 내보내기</h2>
+            <textarea id="export-json" readonly></textarea>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="export-cancel">닫기</button>
+                <button class="btn-save" id="export-copy">복사하기</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="import-overlay">
+        <div class="modal">
+            <h2>데이터 가져오기</h2>
+            <textarea id="import-json" placeholder="JSON 데이터를 붙여넣으세요"></textarea>
+            <div class="warning-text" id="import-warning" style="display:none;">기존 데이터에 덮어 씌워집니다. 되돌릴 수 없습니다.</div>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="import-cancel">취소</button>
+                <button class="btn-save" id="import-confirm">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const monthYearEl = document.getElementById('month-year');
+        const calendarDaysEl = document.getElementById('calendar-days');
+        const prevBtn = document.getElementById('prev-month');
+        const nextBtn = document.getElementById('next-month');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalTitle = document.getElementById('modal-title');
+        const existingEventsEl = document.getElementById('existing-events');
+        const eventTitleInput = document.getElementById('event-title');
+        const btnCancel = document.getElementById('btn-cancel');
+        const btnSave = document.getElementById('btn-save');
+        const repeatButtons = document.querySelectorAll('.repeat-options button');
+        const dailyIntervalWrap = document.getElementById('daily-interval');
+        const dailyIntervalInput = document.getElementById('daily-interval-input');
+        const weeklyIntervalWrap = document.getElementById('weekly-interval');
+        const weeklyIntervalInput = document.getElementById('weekly-interval-input');
+
+        let currentDate = new Date();
+        let selectedDate = null;
+        let selectedRepeat = 'none';
+        let editingEventId = null;
+
+        // Events stored in localStorage
+        // Each event: { id, title, date (YYYY-MM-DD), repeat: 'none'|'daily'|'weekly'|'monthly', dayOfWeek, dayOfMonth }
+        function loadEvents() {
+            return JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+        }
+
+        function saveEvents(events) {
+            localStorage.setItem('calendarEvents', JSON.stringify(events));
+        }
+
+        const repeatOrder = { none: 0, daily: 1, 'daily-n': 2, weekly: 3, 'weekly-n': 4, monthly: 5, 'monthly-nth': 6 };
+
+        function getEventsForDate(year, month, day) {
+            const events = loadEvents();
+            const targetDate = new Date(year, month, day);
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+            return events.filter(ev => {
+                if (ev.date === dateStr) return true;
+
+                const evDate = new Date(ev.date);
+                if (evDate > targetDate) return false;
+
+                if (ev.repeat === 'daily') return true;
+                if (ev.repeat === 'daily-n') {
+                    const interval = ev.dailyInterval || 2;
+                    const diffDays = Math.round((targetDate - evDate) / (1000 * 60 * 60 * 24));
+                    return diffDays % interval === 0;
+                }
+                if (ev.repeat === 'weekly' && targetDate.getDay() === ev.dayOfWeek) return true;
+                if (ev.repeat === 'weekly-n' && targetDate.getDay() === ev.dayOfWeek) {
+                    const interval = ev.weeklyInterval || 2;
+                    const diffWeeks = Math.round((targetDate - evDate) / (1000 * 60 * 60 * 24 * 7));
+                    return diffWeeks % interval === 0;
+                }
+                if (ev.repeat === 'monthly' && day === ev.dayOfMonth) return true;
+                if (ev.repeat === 'monthly-nth' && targetDate.getDay() === ev.dayOfWeek && Math.ceil(day / 7) === ev.nthWeek) return true;
+
+                return false;
+            }).sort((a, b) => (repeatOrder[a.repeat] ?? 99) - (repeatOrder[b.repeat] ?? 99));
+        }
+
+        function renderCalendar(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+
+            monthYearEl.textContent = `${year}년 ${month + 1}월`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+
+            let html = '';
+
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="day empty"></div>';
+            }
+
+            for (let d = 1; d <= lastDate; d++) {
+                const dayOfWeek = new Date(year, month, d).getDay();
+                let cls = 'day';
+                if (isCurrentMonth && d === today.getDate()) cls += ' today';
+                if (dayOfWeek === 0) cls += ' sunday';
+                if (dayOfWeek === 6) cls += ' saturday';
+
+                const events = getEventsForDate(year, month, d);
+                let eventsHtml = '';
+                for (const ev of events) {
+                    const repeatCls = ev.repeat !== 'none' ? ' repeat' : '';
+                    eventsHtml += `<div class="event${repeatCls}">${ev.title}</div>`;
+                }
+
+                html += `<div class="${cls}" data-year="${year}" data-month="${month}" data-day="${d}">
+                    <span class="day-number">${d}</span>
+                    <div class="day-content">${eventsHtml}</div>
+                </div>`;
+            }
+
+            calendarDaysEl.innerHTML = html;
+
+            calendarDaysEl.querySelectorAll('.day:not(.empty)').forEach(dayEl => {
+                dayEl.addEventListener('click', () => {
+                    const y = parseInt(dayEl.dataset.year);
+                    const m = parseInt(dayEl.dataset.month);
+                    const dd = parseInt(dayEl.dataset.day);
+                    openModal(y, m, dd);
+                });
+            });
+        }
+
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+        const nthNames = ['첫째', '둘째', '셋째', '넷째', '다섯째'];
+        const repeatLabels = { none: '', daily: '매일', 'daily-n': '', weekly: '', 'weekly-n': '', monthly: '매월', 'monthly-nth': '' };
+
+        function openModal(year, month, day) {
+            selectedDate = { year, month, day };
+            selectedRepeat = 'none';
+            editingEventId = null;
+            btnSave.textContent = '저장';
+            modalTitle.textContent = `${year}년 ${month + 1}월 ${day}일`;
+            eventTitleInput.value = '';
+
+            const dateObj = new Date(year, month, day);
+            const dow = dateObj.getDay();
+            const nth = Math.ceil(day / 7);
+
+            dailyIntervalInput.value = 1;
+            weeklyIntervalInput.value = 1;
+            repeatButtons.forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.repeat === 'none');
+                if (btn.dataset.repeat === 'weekly') btn.textContent = `매주 ${dayNames[dow]}요일`;
+                if (btn.dataset.repeat === 'weekly-n') btn.textContent = `n주마다 ${dayNames[dow]}요일`;
+                if (btn.dataset.repeat === 'monthly') btn.textContent = `매월 ${day}일`;
+                if (btn.dataset.repeat === 'monthly-nth') btn.textContent = `매월 ${nthNames[nth - 1]} ${dayNames[dow]}요일`;
+            });
+            updateIntervalVisibility();
+
+            renderExistingEvents(year, month, day);
+            modalOverlay.classList.add('active');
+            eventTitleInput.focus();
+        }
+
+        function renderExistingEvents(year, month, day) {
+            const events = getEventsForDate(year, month, day);
+            if (events.length === 0) {
+                existingEventsEl.innerHTML = '';
+                return;
+            }
+            let html = '';
+            for (const ev of events) {
+                let repeatLabel = repeatLabels[ev.repeat];
+                if (ev.repeat === 'daily-n') repeatLabel = `${ev.dailyInterval || 2}일마다`;
+                if (ev.repeat === 'weekly') repeatLabel = `매주 ${dayNames[ev.dayOfWeek]}`;
+                if (ev.repeat === 'weekly-n') repeatLabel = `${ev.weeklyInterval || 2}주마다 ${dayNames[ev.dayOfWeek]}`;
+                if (ev.repeat === 'monthly-nth') repeatLabel = `매월 ${nthNames[(ev.nthWeek || 1) - 1]} ${dayNames[ev.dayOfWeek]}`;
+                const tag = ev.repeat !== 'none' ? `<span class="event-repeat-tag">${repeatLabel}</span>` : '';
+                html += `<div class="event-item" data-id="${ev.id}">
+                    <span class="event-info"><span>${ev.title}</span>${tag}</span>
+                    <button class="btn-delete" data-id="${ev.id}">&times;</button>
+                </div>`;
+            }
+            existingEventsEl.innerHTML = html;
+
+            existingEventsEl.querySelectorAll('.event-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (e.target.closest('.btn-delete')) return;
+                    const id = item.dataset.id;
+                    const ev = loadEvents().find(e => e.id === id);
+                    if (!ev) return;
+                    editingEventId = id;
+                    eventTitleInput.value = ev.title;
+                    selectedRepeat = ev.repeat;
+                    dailyIntervalInput.value = ev.dailyInterval || 1;
+                    weeklyIntervalInput.value = ev.weeklyInterval || 1;
+                    repeatButtons.forEach(b => b.classList.toggle('selected', b.dataset.repeat === ev.repeat));
+                    updateIntervalVisibility();
+                    btnSave.textContent = '수정';
+                    existingEventsEl.querySelectorAll('.event-item').forEach(i => i.classList.remove('editing'));
+                    item.classList.add('editing');
+                });
+            });
+
+            existingEventsEl.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (editingEventId === btn.dataset.id) {
+                        editingEventId = null;
+                        eventTitleInput.value = '';
+                        selectedRepeat = 'none';
+                        repeatButtons.forEach(b => b.classList.toggle('selected', b.dataset.repeat === 'none'));
+                        btnSave.textContent = '저장';
+                    }
+                    deleteEvent(btn.dataset.id);
+                    renderExistingEvents(year, month, day);
+                    renderCalendar(currentDate);
+                });
+            });
+        }
+
+        function deleteEvent(id) {
+            const events = loadEvents().filter(ev => ev.id !== id);
+            saveEvents(events);
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+            selectedDate = null;
+        }
+
+        function updateIntervalVisibility() {
+            dailyIntervalWrap.classList.toggle('active', selectedRepeat === 'daily-n');
+            weeklyIntervalWrap.classList.toggle('active', selectedRepeat === 'weekly-n');
+        }
+
+        repeatButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectedRepeat = btn.dataset.repeat;
+                repeatButtons.forEach(b => b.classList.toggle('selected', b === btn));
+                updateIntervalVisibility();
+            });
+        });
+
+        btnCancel.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+
+        btnSave.addEventListener('click', () => {
+            const title = eventTitleInput.value.trim();
+            if (!title || !selectedDate) return;
+
+            const { year, month, day } = selectedDate;
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dateObj = new Date(year, month, day);
+            const nthWeek = Math.ceil(day / 7);
+
+            const events = loadEvents();
+
+            const dailyInterval = Math.max(1, parseInt(dailyIntervalInput.value) || 1);
+            const weeklyInterval = Math.max(1, parseInt(weeklyIntervalInput.value) || 1);
+
+            if (editingEventId) {
+                const idx = events.findIndex(ev => ev.id === editingEventId);
+                if (idx !== -1) {
+                    events[idx].title = title;
+                    events[idx].repeat = selectedRepeat;
+                    events[idx].dayOfWeek = dateObj.getDay();
+                    events[idx].dayOfMonth = day;
+                    events[idx].nthWeek = nthWeek;
+                    events[idx].dailyInterval = dailyInterval;
+                    events[idx].weeklyInterval = weeklyInterval;
+                }
+                editingEventId = null;
+                btnSave.textContent = '저장';
+            } else {
+                events.push({
+                    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                    title,
+                    date: dateStr,
+                    repeat: selectedRepeat,
+                    dayOfWeek: dateObj.getDay(),
+                    dayOfMonth: day,
+                    nthWeek,
+                    dailyInterval,
+                    weeklyInterval
+                });
+            }
+
+            saveEvents(events);
+            renderCalendar(currentDate);
+            renderExistingEvents(year, month, day);
+            eventTitleInput.value = '';
+            selectedRepeat = 'none';
+            repeatButtons.forEach(b => b.classList.toggle('selected', b.dataset.repeat === 'none'));
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Enter' && modalOverlay.classList.contains('active')) btnSave.click();
+        });
+
+        document.getElementById('btn-print').addEventListener('click', () => {
+            window.print();
+        });
+
+        // Export modal
+        const exportOverlay = document.getElementById('export-overlay');
+        const exportJson = document.getElementById('export-json');
+
+        document.getElementById('btn-export').addEventListener('click', () => {
+            const data = {
+                calendarEvents: JSON.parse(localStorage.getItem('calendarEvents') || '[]'),
+                calendarMemos: JSON.parse(localStorage.getItem('calendarMemos') || '[]')
+            };
+            exportJson.value = JSON.stringify(data, null, 2);
+            exportOverlay.classList.add('active');
+        });
+
+        document.getElementById('export-copy').addEventListener('click', () => {
+            exportJson.select();
+            navigator.clipboard.writeText(exportJson.value);
+            document.getElementById('export-copy').textContent = '복사됨!';
+            setTimeout(() => { document.getElementById('export-copy').textContent = '복사하기'; }, 1500);
+        });
+
+        document.getElementById('export-cancel').addEventListener('click', () => {
+            exportOverlay.classList.remove('active');
+        });
+        exportOverlay.addEventListener('click', (e) => {
+            if (e.target === exportOverlay) exportOverlay.classList.remove('active');
+        });
+
+        // Import modal
+        const importOverlay = document.getElementById('import-overlay');
+        const importJson = document.getElementById('import-json');
+        const importWarning = document.getElementById('import-warning');
+        let importConfirmStep = false;
+
+        document.getElementById('btn-import').addEventListener('click', () => {
+            importJson.value = '';
+            importWarning.style.display = 'none';
+            importConfirmStep = false;
+            document.getElementById('import-confirm').textContent = '확인';
+            importOverlay.classList.add('active');
+            importJson.focus();
+        });
+
+        document.getElementById('import-confirm').addEventListener('click', () => {
+            const text = importJson.value.trim();
+            if (!text) return;
+
+            if (!importConfirmStep) {
+                try {
+                    JSON.parse(text);
+                } catch {
+                    alert('올바른 JSON 형식이 아닙니다.');
+                    return;
+                }
+                importWarning.style.display = 'block';
+                document.getElementById('import-confirm').textContent = '적용하기';
+                importConfirmStep = true;
+                return;
+            }
+
+            try {
+                const data = JSON.parse(text);
+                if (data.calendarEvents) localStorage.setItem('calendarEvents', JSON.stringify(data.calendarEvents));
+                if (data.calendarMemos) localStorage.setItem('calendarMemos', JSON.stringify(data.calendarMemos));
+                renderCalendar(currentDate);
+                renderMemos();
+                importOverlay.classList.remove('active');
+            } catch {
+                alert('올바른 JSON 형식이 아닙니다.');
+            }
+        });
+
+        document.getElementById('import-cancel').addEventListener('click', () => {
+            importOverlay.classList.remove('active');
+        });
+        importOverlay.addEventListener('click', (e) => {
+            if (e.target === importOverlay) importOverlay.classList.remove('active');
+        });
+
+        // ---- Memo ----
+        const memoTextEl = document.getElementById('memo-text');
+        const memoRepeatEl = document.getElementById('memo-repeat');
+        const btnMemoSave = document.getElementById('btn-memo-save');
+        const memoListEl = document.getElementById('memo-list');
+        let editingMemoId = null;
+
+        function loadMemos() {
+            return JSON.parse(localStorage.getItem('calendarMemos') || '[]');
+        }
+
+        function saveMemos(memos) {
+            localStorage.setItem('calendarMemos', JSON.stringify(memos));
+        }
+
+        function getMemosForMonth(year, month) {
+            return loadMemos().filter(m => {
+                if (m.year === year && m.month === month) return true;
+                if (m.repeat) {
+                    const mDate = new Date(m.year, m.month);
+                    const tDate = new Date(year, month);
+                    return mDate <= tDate;
+                }
+                return false;
+            });
+        }
+
+        const memoPrintEl = document.querySelector('.memo-empty-print');
+
+        function renderMemos() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const memos = getMemosForMonth(year, month);
+
+            // Update print box content
+            if (memos.length === 0) {
+                memoPrintEl.textContent = '';
+            } else {
+                memoPrintEl.textContent = memos.map(m => m.text).join(' / ');
+            }
+
+            if (memos.length === 0) {
+                memoListEl.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            for (const m of memos) {
+                const tag = m.repeat ? '<span class="memo-item-tag">매월</span>' : '';
+                const escaped = m.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                html += `<div class="memo-item" data-id="${m.id}">
+                    <span class="memo-item-content">${escaped}</span>
+                    ${tag}
+                    <button class="btn-delete" data-id="${m.id}">&times;</button>
+                </div>`;
+            }
+            memoListEl.innerHTML = html;
+
+            memoListEl.querySelectorAll('.memo-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (e.target.closest('.btn-delete')) return;
+                    const id = item.dataset.id;
+                    const m = loadMemos().find(m => m.id === id);
+                    if (!m) return;
+                    editingMemoId = id;
+                    memoTextEl.value = m.text;
+                    memoRepeatEl.checked = m.repeat;
+                    btnMemoSave.textContent = '수정';
+                    memoListEl.querySelectorAll('.memo-item').forEach(i => i.classList.remove('editing'));
+                    item.classList.add('editing');
+                });
+            });
+
+            memoListEl.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (editingMemoId === btn.dataset.id) {
+                        editingMemoId = null;
+                        memoTextEl.value = '';
+                        memoRepeatEl.checked = false;
+                        btnMemoSave.textContent = '저장';
+                    }
+                    const memos = loadMemos().filter(m => m.id !== btn.dataset.id);
+                    saveMemos(memos);
+                    renderMemos();
+                });
+            });
+        }
+
+        btnMemoSave.addEventListener('click', () => {
+            const text = memoTextEl.value.trim();
+            if (!text) return;
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const memos = loadMemos();
+
+            if (editingMemoId) {
+                const idx = memos.findIndex(m => m.id === editingMemoId);
+                if (idx !== -1) {
+                    memos[idx].text = text;
+                    memos[idx].repeat = memoRepeatEl.checked;
+                }
+                editingMemoId = null;
+                btnMemoSave.textContent = '저장';
+            } else {
+                memos.push({
+                    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                    text,
+                    year,
+                    month,
+                    repeat: memoRepeatEl.checked
+                });
+            }
+
+            saveMemos(memos);
+            memoTextEl.value = '';
+            memoRepeatEl.checked = false;
+            renderMemos();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar(currentDate);
+            renderMemos();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar(currentDate);
+            renderMemos();
+        });
+
+        renderCalendar(currentDate);
+        renderMemos();
+    </script>
+</body>
+</html>
