@@ -1,4 +1,5 @@
 /* OneTheLab Design System — quartz.onethelab.com */
+*{box-sizing:border-box;}
 :root{
   --brand-yellow:#FFD400;
   --brand-yellow-soft:#FFE766;
