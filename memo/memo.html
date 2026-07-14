@@ -42,9 +42,12 @@
     border:1px solid var(--hairline);border-radius:var(--r-md);padding:12px 14px;}
   .composer textarea:focus,.composer input:focus{outline:none;border-color:var(--brand-yellow);}
   .row{display:flex;align-items:center;gap:var(--s3);margin-top:var(--s3);flex-wrap:wrap;}
-  .composer input[type=password]{flex:1;min-width:180px;
+  .composer input.masked{flex:1;min-width:180px;
     font-family:var(--font);font-size:14px;color:var(--ink);background:var(--canvas);
     border:1px solid var(--hairline);border-radius:var(--r-md);padding:10px 14px;}
+
+  /* type=password 대신 텍스트 마스킹 → 브라우저 비밀번호 관리자 저장/업데이트 제안 차단 */
+  input.masked{-webkit-text-security:disc;text-security:disc;letter-spacing:.08em;}
   .hint{font-size:12px;color:var(--muted);margin-top:var(--s2);}
   .cf-turnstile{margin-top:var(--s3);}
 
@@ -64,6 +67,7 @@
   .del-row.open{display:flex;}
   .del-row input{width:130px;font-size:13px;color:var(--ink);background:var(--canvas);
     border:1px solid var(--hairline);border-radius:var(--r-sm);padding:6px 10px;}
+  .del-row input:focus{outline:none;border-color:var(--brand-yellow);}
   .empty{color:var(--muted);font-size:14px;text-align:center;padding:var(--s7) 0;}
 
   /* 토스트 */
@@ -83,15 +87,18 @@
     <p class="sub">누구나 남기는 공개 메모. 비밀번호로 본인 메모만 삭제.</p>
   </header>
 
-  <form class="card composer" id="form">
-    <textarea id="content" maxlength="2000" placeholder="메모 내용 (최대 2000자)" required></textarea>
+  <!-- <form> 없음 + type=password 없음 → 브라우저 비밀번호 저장 제안 안 뜸 -->
+  <div class="card composer" id="composer">
+    <textarea id="content" maxlength="2000" placeholder="메모 내용 (최대 2000자)"></textarea>
     <div class="row">
-      <input type="password" id="password" placeholder="삭제용 비밀번호" autocomplete="new-password" required>
-      <button class="btn btn-primary" type="submit" id="submitBtn">게시</button>
+      <input type="text" class="masked" id="password" placeholder="삭제용 비밀번호"
+             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+             name="memo-key" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other">
+      <button class="btn btn-primary" type="button" id="submitBtn">게시</button>
     </div>
     <div class="cf-turnstile" id="cf" data-theme="dark"></div>
     <p class="hint">스팸 방지: 봇 검증 · 한국 IP만 게시 · 작성 3초 이내 게시 차단</p>
-  </form>
+  </div>
 
   <div class="list" id="list"></div>
   <p class="empty" id="empty" hidden>아직 메모가 없습니다.</p>
@@ -102,7 +109,6 @@
 <script>
 (function () {
   const SB = window.SB_CLIENT;
-  const form = document.getElementById("form");
   const contentEl = document.getElementById("content");
   const passwordEl = document.getElementById("password");
   const submitBtn = document.getElementById("submitBtn");
@@ -177,9 +183,14 @@
       const delRow = document.createElement("div");
       delRow.className = "del-row";
       const pw = document.createElement("input");
-      pw.type = "password";
+      pw.type = "text";                  // password 아님 → 저장 제안 차단
+      pw.className = "masked";
       pw.placeholder = "비밀번호";
       pw.autocomplete = "off";
+      pw.spellcheck = false;
+      pw.setAttribute("data-1p-ignore", "");
+      pw.setAttribute("data-lpignore", "true");
+      pw.setAttribute("data-form-type", "other");
       const ok = document.createElement("button");
       ok.type = "button";
       ok.className = "btn btn-primary btn-sm";
@@ -246,8 +257,7 @@
   }
 
   // ───────── 게시 ─────────
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  submitBtn.addEventListener("click", async () => {
     const content = contentEl.value.trim();
     const password = passwordEl.value;
     if (!content || !password) { toast("내용과 비밀번호를 입력하세요.", true); return; }
@@ -270,6 +280,7 @@
     toast("게시 완료");
     load();
   });
+  passwordEl.addEventListener("keydown", (e) => { if (e.key === "Enter") submitBtn.click(); });
 
   // ───────── 삭제 ─────────
   async function remove(id, password, btn) {
