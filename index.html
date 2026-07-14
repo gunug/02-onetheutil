@@ -10,11 +10,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/ds.css">
     <style>
-        .link-list{list-style:none;padding:0;display:grid;gap:var(--s4);}
-        .link-list .card{display:flex;justify-content:space-between;align-items:center;gap:var(--s4);}
+        .link-list{list-style:none;padding:0;margin:0;display:grid;
+            grid-template-columns:repeat(3,1fr);gap:var(--s4);}
+        .link-list .card{display:flex;flex-direction:column;gap:6px;height:100%;
+            cursor:pointer;transition:.15s;text-decoration:none;}
+        .link-list .card:hover{border-color:var(--brand-yellow);
+            box-shadow:var(--sh-md);transform:translateY(-2px);}
         .link-list h3{margin:0;}
-        .link-list .desc{color:var(--muted);font-size:13px;margin-top:4px;}
-        .link-list .txt{min-width:0;}
+        .link-list .desc{color:var(--muted);font-size:13px;margin-top:2px;}
+        @media(max-width:900px){.link-list{grid-template-columns:repeat(2,1fr);}}
+        @media(max-width:560px){.link-list{grid-template-columns:1fr;}}
         .hero{margin-bottom:var(--s7);}
         .hero h1{font-size:44px;line-height:1.05;}
         .hero p{color:var(--muted);font-size:18px;margin-top:var(--s3);}
@@ -51,49 +56,34 @@
 
         <ul class="link-list">
             <li>
-                <div class="card">
-                    <div class="txt">
-                        <h3>표준 도급계약서</h3>
-                        <p class="desc">소프트웨어종사자(용역) 표준 도급계약서 작성·인쇄</p>
-                    </div>
-                    <a href="contect/contect.html" class="btn btn-primary">열기</a>
-                </div>
+                <a class="card" href="contect/contect.html">
+                    <h3>표준 도급계약서</h3>
+                    <p class="desc">소프트웨어종사자(용역) 표준 도급계약서 작성·인쇄</p>
+                </a>
             </li>
             <li>
-                <div class="card">
-                    <div class="txt">
-                        <h3>디자인 시스템</h3>
-                        <p class="desc">OneTheLab 디자인 토큰·컴포넌트 레퍼런스</p>
-                    </div>
-                    <a href="design-system/design_system.html" class="btn btn-primary">열기</a>
-                </div>
+                <a class="card" href="design-system/design_system.html">
+                    <h3>디자인 시스템</h3>
+                    <p class="desc">OneTheLab 디자인 토큰·컴포넌트 레퍼런스</p>
+                </a>
             </li>
             <li>
-                <div class="card">
-                    <div class="txt">
-                        <h3>아이콘 빌더</h3>
-                        <p class="desc">SVG 아이콘 조합·생성 (Supabase)</p>
-                    </div>
-                    <a href="icon-builder/icon_builder.html" class="btn btn-primary">열기</a>
-                </div>
+                <a class="card" href="icon-builder/icon_builder.html">
+                    <h3>아이콘 빌더</h3>
+                    <p class="desc">SVG 아이콘 조합·생성 (Supabase)</p>
+                </a>
             </li>
             <li>
-                <div class="card">
-                    <div class="txt">
-                        <h3>SVG 갤러리</h3>
-                        <p class="desc">업로드된 아이콘 열람·관리</p>
-                    </div>
-                    <a href="svg-gallery/svg_gallery.html" class="btn btn-primary">열기</a>
-                </div>
+                <a class="card" href="svg-gallery/svg_gallery.html">
+                    <h3>SVG 갤러리</h3>
+                    <p class="desc">업로드된 아이콘 열람·관리</p>
+                </a>
             </li>
             <li>
-                <div class="card">
-                    <div class="txt">
-                        <h3>SVG 그리드 빌더</h3>
-                        <p class="desc">10×10 그리드 아이콘 합성·내보내기</p>
-                    </div>
-                    <a href="svg-grid-builder/svg_grid_builder.html" class="btn btn-primary">열기</a>
-                </div>
+                <a class="card" href="svg-grid-builder/svg_grid_builder.html">
+                    <h3>SVG 그리드 빌더</h3>
+                    <p class="desc">10×10 그리드 아이콘 합성·내보내기</p>
+                </a>
             </li>
         </ul>
     </main>
