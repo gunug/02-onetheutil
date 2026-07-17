@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>표준근로계약서</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/favicon-labor.svg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/ds.css">
+    <style>
+        body { font-family: var(--font); }
+        .container { max-width: 1024px; margin: 2rem auto; }
+        h1, h2 { text-align: center; }
+        .contract-body { line-height: 1.9; }
+        .contract-body .clause { margin-top: var(--s4); }
+        .contract-body .clause > .title { font-weight: 700; color: var(--ink); }
+        .contract-body .sub { padding-left: 1.2em; }
+        .signature-block { margin-top: 3rem; line-height: 2; }
+        #contract-form {
+            margin-bottom: var(--s6);
+            padding: var(--s6);
+            border: 1px solid var(--hairline);
+            border-radius: var(--r-lg);
+            background-color: var(--surface);
+            box-shadow: var(--sh-sm);
+        }
+        #contract-form h2 { text-align: left; margin-top: 0; margin-bottom: 1.5rem; }
+        #contract-form .grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+        .form-section { margin-bottom: var(--s6); }
+        .form-section h3 {
+            text-align: left; font-size: 1.15rem; color: var(--ink);
+            border-bottom: 2px solid var(--hairline); padding-bottom: var(--s2); margin-bottom: var(--s4);
+        }
+        #contract-form input, #contract-form textarea, #contract-form select {
+            border-radius: var(--r-sm); border: 1px solid var(--hairline); background: var(--surface-soft);
+        }
+        .container table { border: 1px solid var(--hairline); border-radius: var(--r-md); overflow: hidden; }
+        .doc {
+            border: 1px solid var(--hairline); border-radius: var(--r-lg);
+            padding: var(--s7) var(--s6); background-color: var(--surface); box-shadow: var(--sh-sm);
+        }
+        span.placeholder { color: var(--brand-yellow-deep); font-weight: bold; }
+        .check { font-family: var(--mono); }
+        @media print {
+            #contract-form, hr { display: none; }
+            body { background: #fff; color: #000; }
+            .doc { background: #fff; border: none; box-shadow: none; padding: 0; }
+            span.placeholder { color: #007bff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .check { color: #000; }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <form id="contract-form" action="javascript:void(0);">
+            <h2>근로계약 정보 입력</h2>
+
+            <div class="form-section">
+                <h3>당사자</h3>
+                <div class="grid">
+                    <label>사업체명: <input type="text" id="employerName" placeholder="원더랩"></label>
+                    <label>대표자: <input type="text" id="employerRep" placeholder="조건희"></label>
+                    <label>사업주 전화: <input type="text" id="employerPhone" placeholder="010-0000-0000"></label>
+                    <label>사업주 주소: <input type="text" id="employerAddress"></label>
+                    <label>근로자 성명: <input type="text" id="workerName" placeholder="이승연"></label>
+                    <label>근로자 주소: <input type="text" id="workerAddress"></label>
+                    <label>근로자 연락처: <input type="text" id="workerContact" placeholder="010-0000-0000"></label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>근로조건</h3>
+                <div class="grid">
+                    <label>근로개시일: <input type="date" id="startDate"></label>
+                    <label>
+                        <span>근로종료일 (기간제): <input type="date" id="endDate"></span>
+                    </label>
+                    <label>근무장소: <input type="text" id="workplace"></label>
+                    <label>업무의 내용: <textarea id="jobDescription" rows="2"></textarea></label>
+                    <label>시업 시각: <input type="time" id="workStart"></label>
+                    <label>종업 시각: <input type="time" id="workEnd"></label>
+                    <label>휴게 시작: <input type="time" id="breakStart"></label>
+                    <label>휴게 종료: <input type="time" id="breakEnd"></label>
+                    <label>근무일/휴일: <input type="text" id="workDays" placeholder="매주 토요일 근무"></label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>임금</h3>
+                <div class="grid">
+                    <label>임금 형태:
+                        <select id="wageType">
+                            <option value="시급">시급</option>
+                            <option value="일급">일급</option>
+                            <option value="주급">주급</option>
+                            <option value="월급">월급</option>
+                        </select>
+                    </label>
+                    <label>금액 (원): <input type="number" id="wageAmount" placeholder="15000"></label>
+                    <label>
+                        <input type="checkbox" id="bonusExists" role="switch"> 상여금 있음
+                    </label>
+                    <label>상여금 (원): <input type="number" id="bonusAmount"></label>
+                    <label>
+                        <input type="checkbox" id="otherPayExists" role="switch"> 기타급여(제수당) 있음
+                    </label>
+                    <label>기타급여 상세: <textarea id="otherPayDetail" rows="2" placeholder="· 30000원 (초과근무 2시간)"></textarea></label>
+                    <label>임금지급일: <textarea id="payDateDetail" rows="2" placeholder="매월 25일 (휴일의 경우 전일 지급)"></textarea></label>
+                    <label>지급방법:
+                        <select id="payMethod">
+                            <option value="입금">근로자 명의 예금통장 입금</option>
+                            <option value="직접">근로자에게 직접지급</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>사회보험 적용</h3>
+                <div class="grid">
+                    <label><input type="checkbox" id="insEmployment"> 고용보험</label>
+                    <label><input type="checkbox" id="insAccident"> 산재보험</label>
+                    <label><input type="checkbox" id="insPension"> 국민연금</label>
+                    <label><input type="checkbox" id="insHealth"> 건강보험</label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>기타</h3>
+                <div class="grid">
+                    <label>특약사항 (선택): <textarea id="specialTerms" rows="2"></textarea></label>
+                    <label>계약 체결일: <input type="date" id="contractDate"></label>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="window.print()">인쇄</button>
+        </form>
+
+        <hr>
+
+        <div class="doc">
+            <h1>표준근로계약서</h1>
+            <br>
+            <p><span id="p-employerHeader" class="placeholder"></span> (이하 “사업주”라 함)과(와) <span id="p-workerName" class="placeholder"></span> (이하 “근로자”라 함)은 다음과 같이 근로계약을 체결한다.</p>
+
+            <div class="contract-body">
+                <p class="clause"><span class="title">1. 근로개시일 :</span> <span id="p-period" class="placeholder"></span></p>
+                <p class="clause"><span class="title">2. 근 무 장 소 :</span> <span id="p-workplace" class="placeholder"></span></p>
+                <p class="clause"><span class="title">3. 업무의 내용 :</span> <span id="p-jobDescription" class="placeholder"></span></p>
+                <p class="clause"><span class="title">4. 소정근로시간 :</span> <span id="p-workTime" class="placeholder"></span> (휴게시간 : <span id="p-breakTime" class="placeholder"></span>)</p>
+                <p class="clause"><span class="title">5. 근무일/휴일 :</span> <span id="p-workDays" class="placeholder"></span></p>
+                <p class="clause"><span class="title">6. 임 금</span></p>
+                <p class="sub">- <span id="p-wageType" class="placeholder"></span> : <span id="p-wageAmount" class="placeholder"></span> 원</p>
+                <p class="sub">- 상여금 : 있음 (<span id="p-bonusYes" class="check"></span>) <span id="p-bonusAmount" class="placeholder"></span> 원, 없음 (<span id="p-bonusNo" class="check"></span>)</p>
+                <p class="sub">- 기타급여(제수당 등) : 있음 (<span id="p-otherYes" class="check"></span>), 없음 (<span id="p-otherNo" class="check"></span>)</p>
+                <p class="sub" id="otherDetailRow" style="padding-left:2.4em;"><span id="p-otherPayDetail" class="placeholder"></span></p>
+                <p class="sub">- 임금지급일 : <span id="p-payDateDetail" class="placeholder"></span></p>
+                <p class="sub">- 지급방법 : 근로자에게 직접지급 (<span id="p-payDirect" class="check"></span>), 근로자 명의 예금통장에 입금 (<span id="p-payBank" class="check"></span>)</p>
+                <p class="clause"><span class="title">7. 연차유급휴가</span></p>
+                <p class="sub">- 연차유급휴가는 근로기준법에서 정하는 바에 따라 부여함</p>
+                <p class="clause"><span class="title">8. 사회보험 적용여부(해당란에 체크)</span></p>
+                <p class="sub check"><span id="p-insEmployment"></span> 고용보험 &nbsp; <span id="p-insAccident"></span> 산재보험 &nbsp; <span id="p-insPension"></span> 국민연금 &nbsp; <span id="p-insHealth"></span> 건강보험</p>
+                <p class="clause"><span class="title">9. 근로계약서 교부</span></p>
+                <p class="sub">- 사업주는 근로계약을 체결함과 동시에 본 계약서를 사본하여 근로자의 교부요구와 관계없이 근로자에게 교부함(근로기준법 제17조 이행)</p>
+                <p class="clause"><span class="title">10. 근로계약, 취업규칙 등의 성실한 이행의무</span></p>
+                <p class="sub">- 사업주와 근로자는 각자가 근로계약, 취업규칙, 단체협약을 지키고 성실하게 이행하여야 함</p>
+                <p class="clause"><span class="title">11. 기 타</span></p>
+                <p class="sub">- 이 계약에 정함이 없는 사항은 근로기준법령에 의함</p>
+                <p class="sub" id="specialRow"><span id="p-specialTerms" class="placeholder"></span></p>
+            </div>
+
+            <div class="signature-block">
+                <p style="text-align:center;"><span id="p-cd-year" class="placeholder"></span> 년 <span id="p-cd-month" class="placeholder"></span> 월 <span id="p-cd-day" class="placeholder"></span> 일</p>
+                <br>
+                <p>(사업주) 사업체명 : <span id="p-employerName" class="placeholder"></span> &nbsp; (전화 : <span id="p-employerPhone" class="placeholder"></span>)</p>
+                <p>주　　소 : <span id="p-employerAddress" class="placeholder"></span></p>
+                <p>대 표 자 : <span id="p-employerRep" class="placeholder"></span> (서명)</p>
+                <br>
+                <p>(근로자) 주　　소 : <span id="p-workerAddress" class="placeholder"></span></p>
+                <p>연 락 처 : <span id="p-workerContact" class="placeholder"></span></p>
+                <p>성　　명 : <span id="p-workerName2" class="placeholder"></span> (서명)</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('contract-form');
+            const storageKey = 'laborContractData';
+            const EMPTY = '________';
+
+            const inputIds = [
+                'employerName','employerRep','employerPhone','employerAddress',
+                'workerName','workerAddress','workerContact',
+                'startDate','endDate','workplace','jobDescription',
+                'workStart','workEnd','breakStart','breakEnd','workDays',
+                'wageType','wageAmount','bonusExists','bonusAmount',
+                'otherPayExists','otherPayDetail','payDateDetail','payMethod',
+                'insEmployment','insAccident','insPension','insHealth',
+                'specialTerms','contractDate'
+            ];
+
+            const $ = id => document.getElementById(id);
+
+            function getData() {
+                const d = {};
+                inputIds.forEach(id => {
+                    const el = $(id);
+                    if (!el) return;
+                    d[id] = el.type === 'checkbox' ? el.checked : el.value;
+                });
+                return d;
+            }
+
+            function fmtDate(s) {
+                if (!s) return null;
+                const dt = new Date(s);
+                return { y: dt.getFullYear(), m: dt.getMonth() + 1, d: dt.getDate(),
+                         full: `${dt.getFullYear()}년 ${dt.getMonth() + 1}월 ${dt.getDate()}일` };
+            }
+            function fmtNum(n) { return n ? Number(n).toLocaleString() : EMPTY; }
+            function setText(id, v) { const el = $(id); if (el) el.textContent = (v == null || v === '') ? EMPTY : v; }
+            function setMulti(id, v) { const el = $(id); if (el) el.innerHTML = (v ? String(v).replace(/\n/g, '<br>') : EMPTY); }
+
+            function hoursBetween(a, b) {
+                if (!a || !b) return null;
+                const [ah, am] = a.split(':').map(Number);
+                const [bh, bm] = b.split(':').map(Number);
+                let mins = (bh * 60 + bm) - (ah * 60 + am);
+                if (mins < 0) mins += 24 * 60;
+                const h = mins / 60;
+                return Number.isInteger(h) ? String(h) : h.toFixed(1);
+            }
+
+            function update() {
+                const d = getData();
+
+                // 당사자
+                const header = d.employerName
+                    ? d.employerName + (d.employerRep ? `(${d.employerRep})` : '')
+                    : EMPTY;
+                setText('p-employerHeader', header);
+                setText('p-workerName', d.workerName);
+                setText('p-workerName2', d.workerName);
+
+                // 1. 근로개시일
+                const s = fmtDate(d.startDate), e = fmtDate(d.endDate);
+                let period = s ? `${s.full}부터` : EMPTY;
+                if (e) period += `, ${e.full} 까지`;
+                setText('p-period', period);
+
+                // 2~3
+                setText('p-workplace', d.workplace);
+                setMulti('p-jobDescription', d.jobDescription);
+
+                // 4. 소정근로시간
+                if (d.workStart && d.workEnd) {
+                    const h = hoursBetween(d.workStart, d.workEnd);
+                    setText('p-workTime', `${d.workStart} 부터 ${d.workEnd} 까지 (${h}시간)`);
+                } else setText('p-workTime', EMPTY);
+                if (d.breakStart && d.breakEnd) setText('p-breakTime', `${d.breakStart} ~ ${d.breakEnd}`);
+                else setText('p-breakTime', EMPTY);
+
+                // 5
+                setText('p-workDays', d.workDays);
+
+                // 6. 임금
+                setText('p-wageType', d.wageType || '시급');
+                setText('p-wageAmount', fmtNum(d.wageAmount));
+                $('p-bonusYes').textContent = d.bonusExists ? 'O' : '';
+                $('p-bonusNo').textContent = d.bonusExists ? '' : 'O';
+                setText('p-bonusAmount', d.bonusExists ? fmtNum(d.bonusAmount) : EMPTY);
+                $('p-otherYes').textContent = d.otherPayExists ? 'O' : '';
+                $('p-otherNo').textContent = d.otherPayExists ? '' : 'O';
+                $('otherDetailRow').style.display = d.otherPayExists ? '' : 'none';
+                setMulti('p-otherPayDetail', d.otherPayDetail);
+                setMulti('p-payDateDetail', d.payDateDetail);
+                $('p-payDirect').textContent = d.payMethod === '직접' ? 'O' : '';
+                $('p-payBank').textContent = d.payMethod === '입금' || !d.payMethod ? 'O' : '';
+
+                // 8. 사회보험
+                $('p-insEmployment').textContent = d.insEmployment ? '☑' : '□';
+                $('p-insAccident').textContent = d.insAccident ? '☑' : '□';
+                $('p-insPension').textContent = d.insPension ? '☑' : '□';
+                $('p-insHealth').textContent = d.insHealth ? '☑' : '□';
+
+                // 특약
+                const specialRow = $('specialRow');
+                if (d.specialTerms) { specialRow.style.display = ''; setMulti('p-specialTerms', '- ' + d.specialTerms); }
+                else specialRow.style.display = 'none';
+
+                // 서명 날짜
+                const cd = fmtDate(d.contractDate);
+                setText('p-cd-year', cd ? cd.y : EMPTY);
+                setText('p-cd-month', cd ? cd.m : EMPTY);
+                setText('p-cd-day', cd ? cd.d : EMPTY);
+
+                // 서명란
+                setText('p-employerName', d.employerName);
+                setText('p-employerPhone', d.employerPhone);
+                setText('p-employerAddress', d.employerAddress);
+                setText('p-employerRep', d.employerRep);
+                setText('p-workerAddress', d.workerAddress);
+                setText('p-workerContact', d.workerContact);
+            }
+
+            function save() { localStorage.setItem(storageKey, JSON.stringify(getData())); }
+            function load() {
+                const d = JSON.parse(localStorage.getItem(storageKey) || '{}');
+                Object.keys(d).forEach(id => {
+                    const el = $(id);
+                    if (!el) return;
+                    if (el.type === 'checkbox') el.checked = d[id];
+                    else el.value = d[id];
+                });
+            }
+
+            form.addEventListener('input', () => { save(); update(); });
+            form.addEventListener('change', () => { save(); update(); });
+
+            load();
+            update();
+        });
+    </script>
+</body>
+</html>
