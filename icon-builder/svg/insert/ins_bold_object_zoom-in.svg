@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="zoom-in">
+  <g transform="translate(6,6) scale(0.5)">
+    <circle class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" cx="11" cy="11" r="6.6"/>
+    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M15.8 15.8l4.6 4.6"/>
+    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M8.6 11h4.8M11 8.6v4.8"/>
+  </g>
+</svg>

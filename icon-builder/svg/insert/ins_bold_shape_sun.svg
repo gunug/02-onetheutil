@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="sun">
+  <g transform="translate(6,6) scale(0.5)">
+    <circle class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" cx="12" cy="12" r="4.1"/>
+    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M12 2.6v2.3M12 19.1v2.3M2.6 12h2.3M19.1 12h2.3M5.4 5.4l1.7 1.7M16.9 16.9l1.7 1.7M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7"/>
+  </g>
+</svg>

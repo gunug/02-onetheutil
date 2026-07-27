@@ -1,5 +1,5 @@
 {
-"count": 151,
+"count": 170,
 "items": [
 {
 "folder": "frame",
@@ -433,6 +433,11 @@
 },
 {
 "folder": "insert",
+"name": "ins_bold_chart_bar-steps",
+"path": "svg/insert/ins_bold_chart_bar-steps.svg"
+},
+{
+"folder": "insert",
 "name": "ins_bold_chart_line",
 "path": "svg/insert/ins_bold_chart_line.svg"
 },
@@ -488,6 +493,16 @@
 },
 {
 "folder": "insert",
+"name": "ins_bold_object_broom",
+"path": "svg/insert/ins_bold_object_broom.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_cake",
+"path": "svg/insert/ins_bold_object_cake.svg"
+},
+{
+"folder": "insert",
 "name": "ins_bold_object_chip",
 "path": "svg/insert/ins_bold_object_chip.svg"
 },
@@ -528,6 +543,11 @@
 },
 {
 "folder": "insert",
+"name": "ins_bold_object_lock-tall",
+"path": "svg/insert/ins_bold_object_lock-tall.svg"
+},
+{
+"folder": "insert",
 "name": "ins_bold_object_mail",
 "path": "svg/insert/ins_bold_object_mail.svg"
 },
@@ -540,6 +560,16 @@
 "folder": "insert",
 "name": "ins_bold_object_nodes",
 "path": "svg/insert/ins_bold_object_nodes.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_photo",
+"path": "svg/insert/ins_bold_object_photo.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_play",
+"path": "svg/insert/ins_bold_object_play.svg"
 },
 {
 "folder": "insert",
@@ -568,6 +598,11 @@
 },
 {
 "folder": "insert",
+"name": "ins_bold_object_sync",
+"path": "svg/insert/ins_bold_object_sync.svg"
+},
+{
+"folder": "insert",
 "name": "ins_bold_object_table",
 "path": "svg/insert/ins_bold_object_table.svg"
 },
@@ -578,8 +613,23 @@
 },
 {
 "folder": "insert",
+"name": "ins_bold_object_upload",
+"path": "svg/insert/ins_bold_object_upload.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_object_zoom-in",
+"path": "svg/insert/ins_bold_object_zoom-in.svg"
+},
+{
+"folder": "insert",
 "name": "ins_bold_shape_cloud",
 "path": "svg/insert/ins_bold_shape_cloud.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_crown",
+"path": "svg/insert/ins_bold_shape_crown.svg"
 },
 {
 "folder": "insert",
@@ -590,6 +640,16 @@
 "folder": "insert",
 "name": "ins_bold_shape_gear",
 "path": "svg/insert/ins_bold_shape_gear.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_gear-star",
+"path": "svg/insert/ins_bold_shape_gear-star.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_globe",
+"path": "svg/insert/ins_bold_shape_globe.svg"
 },
 {
 "folder": "insert",
@@ -613,8 +673,38 @@
 },
 {
 "folder": "insert",
+"name": "ins_bold_shape_shield-check",
+"path": "svg/insert/ins_bold_shape_shield-check.svg"
+},
+{
+"folder": "insert",
 "name": "ins_bold_shape_shuriken",
 "path": "svg/insert/ins_bold_shape_shuriken.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_sparkle",
+"path": "svg/insert/ins_bold_shape_sparkle.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_sun",
+"path": "svg/insert/ins_bold_shape_sun.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_shape_waiter",
+"path": "svg/insert/ins_bold_shape_waiter.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_sign_divide",
+"path": "svg/insert/ins_bold_sign_divide.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_sign_equals",
+"path": "svg/insert/ins_bold_sign_equals.svg"
 },
 {
 "folder": "insert",
@@ -625,6 +715,11 @@
 "folder": "insert",
 "name": "ins_bold_sign_plus",
 "path": "svg/insert/ins_bold_sign_plus.svg"
+},
+{
+"folder": "insert",
+"name": "ins_bold_sign_times",
+"path": "svg/insert/ins_bold_sign_times.svg"
 },
 {
 "folder": "insert",

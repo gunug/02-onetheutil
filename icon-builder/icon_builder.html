@@ -412,15 +412,18 @@
     insert: [
       "ins_bold_text_lines", "ins_bold_text_lines3", "ins_bold_list_rows", "ins_bold_text_code",
       "ins_bold_sign_plus", "ins_bold_sign_minus", "ins_bold_sign_times", "ins_bold_sign_divide", "ins_bold_sign_equals",
-      "ins_bold_mark_x", "ins_bold_mark_dots",
+      "ins_bold_mark_x", "ins_bold_mark_dots", "ins_bold_mark_info", "ins_bold_mark_exclaim", "ins_bold_mark_question",
       "ins_bold_shape_heart", "ins_bold_shape_cloud", "ins_bold_shape_o", "ins_bold_shape_shuriken", "ins_bold_shape_gear",
-      "ins_bold_shape_person", "ins_bold_shape_people", "ins_bold_shape_waiter", "ins_bold_shape_flag",
+      "ins_bold_shape_gear-star", "ins_bold_shape_person", "ins_bold_shape_people", "ins_bold_shape_waiter", "ins_bold_shape_flag",
+      "ins_bold_shape_sun", "ins_bold_shape_globe", "ins_bold_shape_sparkle", "ins_bold_shape_crown", "ins_bold_shape_shield-check",
       "ins_bold_hand_like",
-      "ins_bold_chart_bar", "ins_bold_chart_line", "ins_bold_chart_pie", "ins_bold_chart_stock",
-      "ins_bold_object_table", "ins_bold_object_link", "ins_bold_object_key", "ins_bold_object_lock", "ins_bold_object_token",
-      "ins_bold_object_server", "ins_bold_object_db", "ins_bold_object_interface", "ins_bold_object_apps", "ins_bold_object_search", "ins_bold_object_refresh",
+      "ins_bold_chart_bar", "ins_bold_chart_bar-steps", "ins_bold_chart_line", "ins_bold_chart_pie", "ins_bold_chart_stock",
+      "ins_bold_object_table", "ins_bold_object_link", "ins_bold_object_key", "ins_bold_object_lock", "ins_bold_object_lock-tall", "ins_bold_object_token",
+      "ins_bold_object_server", "ins_bold_object_db", "ins_bold_object_interface", "ins_bold_object_apps", "ins_bold_object_search", "ins_bold_object_zoom-in",
+      "ins_bold_object_refresh", "ins_bold_object_sync",
       "ins_bold_object_mail", "ins_bold_object_mailopen", "ins_bold_object_codewin", "ins_bold_object_chip",
-      "ins_bold_object_remodel", "ins_bold_object_nodes", "ins_bold_object_grad", "ins_bold_object_sparkcode"
+      "ins_bold_object_remodel", "ins_bold_object_nodes", "ins_bold_object_grad", "ins_bold_object_sparkcode",
+      "ins_bold_object_photo", "ins_bold_object_upload", "ins_bold_object_play", "ins_bold_object_cake", "ins_bold_object_broom"
     ],
     logo: ["logo_openai", "logo_claude", "logo_gemini", "logo_github", "logo_git", "logo_flutter",
            "logo_android", "logo_ios", "logo_web", "logo_obsidian", "logo_usb", "logo_wifi", "logo_onethelab_v1-5", "logo_onethelab_v2"],
@@ -471,15 +474,25 @@
   // insert 그룹 세부 섹션 분류 (UI 표시용, MANIFEST.insert 순서와 무관하게 id 로 매칭)
   const INSERT_SECTIONS = [
     { title: "텍스트 · 목록", ids: ["ins_bold_text_lines", "ins_bold_text_lines3", "ins_bold_list_rows", "ins_bold_text_code"] },
-    { title: "기호", ids: ["ins_bold_sign_plus", "ins_bold_sign_minus", "ins_bold_sign_times", "ins_bold_sign_divide", "ins_bold_sign_equals", "ins_bold_mark_x", "ins_bold_mark_dots"] },
-    { title: "도형", ids: ["ins_bold_shape_heart", "ins_bold_shape_cloud", "ins_bold_shape_o", "ins_bold_shape_shuriken", "ins_bold_shape_gear", "ins_bold_shape_person", "ins_bold_shape_people", "ins_bold_shape_waiter", "ins_bold_shape_flag"] },
+    { title: "기호", ids: [
+      "ins_bold_sign_plus", "ins_bold_sign_minus", "ins_bold_sign_times", "ins_bold_sign_divide", "ins_bold_sign_equals",
+      "ins_bold_mark_x", "ins_bold_mark_dots", "ins_bold_mark_info", "ins_bold_mark_exclaim", "ins_bold_mark_question"
+    ] },
+    { title: "도형", ids: [
+      "ins_bold_shape_heart", "ins_bold_shape_cloud", "ins_bold_shape_o", "ins_bold_shape_shuriken",
+      "ins_bold_shape_gear", "ins_bold_shape_gear-star", "ins_bold_shape_person", "ins_bold_shape_people",
+      "ins_bold_shape_waiter", "ins_bold_shape_flag",
+      "ins_bold_shape_sun", "ins_bold_shape_globe", "ins_bold_shape_sparkle", "ins_bold_shape_crown", "ins_bold_shape_shield-check"
+    ] },
     { title: "손", ids: ["ins_bold_hand_like"] },
-    { title: "차트", ids: ["ins_bold_chart_bar", "ins_bold_chart_line", "ins_bold_chart_pie", "ins_bold_chart_stock"] },
+    { title: "차트", ids: ["ins_bold_chart_bar", "ins_bold_chart_bar-steps", "ins_bold_chart_line", "ins_bold_chart_pie", "ins_bold_chart_stock"] },
     { title: "오브젝트", ids: [
-      "ins_bold_object_table", "ins_bold_object_link", "ins_bold_object_key", "ins_bold_object_lock", "ins_bold_object_token",
-      "ins_bold_object_server", "ins_bold_object_db", "ins_bold_object_interface", "ins_bold_object_apps", "ins_bold_object_search", "ins_bold_object_refresh",
+      "ins_bold_object_table", "ins_bold_object_link", "ins_bold_object_key", "ins_bold_object_lock", "ins_bold_object_lock-tall", "ins_bold_object_token",
+      "ins_bold_object_server", "ins_bold_object_db", "ins_bold_object_interface", "ins_bold_object_apps",
+      "ins_bold_object_search", "ins_bold_object_zoom-in", "ins_bold_object_refresh", "ins_bold_object_sync",
       "ins_bold_object_mail", "ins_bold_object_mailopen", "ins_bold_object_codewin", "ins_bold_object_chip",
-      "ins_bold_object_remodel", "ins_bold_object_nodes", "ins_bold_object_grad", "ins_bold_object_sparkcode"
+      "ins_bold_object_remodel", "ins_bold_object_nodes", "ins_bold_object_grad", "ins_bold_object_sparkcode",
+      "ins_bold_object_photo", "ins_bold_object_upload", "ins_bold_object_play", "ins_bold_object_cake", "ins_bold_object_broom"
     ] }
   ];
 
