@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon-crop.svg">
+<title>이미지 크롭</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-yellow:#FFD400; --brand-yellow-soft:#FFE766; --brand-yellow-deep:#C9A600; --on-brand:#1A1A17;
+    --ink:#F5F4EC; --body:#CFCDC2; --muted:#8E8C82; --hairline:#33332B;
+    --canvas:#121210; --surface:#1C1C17; --surface-soft:#26261F;
+    --sh-sm:0 1px 2px rgba(0,0,0,.4); --sh-md:0 4px 16px rgba(0,0,0,.45);
+    --r-sm:6px; --r-md:10px; --r-lg:16px;
+    --font:"Inter",-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; padding: 40px 24px 64px;
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+    font-family: var(--font); background: var(--canvas); color: var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  .eyebrow { display:inline-block; background:#161613; color:var(--brand-yellow); font-size:11px; font-weight:600;
+             letter-spacing:.12em; text-transform:uppercase; padding:5px 12px; border-radius:9999px; margin-bottom:8px; }
+  .head { text-align:center; }
+  h1 { font-size: 28px; font-weight: 800; letter-spacing:-.02em; color: var(--ink); margin: 0; }
+  .sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  .wrap { width:100%; max-width:1040px; display:flex; flex-direction:column; gap:16px; }
+
+  .btn {
+    font-family:var(--font); font-size:13px; font-weight:700; padding:9px 18px; border-radius:var(--r-md);
+    border:1px solid var(--hairline); background:var(--surface); color:var(--body); cursor:pointer; transition:.12s;
+  }
+  .btn:hover:not(:disabled) { color:var(--ink); border-color:var(--brand-yellow); }
+  .btn:disabled { opacity:.45; cursor:not-allowed; }
+  .btn-primary { background:var(--brand-yellow); color:var(--on-brand); border-color:var(--brand-yellow); }
+  .btn-primary:hover:not(:disabled) { background:var(--brand-yellow-soft); color:var(--on-brand); }
+  .btn-sm { padding:7px 13px; font-size:12px; }
+
+  /* 드롭존 */
+  .drop {
+    border:2px dashed var(--hairline); border-radius:var(--r-lg); background:var(--surface);
+    padding:44px 24px; text-align:center; cursor:pointer; transition:.15s; color:var(--muted);
+  }
+  .drop:hover { border-color:var(--brand-yellow-deep); color:var(--body); }
+  .drop.over { border-color:var(--brand-yellow); background:var(--surface-soft); color:var(--ink); }
+  .drop strong { color:var(--ink); font-weight:700; }
+  .drop .hint { font-size:12px; margin-top:8px; }
+  .drop kbd { font-family:var(--mono); font-size:11px; background:var(--surface-soft); border:1px solid var(--hairline);
+              border-radius:4px; padding:1px 6px; color:var(--body); }
+
+  /* 편집 영역 */
+  .editor { display:none; flex-direction:column; gap:14px; }
+  .editor.show { display:flex; }
+
+  .toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .toolbar .spacer { flex:1 1 auto; }
+  .seg { display:flex; gap:6px; flex-wrap:wrap; }
+  .seg .btn.on { background:var(--brand-yellow); color:var(--on-brand); border-color:var(--brand-yellow); }
+
+  .board {
+    display:flex; align-items:center; justify-content:center; padding:16px;
+    background:var(--surface); border:1px solid var(--hairline); border-radius:var(--r-lg);
+    overflow:hidden;
+  }
+  .stage { position:relative; line-height:0; touch-action:none; user-select:none; }
+  .stage img { display:block; max-width:100%; max-height:62vh; width:auto; height:auto; user-select:none; -webkit-user-drag:none; }
+
+  .cropbox {
+    position:absolute; box-sizing:border-box; cursor:move;
+    border:1px solid var(--brand-yellow);
+    box-shadow:0 0 0 9999px rgba(0,0,0,.58);
+  }
+  /* 3분할 가이드 */
+  .cropbox::before, .cropbox::after {
+    content:""; position:absolute; inset:0; pointer-events:none; opacity:.35;
+  }
+  .cropbox::before {
+    background:linear-gradient(to right, transparent 33.33%, #fff 33.33%, #fff calc(33.33% + 1px), transparent calc(33.33% + 1px),
+                                         transparent 66.66%, #fff 66.66%, #fff calc(66.66% + 1px), transparent calc(66.66% + 1px));
+  }
+  .cropbox::after {
+    background:linear-gradient(to bottom, transparent 33.33%, #fff 33.33%, #fff calc(33.33% + 1px), transparent calc(33.33% + 1px),
+                                          transparent 66.66%, #fff 66.66%, #fff calc(66.66% + 1px), transparent calc(66.66% + 1px));
+  }
+  .h { position:absolute; width:14px; height:14px; background:var(--brand-yellow); border-radius:3px; z-index:2; }
+  .h[data-h="nw"]{ left:-7px;  top:-7px;  cursor:nwse-resize; }
+  .h[data-h="ne"]{ right:-7px; top:-7px;  cursor:nesw-resize; }
+  .h[data-h="sw"]{ left:-7px;  bottom:-7px; cursor:nesw-resize; }
+  .h[data-h="se"]{ right:-7px; bottom:-7px; cursor:nwse-resize; }
+  .h[data-h="n"] { left:50%; top:-7px; transform:translateX(-50%); cursor:ns-resize; }
+  .h[data-h="s"] { left:50%; bottom:-7px; transform:translateX(-50%); cursor:ns-resize; }
+  .h[data-h="w"] { top:50%; left:-7px; transform:translateY(-50%); cursor:ew-resize; }
+  .h[data-h="e"] { top:50%; right:-7px; transform:translateY(-50%); cursor:ew-resize; }
+
+  .meta { font-size:11px; color:var(--muted); font-family:var(--mono); text-align:center; }
+
+  .field { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); }
+  .field input[type=range] { accent-color:var(--brand-yellow); width:120px; }
+
+  /* 결과 */
+  .result { display:none; flex-direction:column; gap:12px;
+            background:var(--surface); border:1px solid var(--hairline); border-radius:var(--r-lg); padding:18px; }
+  .result.show { display:flex; }
+  .result-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .result-head .label { font-size:13px; font-weight:700; color:var(--ink); margin-right:auto; }
+  .result img { max-width:100%; max-height:340px; display:block; margin:0 auto;
+                border:1px solid var(--hairline); border-radius:var(--r-md); box-shadow:var(--sh-sm); }
+
+  .toast {
+    position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px);
+    background:var(--brand-yellow); color:var(--on-brand); font-size:13px; font-weight:700;
+    padding:10px 20px; border-radius:9999px; box-shadow:var(--sh-md); opacity:0; pointer-events:none; transition:.2s;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+  <div class="head">
+    <span class="eyebrow">CROP</span>
+    <h1>이미지 크롭</h1>
+    <p class="sub">브라우저에서 처리 (이미지 서버 전송 없음) · JPG 저장</p>
+  </div>
+
+  <div class="wrap">
+    <div id="drop" class="drop" tabindex="0">
+      <div><strong>이미지를 여기에 놓기</strong> · 클릭하여 선택</div>
+      <div class="hint"><kbd>Ctrl</kbd> + <kbd>V</kbd> 로 붙여넣기도 가능</div>
+      <input id="file" type="file" accept="image/*" hidden>
+    </div>
+
+    <div id="editor" class="editor">
+      <div class="toolbar">
+        <div class="seg" id="ratios">
+          <button class="btn btn-sm on" data-r="free">자유</button>
+          <button class="btn btn-sm" data-r="1:1">1:1</button>
+          <button class="btn btn-sm" data-r="4:3">4:3</button>
+          <button class="btn btn-sm" data-r="3:4">3:4</button>
+          <button class="btn btn-sm" data-r="16:9">16:9</button>
+          <button class="btn btn-sm" data-r="9:16">9:16</button>
+        </div>
+        <div class="spacer"></div>
+        <label class="field">
+          품질 <input type="range" id="quality" min="50" max="100" step="1" value="92">
+          <span id="quality-v" style="font-family:var(--mono);color:var(--body)">92</span>
+        </label>
+        <button class="btn btn-sm" id="reset">선택 초기화</button>
+        <button class="btn btn-sm" id="change">다른 이미지</button>
+      </div>
+
+      <div class="board">
+        <div class="stage" id="stage">
+          <img id="img" alt="원본">
+          <div class="cropbox" id="cropbox">
+            <div class="h" data-h="nw"></div><div class="h" data-h="n"></div><div class="h" data-h="ne"></div>
+            <div class="h" data-h="w"></div><div class="h" data-h="e"></div>
+            <div class="h" data-h="sw"></div><div class="h" data-h="s"></div><div class="h" data-h="se"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta" id="meta">—</div>
+
+      <div class="toolbar">
+        <button class="btn btn-primary" id="docrop">크롭</button>
+      </div>
+    </div>
+
+    <div id="result" class="result">
+      <div class="result-head">
+        <span class="label">크롭 결과</span>
+        <span class="meta" id="rmeta"></span>
+        <button class="btn btn-primary btn-sm" id="download">다운로드</button>
+        <button class="btn btn-sm" id="copy">이미지 복사</button>
+      </div>
+      <img id="rimg" alt="크롭 결과">
+    </div>
+  </div>
+
+  <div id="toast" class="toast">복사됨</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const drop = $("drop"), fileInput = $("file"), editor = $("editor");
+  const stage = $("stage"), img = $("img"), box = $("cropbox");
+  const metaEl = $("meta"), toast = $("toast");
+  const result = $("result"), rimg = $("rimg"), rmetaEl = $("rmeta");
+
+  const MIN = 24;              // 최소 선택 크기(화면 px)
+  let srcURL = null;           // 원본 objectURL
+  let outURL = null;           // 결과 미리보기 objectURL
+  let outBlob = null;          // 결과 JPG blob
+  let ratio = null;            // w/h, null이면 자유
+  let crop = { x: 0, y: 0, w: 1, h: 1 };   // 이미지 기준 정규화 좌표(0~1)
+
+  function showToast(msg) {
+    toast.textContent = msg; toast.classList.add("show");
+    clearTimeout(showToast._t); showToast._t = setTimeout(() => toast.classList.remove("show"), 1500);
+  }
+  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  const dispW = () => img.clientWidth;
+  const dispH = () => img.clientHeight;
+
+  /* ---------- 이미지 로드 ---------- */
+  function acceptFile(f) {
+    if (!f || !f.type.startsWith("image/")) { showToast("이미지 파일만 가능"); return; }
+    if (srcURL) URL.revokeObjectURL(srcURL);
+    srcURL = URL.createObjectURL(f);
+    img.onload = () => {
+      drop.style.display = "none";
+      editor.classList.add("show");
+      resetCrop();
+    };
+    img.onerror = () => { showToast("이미지를 읽을 수 없음"); };
+    img.src = srcURL;
+    clearResult();
+  }
+
+  drop.addEventListener("click", () => fileInput.click());
+  drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInput.click(); } });
+  fileInput.addEventListener("change", () => { if (fileInput.files[0]) acceptFile(fileInput.files[0]); fileInput.value = ""; });
+
+  ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", e => { e.stopPropagation(); const f = e.dataTransfer.files[0]; if (f) acceptFile(f); });
+
+  // 편집 중에도 드래그로 교체 가능
+  ["dragenter", "dragover"].forEach(ev => window.addEventListener(ev, e => { if (e.dataTransfer && e.dataTransfer.types.includes("Files")) e.preventDefault(); }));
+  window.addEventListener("drop", e => {
+    if (!e.dataTransfer || !e.dataTransfer.files.length) return;
+    e.preventDefault();
+    acceptFile(e.dataTransfer.files[0]);
+  });
+
+  window.addEventListener("paste", e => {
+    const items = e.clipboardData && e.clipboardData.items;
+    if (!items) return;
+    for (const it of items) {
+      if (it.type.startsWith("image/")) { acceptFile(it.getAsFile()); e.preventDefault(); return; }
+    }
+  });
+
+  $("change").addEventListener("click", () => fileInput.click());
+
+  /* ---------- 선택 영역 ---------- */
+  // 비율에 맞춰 이미지 안에 최대 크기로 가운데 배치
+  function resetCrop() {
+    const W = dispW(), H = dispH();
+    let w = W, h = H;
+    if (ratio) {
+      if (W / H > ratio) { h = H; w = h * ratio; } else { w = W; h = w / ratio; }
+    }
+    setPx({ x: (W - w) / 2, y: (H - h) / 2, w, h });
+  }
+
+  function cropPx() {
+    return { x: crop.x * dispW(), y: crop.y * dispH(), w: crop.w * dispW(), h: crop.h * dispH() };
+  }
+
+  function setPx(r) {
+    const W = dispW(), H = dispH();
+    if (!W || !H) return;
+    crop = { x: r.x / W, y: r.y / H, w: r.w / W, h: r.h / H };
+    paint();
+  }
+
+  function paint() {
+    box.style.left = (crop.x * 100) + "%";
+    box.style.top = (crop.y * 100) + "%";
+    box.style.width = (crop.w * 100) + "%";
+    box.style.height = (crop.h * 100) + "%";
+    const o = outputSize();
+    metaEl.textContent = `원본 ${img.naturalWidth}×${img.naturalHeight} · 선택 ${o.w}×${o.h}px` +
+                         (ratio ? ` · 비율 ${$("ratios").querySelector(".on").dataset.r}` : "");
+  }
+
+  function outputSize() {
+    const NW = img.naturalWidth, NH = img.naturalHeight;
+    const x = clamp(Math.round(crop.x * NW), 0, Math.max(0, NW - 1));
+    const y = clamp(Math.round(crop.y * NH), 0, Math.max(0, NH - 1));
+    return {
+      x, y,
+      w: clamp(Math.round(crop.w * NW), 1, NW - x),   // 반올림 오차로 원본 밖을 넘지 않게
+      h: clamp(Math.round(crop.h * NH), 1, NH - y)
+    };
+  }
+
+  /* ---------- 드래그(이동/리사이즈) ---------- */
+  let drag = null;
+
+  function onDown(e, mode) {
+    if (e.button !== undefined && e.button !== 0) return;
+    e.preventDefault(); e.stopPropagation();
+    stage.setPointerCapture(e.pointerId);
+    drag = { mode, id: e.pointerId, mx: e.clientX, my: e.clientY, s: cropPx() };
+  }
+
+  box.addEventListener("pointerdown", e => onDown(e, "move"));
+  box.querySelectorAll(".h").forEach(h => h.addEventListener("pointerdown", e => onDown(e, h.dataset.h)));
+
+  stage.addEventListener("pointermove", e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const W = dispW(), H = dispH();
+    const dx = e.clientX - drag.mx, dy = e.clientY - drag.my;
+    const s = drag.s;
+
+    if (drag.mode === "move") {
+      setPx({ x: clamp(s.x + dx, 0, W - s.w), y: clamp(s.y + dy, 0, H - s.h), w: s.w, h: s.h });
+      return;
+    }
+
+    const m = drag.mode;
+    const mx = clamp(e.clientX - stage.getBoundingClientRect().left, 0, W);
+    const my = clamp(e.clientY - stage.getBoundingClientRect().top, 0, H);
+
+    if (!ratio) {
+      let l = s.x, t = s.y, r = s.x + s.w, b = s.y + s.h;
+      if (m.includes("w")) l = clamp(mx, 0, r - MIN);
+      if (m.includes("e")) r = clamp(mx, l + MIN, W);
+      if (m.includes("n")) t = clamp(my, 0, b - MIN);
+      if (m.includes("s")) b = clamp(my, t + MIN, H);
+      setPx({ x: l, y: t, w: r - l, h: b - t });
+      return;
+    }
+
+    // 비율 고정
+    const corner = m.length === 2;
+    if (corner) {
+      // 반대편 모서리를 고정점으로 삼고 커서까지 비율에 맞춰 확장
+      const ax = m.includes("e") ? s.x : s.x + s.w;
+      const ay = m.includes("s") ? s.y : s.y + s.h;
+      let w = Math.abs(mx - ax), h = Math.abs(my - ay);
+      if (w / Math.max(h, 1e-6) > ratio) h = w / ratio; else w = h * ratio;
+      const maxW = m.includes("e") ? W - ax : ax;
+      const maxH = m.includes("s") ? H - ay : ay;
+      if (w > maxW) { w = maxW; h = w / ratio; }
+      if (h > maxH) { h = maxH; w = h * ratio; }
+      if (w < MIN) { w = MIN; h = w / ratio; }
+      if (h < MIN) { h = MIN; w = h * ratio; }
+      setPx({ x: m.includes("e") ? ax : ax - w, y: m.includes("s") ? ay : ay - h, w, h });
+      return;
+    }
+
+    // 변(edge): 한 축은 반대변 고정, 다른 축은 중심 기준으로 대칭 확장
+    if (m === "e" || m === "w") {
+      const ax = m === "e" ? s.x : s.x + s.w;
+      const cy = s.y + s.h / 2;
+      let w = Math.abs(mx - ax);
+      const maxW = m === "e" ? W - ax : ax;
+      w = clamp(w, MIN, maxW);
+      let h = w / ratio;
+      const maxH = 2 * Math.min(cy, H - cy);
+      if (h > maxH) { h = maxH; w = h * ratio; }
+      setPx({ x: m === "e" ? ax : ax - w, y: cy - h / 2, w, h });
+    } else {
+      const ay = m === "s" ? s.y : s.y + s.h;
+      const cx = s.x + s.w / 2;
+      let h = Math.abs(my - ay);
+      const maxH = m === "s" ? H - ay : ay;
+      h = clamp(h, MIN, maxH);
+      let w = h * ratio;
+      const maxW = 2 * Math.min(cx, W - cx);
+      if (w > maxW) { w = maxW; h = w / ratio; }
+      setPx({ x: cx - w / 2, y: m === "s" ? ay : ay - h, w, h });
+    }
+  });
+
+  ["pointerup", "pointercancel"].forEach(ev => stage.addEventListener(ev, e => {
+    if (drag && e.pointerId === drag.id) drag = null;
+  }));
+
+  // 빈 곳에서 드래그하면 새 선택 영역 그리기
+  stage.addEventListener("pointerdown", e => {
+    if (e.target !== img || e.button !== 0) return;
+    e.preventDefault();
+    stage.setPointerCapture(e.pointerId);
+    const R = stage.getBoundingClientRect();
+    const ox = clamp(e.clientX - R.left, 0, dispW()), oy = clamp(e.clientY - R.top, 0, dispH());
+    setPx({ x: ox, y: oy, w: MIN, h: ratio ? MIN / ratio : MIN });
+    drag = { mode: "se", id: e.pointerId, mx: e.clientX, my: e.clientY, s: { x: ox, y: oy, w: 0, h: 0 } };
+  });
+
+  /* ---------- 비율 ---------- */
+  $("ratios").addEventListener("click", e => {
+    const btn = e.target.closest("button"); if (!btn) return;
+    $("ratios").querySelectorAll("button").forEach(b => b.classList.toggle("on", b === btn));
+    const r = btn.dataset.r;
+    ratio = r === "free" ? null : (() => { const [a, b] = r.split(":").map(Number); return a / b; })();
+    if (!ratio) { paint(); return; }
+    // 현재 선택의 중심을 유지한 채 비율에 맞춰 다시 맞춤
+    const W = dispW(), H = dispH(), c = cropPx();
+    const cx = c.x + c.w / 2, cy = c.y + c.h / 2;
+    let w = c.w, h = w / ratio;
+    if (h > c.h) { h = c.h; w = h * ratio; }
+    if (w > W) { w = W; h = w / ratio; }
+    if (h > H) { h = H; w = h * ratio; }
+    setPx({ x: clamp(cx - w / 2, 0, W - w), y: clamp(cy - h / 2, 0, H - h), w, h });
+  });
+
+  $("reset").addEventListener("click", resetCrop);
+  window.addEventListener("resize", paint);
+
+  /* ---------- 크롭 실행 ---------- */
+  $("quality").addEventListener("input", () => $("quality-v").textContent = $("quality").value);
+
+  function clearResult() {
+    result.classList.remove("show");
+    if (outURL) { URL.revokeObjectURL(outURL); outURL = null; }
+    outBlob = null;
+  }
+
+  $("docrop").addEventListener("click", () => {
+    const o = outputSize();
+    const c = document.createElement("canvas");
+    c.width = o.w; c.height = o.h;
+    const cx = c.getContext("2d");
+    cx.fillStyle = "#FFFFFF";              // JPG는 투명을 지원하지 않으므로 흰색으로 채움
+    cx.fillRect(0, 0, o.w, o.h);
+    cx.drawImage(img, o.x, o.y, o.w, o.h, 0, 0, o.w, o.h);
+
+    const q = +$("quality").value / 100;
+    c.toBlob(b => {
+      if (!b) { showToast("크롭 실패"); return; }
+      clearResult();
+      outBlob = b;
+      outURL = URL.createObjectURL(b);
+      rimg.src = outURL;
+      rmetaEl.textContent = `${o.w}×${o.h}px · ${(b.size / 1024).toFixed(0)} KB · JPG ${$("quality").value}%`;
+      result.classList.add("show");
+      result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, "image/jpeg", q);
+  });
+
+  $("download").addEventListener("click", () => {
+    if (!outBlob) return;
+    const o = outputSize();
+    const a = document.createElement("a");
+    a.href = outURL;
+    a.download = `crop-${o.w}x${o.h}-${new Date().toISOString().slice(0, 10)}.jpg`;
+    a.click();
+  });
+
+  // 클립보드 image/* 쓰기는 사실상 PNG만 지원 → 복사용으로만 PNG 변환
+  $("copy").addEventListener("click", async () => {
+    if (!outBlob) return;
+    try {
+      const bmp = await createImageBitmap(outBlob);
+      const c = document.createElement("canvas");
+      c.width = bmp.width; c.height = bmp.height;
+      c.getContext("2d").drawImage(bmp, 0, 0);
+      const png = await new Promise(res => c.toBlob(res, "image/png"));
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
+      showToast("이미지 복사됨 (PNG)");
+    } catch {
+      showToast("이 브라우저는 이미지 복사 미지원");
+    }
+  });
+</script>
+</body>
+</html>
