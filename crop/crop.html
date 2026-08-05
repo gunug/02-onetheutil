@@ -102,6 +102,17 @@
 
   .field { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); }
   .field input[type=range] { accent-color:var(--brand-yellow); width:120px; }
+  .field input[type=checkbox] { accent-color:var(--brand-yellow); width:15px; height:15px; }
+  select, input[type=number] {
+    background:var(--surface-soft); border:1px solid var(--hairline); border-radius:var(--r-md);
+    color:var(--ink); font-family:var(--font); font-size:12px; padding:7px 10px;
+  }
+  select { cursor:pointer; max-width:340px; }
+  input[type=number] { width:82px; font-family:var(--mono); }
+  select:focus, input[type=number]:focus { outline:none; border-color:var(--brand-yellow); }
+  optgroup { color:var(--muted); font-size:11px; }
+  option { color:var(--ink); }
+  #customwrap[hidden] { display:none; }
 
   /* 결과 */
   .result { display:none; flex-direction:column; gap:12px;
@@ -167,6 +178,61 @@
       <div class="meta" id="meta">—</div>
 
       <div class="toolbar">
+        <label class="field">
+          출력 크기
+          <select id="resize">
+            <option value="none" selected>원본 유지 (크롭 크기 그대로)</option>
+            <optgroup label="긴 변 기준">
+              <option value="long:3840">긴 변 3840 — 4K</option>
+              <option value="long:2560">긴 변 2560 — QHD·고해상 웹</option>
+              <option value="long:1920">긴 변 1920 — FHD·웹 표준</option>
+              <option value="long:1280">긴 변 1280 — 블로그 본문</option>
+              <option value="long:800">긴 변 800 — 가벼운 웹</option>
+              <option value="long:400">긴 변 400 — 썸네일</option>
+            </optgroup>
+            <optgroup label="긴 변 기준 · 70%">
+              <option value="long:2688">긴 변 2688 — 4K 70%</option>
+              <option value="long:1792">긴 변 1792 — QHD 70%</option>
+              <option value="long:1344">긴 변 1344 — FHD 70%</option>
+              <option value="long:896">긴 변 896 — 블로그 본문 70%</option>
+              <option value="long:560">긴 변 560 — 가벼운 웹 70%</option>
+              <option value="long:280">긴 변 280 — 썸네일 70%</option>
+            </optgroup>
+            <optgroup label="비율 프리셋">
+              <option value="fix:1080x1080">1:1 · 1080×1080 — 인스타</option>
+              <option value="fix:400x400">1:1 · 400×400 — 프로필</option>
+              <option value="fix:1600x1200">4:3 · 1600×1200</option>
+              <option value="fix:1024x768">4:3 · 1024×768</option>
+              <option value="fix:1200x1600">3:4 · 1200×1600</option>
+              <option value="fix:1920x1080">16:9 · 1920×1080</option>
+              <option value="fix:1280x720">16:9 · 1280×720 — 유튜브 썸네일</option>
+              <option value="fix:1080x1920">9:16 · 1080×1920 — 스토리·릴스</option>
+            </optgroup>
+            <optgroup label="비율 프리셋 · 70%">
+              <option value="fix:756x756">1:1 · 756×756 — 인스타 70%</option>
+              <option value="fix:280x280">1:1 · 280×280 — 프로필 70%</option>
+              <option value="fix:1120x840">4:3 · 1120×840 — 70%</option>
+              <option value="fix:720x540">4:3 · 720×540 — 70%</option>
+              <option value="fix:840x1120">3:4 · 840×1120 — 70%</option>
+              <option value="fix:1344x756">16:9 · 1344×756 — 70%</option>
+              <option value="fix:896x504">16:9 · 896×504 — 유튜브 썸네일 70%</option>
+              <option value="fix:756x1344">9:16 · 756×1344 — 스토리·릴스 70%</option>
+            </optgroup>
+            <optgroup label="직접 입력">
+              <option value="custom">사용자 지정…</option>
+            </optgroup>
+          </select>
+        </label>
+
+        <span class="field" id="customwrap" hidden>
+          <input type="number" id="cw" min="1" max="20000" placeholder="가로">
+          <span>×</span>
+          <input type="number" id="ch" min="1" max="20000" placeholder="세로">
+          <label class="field"><input type="checkbox" id="clock" checked> 비율 잠금</label>
+        </span>
+
+        <label class="field"><input type="checkbox" id="noup"> 원본보다 크게 안 함</label>
+        <div class="spacer"></div>
         <button class="btn btn-primary" id="docrop">크롭</button>
       </div>
     </div>
@@ -195,6 +261,7 @@
   let srcURL = null;           // 원본 objectURL
   let outURL = null;           // 결과 미리보기 objectURL
   let outBlob = null;          // 결과 JPG blob
+  let outDim = { w: 0, h: 0 }; // 결과 픽셀 크기(파일명용)
   let ratio = null;            // w/h, null이면 자유
   let crop = { x: 0, y: 0, w: 1, h: 1 };   // 이미지 기준 정규화 좌표(0~1)
 
@@ -274,9 +341,13 @@
     box.style.top = (crop.y * 100) + "%";
     box.style.width = (crop.w * 100) + "%";
     box.style.height = (crop.h * 100) + "%";
-    const o = outputSize();
-    metaEl.textContent = `원본 ${img.naturalWidth}×${img.naturalHeight} · 선택 ${o.w}×${o.h}px` +
-                         (ratio ? ` · 비율 ${$("ratios").querySelector(".on").dataset.r}` : "");
+    const o = outputSize(), p = plan(o);
+    let s = `원본 ${img.naturalWidth}×${img.naturalHeight} · 선택 ${o.w}×${o.h}px`;
+    if (ratio) s += ` · 비율 ${$("ratios").querySelector(".on").dataset.r}`;
+    s += ` · 출력 ${p.tw}×${p.th}px`;
+    if (p.tw > p.sw + 0.5) s += ` (${(p.tw / p.sw * 100).toFixed(0)}% 확대)`;
+    if (p.sw < o.w - 0.5 || p.sh < o.h - 0.5) s += " · 비율 차이로 선택 영역 일부 잘림";
+    metaEl.textContent = s;
   }
 
   function outputSize() {
@@ -289,6 +360,62 @@
       h: clamp(Math.round(crop.h * NH), 1, NH - y)
     };
   }
+
+  /* ---------- 출력 크기(리사이즈) ---------- */
+  function targetSpec() {
+    const v = $("resize").value;
+    if (v === "custom") {
+      const w = parseInt($("cw").value, 10), h = parseInt($("ch").value, 10);
+      return (w > 0 && h > 0) ? { kind: "fix", w, h } : { kind: "none" };
+    }
+    if (v.startsWith("long:")) return { kind: "long", n: +v.slice(5) };
+    if (v.startsWith("fix:")) { const [w, h] = v.slice(4).split("x").map(Number); return { kind: "fix", w, h }; }
+    return { kind: "none" };
+  }
+
+  // o(원본 픽셀 기준 선택 영역) → 실제로 읽어올 원본 영역 s*와 출력 크기 t*
+  function plan(o) {
+    const spec = targetSpec(), noup = $("noup").checked;
+    if (spec.kind === "none") return { sx: o.x, sy: o.y, sw: o.w, sh: o.h, tw: o.w, th: o.h };
+
+    if (spec.kind === "long") {
+      let s = spec.n / Math.max(o.w, o.h);
+      if (noup) s = Math.min(s, 1);
+      return { sx: o.x, sy: o.y, sw: o.w, sh: o.h,
+               tw: Math.max(1, Math.round(o.w * s)), th: Math.max(1, Math.round(o.h * s)) };
+    }
+
+    // 목표 비율과 선택 비율이 다르면 선택 영역을 중앙 기준으로 한 번 더 잘라 채운다(cover)
+    const tAR = spec.w / spec.h, sAR = o.w / o.h;
+    let sw, sh;
+    if (sAR > tAR) { sh = o.h; sw = sh * tAR; } else { sw = o.w; sh = sw / tAR; }
+    const sx = o.x + (o.w - sw) / 2, sy = o.y + (o.h - sh) / 2;
+    let tw = spec.w, th = spec.h;
+    if (noup) { const k = Math.min(1, sw / tw); tw = Math.max(1, Math.round(tw * k)); th = Math.max(1, Math.round(th * k)); }
+    return { sx, sy, sw, sh, tw, th };
+  }
+
+  $("resize").addEventListener("change", () => {
+    const custom = $("resize").value === "custom";
+    $("customwrap").hidden = !custom;
+    if (custom && !$("cw").value) {           // 처음 열 때 현재 선택 크기로 채움
+      const o = outputSize();
+      $("cw").value = o.w; $("ch").value = o.h;
+    }
+    paint();
+  });
+
+  // 비율 잠금: 한쪽을 고치면 현재 선택 비율로 나머지를 계산
+  function syncCustom(from) {
+    if (!$("clock").checked) return;
+    const o = outputSize(), ar = o.w / o.h;
+    if (from === "w") { const w = parseInt($("cw").value, 10); if (w > 0) $("ch").value = Math.max(1, Math.round(w / ar)); }
+    else              { const h = parseInt($("ch").value, 10); if (h > 0) $("cw").value = Math.max(1, Math.round(h * ar)); }
+  }
+  $("cw").addEventListener("input", () => { syncCustom("w"); paint(); });
+  $("ch").addEventListener("input", () => { syncCustom("h"); paint(); });
+  $("clock").addEventListener("change", () => { syncCustom("w"); paint(); });
+  $("noup").addEventListener("change", paint);
 
   /* ---------- 드래그(이동/리사이즈) ---------- */
   let drag = null;
@@ -415,22 +542,27 @@
   }
 
   $("docrop").addEventListener("click", () => {
-    const o = outputSize();
+    const o = outputSize(), p = plan(o);
     const c = document.createElement("canvas");
-    c.width = o.w; c.height = o.h;
+    c.width = p.tw; c.height = p.th;
     const cx = c.getContext("2d");
     cx.fillStyle = "#FFFFFF";              // JPG는 투명을 지원하지 않으므로 흰색으로 채움
-    cx.fillRect(0, 0, o.w, o.h);
-    cx.drawImage(img, o.x, o.y, o.w, o.h, 0, 0, o.w, o.h);
+    cx.fillRect(0, 0, p.tw, p.th);
+    cx.imageSmoothingEnabled = true;
+    cx.imageSmoothingQuality = "high";
+    cx.drawImage(img, p.sx, p.sy, p.sw, p.sh, 0, 0, p.tw, p.th);
 
     const q = +$("quality").value / 100;
     c.toBlob(b => {
       if (!b) { showToast("크롭 실패"); return; }
       clearResult();
       outBlob = b;
+      outDim = { w: p.tw, h: p.th };
       outURL = URL.createObjectURL(b);
       rimg.src = outURL;
-      rmetaEl.textContent = `${o.w}×${o.h}px · ${(b.size / 1024).toFixed(0)} KB · JPG ${$("quality").value}%`;
+      const scale = p.tw / p.sw;
+      rmetaEl.textContent = `${p.tw}×${p.th}px · ${(b.size / 1024).toFixed(0)} KB · JPG ${$("quality").value}%` +
+                            (Math.abs(scale - 1) > 0.01 ? ` · 원본 대비 ${(scale * 100).toFixed(0)}%` : "");
       result.classList.add("show");
       result.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, "image/jpeg", q);
@@ -438,10 +570,9 @@
 
   $("download").addEventListener("click", () => {
     if (!outBlob) return;
-    const o = outputSize();
     const a = document.createElement("a");
     a.href = outURL;
-    a.download = `crop-${o.w}x${o.h}-${new Date().toISOString().slice(0, 10)}.jpg`;
+    a.download = `crop-${outDim.w}x${outDim.h}-${new Date().toISOString().slice(0, 10)}.jpg`;
     a.click();
   });
 
