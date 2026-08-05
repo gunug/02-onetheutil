@@ -103,16 +103,14 @@
   .field { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); }
   .field input[type=range] { accent-color:var(--brand-yellow); width:120px; }
   .field input[type=checkbox] { accent-color:var(--brand-yellow); width:15px; height:15px; }
-  select, input[type=number] {
-    background:var(--surface-soft); border:1px solid var(--hairline); border-radius:var(--r-md);
-    color:var(--ink); font-family:var(--font); font-size:12px; padding:7px 10px;
-  }
-  select { cursor:pointer; max-width:340px; }
-  input[type=number] { width:82px; font-family:var(--mono); }
-  select:focus, input[type=number]:focus { outline:none; border-color:var(--brand-yellow); }
-  optgroup { color:var(--muted); font-size:11px; }
-  option { color:var(--ink); }
-  #customwrap[hidden] { display:none; }
+  /* 출력 크기 버튼 */
+  #sizebar { align-items:flex-start; }
+  #sizes { display:flex; flex-wrap:wrap; gap:6px; align-items:center; flex:1 1 320px; }
+  #sizes .btn { font-family:var(--mono); font-size:11px; }
+  #sizes .btn b { font-family:var(--font); font-weight:700; }
+  #sizes .btn .use { color:var(--muted); font-family:var(--font); }
+  #sizes .btn.on .use { color:var(--on-brand); opacity:.7; }
+  #sizes .empty { font-size:12px; color:var(--muted); }
 
   /* 결과 */
   .result { display:none; flex-direction:column; gap:12px;
@@ -177,60 +175,12 @@
 
       <div class="meta" id="meta">—</div>
 
+      <div class="toolbar" id="sizebar">
+        <span class="field" style="padding-top:8px">출력 크기</span>
+        <div class="seg" id="sizes"><!-- 비율 선택에 따라 채워짐 --></div>
+      </div>
+
       <div class="toolbar">
-        <label class="field">
-          출력 크기
-          <select id="resize">
-            <option value="none" selected>원본 유지 (크롭 크기 그대로)</option>
-            <optgroup label="긴 변 기준">
-              <option value="long:3840">긴 변 3840 — 4K</option>
-              <option value="long:2560">긴 변 2560 — QHD·고해상 웹</option>
-              <option value="long:1920">긴 변 1920 — FHD·웹 표준</option>
-              <option value="long:1280">긴 변 1280 — 블로그 본문</option>
-              <option value="long:800">긴 변 800 — 가벼운 웹</option>
-              <option value="long:400">긴 변 400 — 썸네일</option>
-            </optgroup>
-            <optgroup label="긴 변 기준 · 70%">
-              <option value="long:2688">긴 변 2688 — 4K 70%</option>
-              <option value="long:1792">긴 변 1792 — QHD 70%</option>
-              <option value="long:1344">긴 변 1344 — FHD 70%</option>
-              <option value="long:896">긴 변 896 — 블로그 본문 70%</option>
-              <option value="long:560">긴 변 560 — 가벼운 웹 70%</option>
-              <option value="long:280">긴 변 280 — 썸네일 70%</option>
-            </optgroup>
-            <optgroup label="비율 프리셋">
-              <option value="fix:1080x1080">1:1 · 1080×1080 — 인스타</option>
-              <option value="fix:400x400">1:1 · 400×400 — 프로필</option>
-              <option value="fix:1600x1200">4:3 · 1600×1200</option>
-              <option value="fix:1024x768">4:3 · 1024×768</option>
-              <option value="fix:1200x1600">3:4 · 1200×1600</option>
-              <option value="fix:1920x1080">16:9 · 1920×1080</option>
-              <option value="fix:1280x720">16:9 · 1280×720 — 유튜브 썸네일</option>
-              <option value="fix:1080x1920">9:16 · 1080×1920 — 스토리·릴스</option>
-            </optgroup>
-            <optgroup label="비율 프리셋 · 70%">
-              <option value="fix:756x756">1:1 · 756×756 — 인스타 70%</option>
-              <option value="fix:280x280">1:1 · 280×280 — 프로필 70%</option>
-              <option value="fix:1120x840">4:3 · 1120×840 — 70%</option>
-              <option value="fix:720x540">4:3 · 720×540 — 70%</option>
-              <option value="fix:840x1120">3:4 · 840×1120 — 70%</option>
-              <option value="fix:1344x756">16:9 · 1344×756 — 70%</option>
-              <option value="fix:896x504">16:9 · 896×504 — 유튜브 썸네일 70%</option>
-              <option value="fix:756x1344">9:16 · 756×1344 — 스토리·릴스 70%</option>
-            </optgroup>
-            <optgroup label="직접 입력">
-              <option value="custom">사용자 지정…</option>
-            </optgroup>
-          </select>
-        </label>
-
-        <span class="field" id="customwrap" hidden>
-          <input type="number" id="cw" min="1" max="20000" placeholder="가로">
-          <span>×</span>
-          <input type="number" id="ch" min="1" max="20000" placeholder="세로">
-          <label class="field"><input type="checkbox" id="clock" checked> 비율 잠금</label>
-        </span>
-
         <label class="field"><input type="checkbox" id="noup"> 원본보다 크게 안 함</label>
         <div class="spacer"></div>
         <button class="btn btn-primary" id="docrop">크롭</button>
@@ -362,15 +312,46 @@
   }
 
   /* ---------- 출력 크기(리사이즈) ---------- */
-  function targetSpec() {
-    const v = $("resize").value;
-    if (v === "custom") {
-      const w = parseInt($("cw").value, 10), h = parseInt($("ch").value, 10);
-      return (w > 0 && h > 0) ? { kind: "fix", w, h } : { kind: "none" };
+  // 비율별 프리셋: [가로, 세로, 사용처] — 큰 해상도부터. 70% 축소본은 사용처 표기 없음
+  const PRESETS = {
+    "1:1":  [[1080, 1080, "인스타"], [1000, 1000, ""], [756, 756, ""], [400, 400, "프로필"], [280, 280, ""]],
+    "4:3":  [[1600, 1200, ""], [1120, 840, ""], [1024, 768, ""], [1000, 750, ""], [720, 540, ""]],
+    "3:4":  [[1200, 1600, ""], [840, 1120, ""], [750, 1000, ""]],
+    "16:9": [[2560, 1440, "QHD"], [1920, 1080, "FHD"], [1280, 720, "HD · 유튜브 썸네일"], [1000, 563, ""]],
+    "9:16": [[1440, 2560, "QHD"], [1080, 1920, "FHD · 스토리·릴스"], [720, 1280, "HD"], [563, 1000, ""]]
+  };
+
+  let sizeVal = "none";        // "none" 또는 "1080x1080"
+
+  function buildSizes() {
+    const key = $("ratios").querySelector(".on").dataset.r;
+    const wrap = $("sizes");
+    const mk = (val, label, use) =>
+      `<button class="btn btn-sm${val === sizeVal ? " on" : ""}" data-size="${val}">` +
+      `${label}${use ? ` <span class="use">${use}</span>` : ""}</button>`;
+
+    let html = mk("none", "<b>원본 유지</b>", "");
+    if (key === "free") {
+      html += mk("long:1000", "긴 변 1000", "비율 그대로 축소·확대");
+      html += `<span class="empty">비율(1:1 · 4:3 · 3:4 · 16:9 · 9:16)을 고르면 프리셋이 나옵니다.</span>`;
+    } else {
+      PRESETS[key].forEach(([w, h, use]) => html += mk(`${w}x${h}`, `${w}×${h}`, use));
     }
-    if (v.startsWith("long:")) return { kind: "long", n: +v.slice(5) };
-    if (v.startsWith("fix:")) { const [w, h] = v.slice(4).split("x").map(Number); return { kind: "fix", w, h }; }
-    return { kind: "none" };
+    wrap.innerHTML = html;
+  }
+
+  $("sizes").addEventListener("click", e => {
+    const btn = e.target.closest("button[data-size]"); if (!btn) return;
+    sizeVal = btn.dataset.size;
+    $("sizes").querySelectorAll("button").forEach(b => b.classList.toggle("on", b === btn));
+    saveState(); paint();
+  });
+
+  function targetSpec() {
+    if (sizeVal === "none") return { kind: "none" };
+    if (sizeVal.startsWith("long:")) return { kind: "long", n: +sizeVal.slice(5) };
+    const [w, h] = sizeVal.split("x").map(Number);
+    return { kind: "fix", w, h };
   }
 
   // o(원본 픽셀 기준 선택 영역) → 실제로 읽어올 원본 영역 s*와 출력 크기 t*
@@ -378,6 +359,7 @@
     const spec = targetSpec(), noup = $("noup").checked;
     if (spec.kind === "none") return { sx: o.x, sy: o.y, sw: o.w, sh: o.h, tw: o.w, th: o.h };
 
+    // 긴 변 기준: 선택 영역 비율 그대로 스케일만 변경
     if (spec.kind === "long") {
       let s = spec.n / Math.max(o.w, o.h);
       if (noup) s = Math.min(s, 1);
@@ -395,27 +377,7 @@
     return { sx, sy, sw, sh, tw, th };
   }
 
-  $("resize").addEventListener("change", () => {
-    const custom = $("resize").value === "custom";
-    $("customwrap").hidden = !custom;
-    if (custom && !$("cw").value) {           // 처음 열 때 현재 선택 크기로 채움
-      const o = outputSize();
-      $("cw").value = o.w; $("ch").value = o.h;
-    }
-    paint();
-  });
-
-  // 비율 잠금: 한쪽을 고치면 현재 선택 비율로 나머지를 계산
-  function syncCustom(from) {
-    if (!$("clock").checked) return;
-    const o = outputSize(), ar = o.w / o.h;
-    if (from === "w") { const w = parseInt($("cw").value, 10); if (w > 0) $("ch").value = Math.max(1, Math.round(w / ar)); }
-    else              { const h = parseInt($("ch").value, 10); if (h > 0) $("cw").value = Math.max(1, Math.round(h * ar)); }
-  }
-  $("cw").addEventListener("input", () => { syncCustom("w"); paint(); });
-  $("ch").addEventListener("input", () => { syncCustom("h"); paint(); });
-  $("clock").addEventListener("change", () => { syncCustom("w"); paint(); });
-  $("noup").addEventListener("change", paint);
+  $("noup").addEventListener("change", () => { saveState(); paint(); });
 
   /* ---------- 드래그(이동/리사이즈) ---------- */
   let drag = null;
@@ -518,6 +480,8 @@
     $("ratios").querySelectorAll("button").forEach(b => b.classList.toggle("on", b === btn));
     const r = btn.dataset.r;
     ratio = r === "free" ? null : (() => { const [a, b] = r.split(":").map(Number); return a / b; })();
+    sizeVal = "none";                        // 비율이 바뀌면 프리셋 목록도 바뀌므로 초기화
+    buildSizes(); saveState();
     if (!ratio) { paint(); return; }
     // 현재 선택의 중심을 유지한 채 비율에 맞춰 다시 맞춤
     const W = dispW(), H = dispH(), c = cropPx();
@@ -532,8 +496,44 @@
   $("reset").addEventListener("click", resetCrop);
   window.addEventListener("resize", paint);
 
+  /* ---------- 설정 저장 (비율·출력 크기·확대 허용·품질) ---------- */
+  const STORE = "onethe-crop-v1";
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORE, JSON.stringify({
+        r: $("ratios").querySelector(".on").dataset.r,
+        size: sizeVal,
+        noup: $("noup").checked,
+        q: $("quality").value
+      }));
+    } catch {}
+  }
+
+  function loadState() {
+    let d;
+    try { d = JSON.parse(localStorage.getItem(STORE) || "null"); } catch {}
+    if (!d) return;
+    const btn = d.r && $("ratios").querySelector(`button[data-r="${d.r}"]`);
+    if (btn) {
+      $("ratios").querySelectorAll("button").forEach(b => b.classList.toggle("on", b === btn));
+      ratio = d.r === "free" ? null : (() => { const [a, b] = d.r.split(":").map(Number); return a / b; })();
+    }
+    if (d.noup !== undefined) $("noup").checked = !!d.noup;
+    if (d.q) { $("quality").value = d.q; $("quality-v").textContent = d.q; }
+    if (d.size) sizeVal = d.size;
+  }
+
+  loadState();
+  buildSizes();
+  // 저장된 출력 크기가 현재 비율의 프리셋에 없으면 원본 유지로 되돌린다
+  if (sizeVal !== "none" && !$("sizes").querySelector(`button[data-size="${sizeVal}"]`)) {
+    sizeVal = "none";
+    buildSizes();
+  }
+
   /* ---------- 크롭 실행 ---------- */
-  $("quality").addEventListener("input", () => $("quality-v").textContent = $("quality").value);
+  $("quality").addEventListener("input", () => { $("quality-v").textContent = $("quality").value; saveState(); });
 
   function clearResult() {
     result.classList.remove("show");
