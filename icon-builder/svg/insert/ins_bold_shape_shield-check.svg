@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="shield-check">
-  <g transform="translate(6,6) scale(0.5)">
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M12 2.9l7.3 3v5.7c0 4.3-3 8-7.3 9.4-4.3-1.4-7.3-5.1-7.3-9.4V5.9z"/>
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M8.9 12.1l2.3 2.3 4-4.4"/>
-  </g>
-</svg>

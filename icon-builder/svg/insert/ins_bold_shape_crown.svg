@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="crown">
-  <g transform="translate(6,6) scale(0.5)">
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M3.4 7.6l3.2 3.1 5.4-6 5.4 6 3.2-3.1-1.8 11H5.2z"/>
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M5.2 20.4h13.6"/>
-  </g>
-</svg>

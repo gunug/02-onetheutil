@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="lock-tall">
-  <g transform="translate(6,6) scale(0.5)">
-    <rect class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" x="4.6" y="10.2" width="14.8" height="10.2" rx="2.4"/>
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M8.2 10.2V7.4a3.8 3.8 0 0 1 7.6 0v2.8"/>
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M12 14.4v2.2"/>
-  </g>
-</svg>

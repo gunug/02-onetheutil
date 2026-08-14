@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="bar-steps">
-  <g transform="translate(6,6) scale(0.5)">
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M3.5 20.5h17"/>
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M6.6 20.5v-5.2"/>
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M12 20.5V8.4"/>
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M17.4 20.5v-8.2"/>
-  </g>
-</svg>

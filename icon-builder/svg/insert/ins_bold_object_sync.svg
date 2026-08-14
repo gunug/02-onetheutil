@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 28 28" data-name="sync">
-  <g transform="translate(6,6) scale(0.5)">
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M4 12a8 8 0 0 1 13.6-5.7l2 2"/>
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M20 4.3v4.4h-4.4"/>
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M20 12a8 8 0 0 1-13.6 5.7l-2-2"/>
-    <path class="ins" style="stroke-width:calc(var(--stroke-w)*1.4)" d="M4 19.7v-4.4h4.4"/>
-  </g>
-</svg>
