@@ -193,6 +193,9 @@ code{font-family:var(--mono);font-size:13px;background:var(--surface-soft);
   padding:2px 6px;border-radius:4px;color:var(--ink)}
 .code-block{background:var(--code-bg);color:var(--code-fg);border-radius:var(--r-md);
   padding:var(--s5);font-family:var(--mono);font-size:13px;line-height:1.7;overflow-x:auto}
+.prompt-box{white-space:pre-wrap;word-break:break-word;line-height:1.75}
+.prompt-head{display:flex;align-items:center;justify-content:space-between;
+  gap:var(--s4);margin-bottom:var(--s3)}
 .code-block .c{color:#9a9a8e}
 .code-block .y{color:var(--brand-yellow)}
 
@@ -366,6 +369,9 @@ footer{margin-top:var(--s8);padding-top:var(--s5);border-top:1px solid var(--hai
   <aside>
     <div class="logo"><span class="mark"><svg viewBox="6.04 9.10 11.73 5.80" aria-label="One The Lab"><g transform="translate(6,6) scale(0.5)"><g transform="translate(0,6.062) scale(0.40276) translate(-268.052,-406.287)"><path fill-rule="evenodd" d="M284.609,412.015 276.566,407.371 268.991,411.744 268.991,430.320 276.567,434.693 292.654,425.406 292.654,416.659 Z M275.626,427.571 275.628,414.494 286.952,421.032 Z"/><polygon points="294.527,415.577 286.953,411.203 293.590,407.371 308.740,416.118 301.166,420.491 301.166,430.320 294.527,434.152"/><polygon points="309.678,407.912 303.979,411.202 309.678,414.494"/><polygon points="309.678,417.742 303.041,421.573 303.041,430.320 310.615,434.692 325.766,425.947 319.128,422.114 309.678,427.571"/></g></g></svg></span> One The Lab</div>
     <nav>
+      <div class="nav-sec"><span class="tick"></span>AI</div>
+      <a href="#ai-prompt">AI 프롬프트</a>
+
       <div class="nav-sec"><span class="tick"></span>기초</div>
       <a href="#brand" class="active">Brand</a>
       <a href="#color">Color</a>
@@ -445,6 +451,41 @@ footer{margin-top:var(--s8);padding-top:var(--s5);border-top:1px solid var(--hai
       <h1>One The Lab Design System</h1>
       <p>일관된 화면을 빠르게 만들기 위한 색·글꼴·간격·컴포넌트 규칙 모음. 노랑을 브랜드 보울티지로 쓰고, 짙은 잉크와 따뜻한 캔버스로 균형을 잡는다.</p>
     </div>
+
+    <!-- AI PROMPT -->
+    <section id="ai-prompt">
+      <h2>Prompt</h2>
+      <div class="sec-title">AI 프롬프트</div>
+      <div class="prompt-head">
+        <p style="color:var(--muted);font-size:14px;margin:0">아래 내용을 그대로 복사해 AI에게 전달하면 이 디자인 시스템을 반영한다.</p>
+        <button class="btn btn-primary" onclick="copyPrompt(this)">복사</button>
+      </div>
+      <div class="code-block prompt-box" id="ai-prompt-text">아래 디자인 시스템을 그대로 지켜서 HTML/CSS를 작성한다.
+
+[규칙]
+- 색·간격·모서리·그림자는 반드시 CSS 변수로 참조. HEX 하드코딩 금지.
+- 다크가 기본: &lt;html data-theme="dark"&gt;. 라이트는 [data-theme="light"]에서 토큰만 재정의.
+- 브랜드 노랑은 강조에만 사용(primary 버튼, 활성 nav, 포인트). 넓은 면적 채움 금지.
+- 노랑 배경 위 텍스트는 항상 --on-brand.
+- 폰트: Inter(UI) / JetBrains Mono(코드). 본문 16px, line-height 1.6.
+- 카드 = --surface + 1px solid --hairline + --r-lg + --sh-sm.
+
+[토큰]
+브랜드  --brand-yellow:#FFD400  --brand-yellow-soft:#FFE766  --brand-yellow-deep:#C9A600  --on-brand:#1A1A17
+시맨틱  --success:#3FA66A  --warning:#E0941A  --error:#D24A4A  --info:#3A78C2
+다크    --ink:#F5F4EC --body:#CFCDC2 --muted:#8E8C82 --hairline:#33332B --canvas:#121210 --surface:#1C1C17 --surface-soft:#26261F --on-ink:#121210
+라이트  --ink:#1A1A17 --body:#3D3D38 --muted:#7A7A72 --hairline:#E7E5DD --canvas:#FAFAF7 --surface:#FFFFFF --surface-soft:#F4F3EE --on-ink:#FAFAF7
+간격    --s1~--s8 = 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 px
+모서리  --r-sm:6px --r-md:10px --r-lg:16px --r-pill:9999px
+그림자  --sh-sm / --sh-md / --sh-lg
+코드    --code-bg:#161613 --code-fg:#FAFAF7 (테마 무관 고정)
+
+[금지]
+- 토큰 밖의 임의 색·간격 추가
+- 순수 #000 / #fff 사용
+- 그라데이션·과한 애니메이션
+- 외부 UI 프레임워크(Bootstrap, Tailwind 등)</div>
+    </section>
 
     <!-- COLOR -->
     <section id="color">
@@ -1597,6 +1638,16 @@ footer{margin-top:var(--s8);padding-top:var(--s5);border-top:1px solid var(--hai
     var next = el.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     el.setAttribute('data-theme', next);
     localStorage.setItem('brand-theme', next);
+  }
+
+  // AI 프롬프트 복사
+  function copyPrompt(btn){
+    var txt = document.getElementById('ai-prompt-text').textContent;
+    navigator.clipboard.writeText(txt).then(function(){
+      var old = btn.textContent;
+      btn.textContent = '복사됨';
+      setTimeout(function(){ btn.textContent = old; }, 1500);
+    });
   }
 
   // 좌측 nav 스크롤 활성화 (현재 보는 앵커)
